@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
+            /* Purple Theme - Shkalma */
             --primary-color: #6A1B9A; 
             --primary-light: #4A148C;
             --secondary-color: #9C27B0;
@@ -24,7 +25,7 @@
             --error: #c62828;
             --blue-cost: #1565c0;
             --shadow-sm: 0 4px 12px rgba(106, 27, 154, 0.08);
-            --global-spacing: 1.5rem; /* توحيد المسافات */
+            --gap-size: 1.5rem; /* توحيد المسافات */
         }
         * { box-sizing: border-box; }
         body { font-family: 'IBM Plex Sans Arabic', sans-serif; background-color: var(--background); color: var(--text-primary); line-height: 1.6; margin: 0; padding: 0; }
@@ -46,24 +47,35 @@
         .page { display: none; animation: fadeIn 0.4s ease; } .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Grid - Consistent Gaps */
-        .budget-grid-layout { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--global-spacing); }
-        .area-treasury { grid-column: 1; } .area-expenses { grid-column: 2; } .area-prod { grid-column: 3; grid-row: 1 / span 2; }
-        .area-chart { grid-column: 1; } .area-salaries { grid-column: 2; }
+        /* Grid Layout - Equal Spacing */
+        .budget-grid-layout { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr 1fr; 
+            gap: var(--gap-size); 
+            align-items: start;
+        }
+        .area-treasury { grid-column: 1; } 
+        .area-expenses { grid-column: 2; } 
+        .area-prod { grid-column: 3; grid-row: 1 / span 2; height: 100%; }
+        .area-chart { grid-column: 1; } 
+        .area-salaries { grid-column: 2; }
 
-        /* Cards - Consistent Margins */
+        /* Cards */
         .card-modern { 
             background: var(--surface); border: 1px solid var(--border-color); border-radius: 16px; 
-            box-shadow: var(--shadow-sm); margin-bottom: var(--global-spacing); overflow: hidden; 
-            display: flex; flex-direction: column; height: 100%; 
+            box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; 
+            height: 100%; margin-bottom: 0; /* Remove margin bottom to let Grid gap handle spacing */
         }
+        /* Except in product calculation page where we use margin */
+        #calculate-product .card-modern, #product-main .card-modern, #invoices-main .card-modern { margin-bottom: var(--gap-size); }
+
         .card-header-modern { background: #fff; padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
         .card-body-modern { padding: 1.5rem; flex-grow: 1; }
 
-        .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: var(--global-spacing); background: #fff; box-shadow: var(--shadow-sm); }
+        .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; background: #fff; box-shadow: var(--shadow-sm); }
         .card-header-dark { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
 
-        .card-theme-container { border: 2px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: var(--global-spacing); background: #F3E5F5; box-shadow: var(--shadow-sm); }
+        .card-theme-container { border: 2px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; background: #F3E5F5; box-shadow: var(--shadow-sm); }
         .card-header-theme { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .card-theme-container .form-control-modern { background: #ffffff; }
 
@@ -80,7 +92,7 @@
         .table-modern th { background: #F3E5F5; padding: 1rem; text-align: center; font-weight: 600; color: var(--primary-color); border-bottom: 2px solid var(--border-color); }
         .table-modern td { padding: 0.9rem; text-align: center; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
 
-        .profit-highlight { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 1.5rem; border-radius: 16px; text-align: center; margin-bottom: var(--global-spacing); box-shadow: 0 4px 15px rgba(106, 27, 154, 0.2); }
+        .profit-highlight { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 1.5rem; border-radius: 16px; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(106, 27, 154, 0.2); }
         .profit-highlight h5, .profit-highlight small, .profit-highlight h2 { color: #ffffff !important; opacity: 1 !important; }
 
         .report-row { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.95rem; } .report-val { font-weight: 700; }
@@ -88,14 +100,14 @@
         .prod-item-name { font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem; display: block; }
         .prod-item-stat { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.2rem; } .prod-item-val { font-weight: 700; color: #333; }
         
-        .cost-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: var(--global-spacing); }
+        .cost-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .cost-card { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.2rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .cost-card-title { font-size: 0.85rem; color: #777; margin-bottom: 0.5rem; font-weight: 500; }
         .cost-card-value { font-size: 1.3rem; font-weight: 700; color: var(--primary-color); }
         .cost-card.profit { border-color: var(--warning); } .cost-card.profit .cost-card-value { color: var(--warning); }
         .cost-card.final { border-color: var(--success); background: #e8f5e9; } .cost-card.final .cost-card-value { color: var(--success); }
 
-        .nav-tabs-modern { border: none; gap: 8px; margin-bottom: var(--global-spacing); }
+        .nav-tabs-modern { border: none; gap: 8px; margin-bottom: 1.5rem; }
         .nav-tabs-modern .nav-link { border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); padding: 0.6rem 1.5rem; font-weight: 500; background: white; }
         .nav-tabs-modern .nav-link.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
 
@@ -104,7 +116,7 @@
         .price-input-container input { padding-left: 35px; }
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
         .status-active { background: #e8f5e9; color: #2e7d32; } .status-inactive { background: #ffebee; color: #c62828; }
-        .filter-wrapper { background: white; padding: 10px; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: var(--global-spacing); }
+        .filter-wrapper { background: white; padding: 10px; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 20px; }
 
         .summary-input-large { font-size: 1.5rem; font-weight: 700; text-align: center; height: 60px; background: #fff; color: #333; border: 1px solid #ddd; }
         .summary-label { font-size: 0.9rem; color: var(--primary-color); margin-bottom: 8px; font-weight: 700; display: block; text-align: center; }
@@ -116,9 +128,6 @@
         .save-btn-container { text-align: center; margin-top: 20px; }
         .save-btn-custom { background: #00c853; color: white; font-size: 1.1rem; padding: 10px 40px; border-radius: 8px; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .save-btn-custom:hover { background: #009624; color: white; }
-
-        /* Unified row gaps */
-        .row { --bs-gutter-y: var(--global-spacing); }
 
         @media (max-width: 992px) {
             .budget-grid-layout { grid-template-columns: 1fr; }
@@ -236,8 +245,8 @@
     </div>
 
     <div class="modal fade" id="invoiceModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-success text-white"><h5 class="modal-title">فاتورة جديدة</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="inv-id"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="inv-date"></div><div class="mb-2"><label>العميل</label><input type="text" class="form-control-modern" id="inv-customer"></div><div class="mb-2"><label>الهاتف</label><input type="tel" class="form-control-modern" id="inv-phone"></div><div class="mb-2"><label>المنتج</label><select class="form-select-modern" id="inv-product" onchange="calcInvTotal()"></select></div><div class="row mb-2"><div class="col-6"><label>العدد</label><input type="number" class="form-control-modern" id="inv-qty" value="1" oninput="calcInvTotal()"></div><div class="col-6"><label>الإجمالي</label><input type="number" class="form-control-modern bg-light" id="inv-total" readonly></div></div><div class="mb-2"><label>الحالة</label><select class="form-select-modern" id="inv-status" onchange="toggleInvMethod()"><option value="Paid">مدفوع</option><option value="Unpaid">غير مدفوع</option></select></div><div class="mb-2" id="inv-method-div"><label>طريقة الدفع</label><select class="form-select-modern" id="inv-method"><option value="Cash">كاش</option><option value="Benefit">بنفت</option></select></div></div><div class="modal-footer"><button class="btn btn-success-modern" onclick="saveInvoice()">حفظ</button></div></div></div></div>
-    <div class="modal fade" id="productionModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">تسجيل ناتج</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="prod-id"><div class="row g-2 mb-3"><div class="col-6"><label>التاريخ</label><input type="date" class="form-control-modern" id="prod-date"></div><div class="col-6"><label>الصنف</label><select class="form-select-modern" id="prod-name"></select></div></div><div class="row g-2 mb-3"><div class="col-6"><label>الوزن</label><input type="text" class="form-control-modern" id="prod-weight"></div><div class="col-6"><label>عدد العلب</label><input type="number" class="form-control-modern" id="prod-count" oninput="calcProd()"></div></div><h6>المنتجات المستخدمة</h6><table class="table-modern mb-2" id="prod-ing-table"><tbody></tbody></table><button class="btn btn-sm btn-light border mb-3" onclick="addProdIng()">+ منتج</button><h6>تكاليف تشغيلية</h6><table class="table-modern mb-2" id="prod-op-table"><tbody></tbody></table><button class="btn btn-sm btn-light border mb-3" onclick="addProdOp()">+ تكلفة</button><div class="row"><div class="col-6"><label>الإجمالي</label><input id="prod-total" class="form-control-modern" readonly></div><div class="col-6"><label>للوحدة</label><input id="prod-unit" class="form-control-modern" readonly></div></div></div><div class="modal-footer"><button class="btn btn-primary-modern" onclick="saveProduction()">حفظ</button></div></div></div></div>
-    <div class="modal fade" id="purchaseModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">مشتريات</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="pur-id"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="pur-date"></div><div class="mb-2"><label>الصنف</label><input type="text" class="form-control-modern" id="pur-item"></div><div class="row mb-2"><div class="col-6"><label>العدد</label><input type="number" class="form-control-modern" id="pur-count"></div><div class="col-6"><label>السعر</label><input type="number" class="form-control-modern" id="pur-amount"></div></div><div class="mb-2"><label>التصنيف</label><select class="form-select-modern" id="pur-cat"></select></div><div class="mb-2"><label>الحالة</label><select class="form-select-modern" id="pur-status" onchange="togglePurMethod()"><option value="Paid">مدفوع</option><option value="Unpaid">غير مدفوع</option></select></div><div class="mb-2" id="pur-method-div"><label>طريقة الدفع</label><select class="form-select-modern" id="pur-method"><option value="Cash">كاش</option><option value="Benefit">بنفت</option></select></div></div><div class="modal-footer"><button class="btn btn-primary-modern" onclick="savePurchase()">حفظ</button></div></div></div></div>
+    <div class="modal fade" id="productionModal" tabindex="-1"><div class="modal-dialog modal-lg"><div class="modal-content"><div class="modal-header bg-primary text-white"><h5 class="modal-title">تسجيل ناتج</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="prod-id"><div class="row g-2 mb-3"><div class="col-6"><label>التاريخ</label><input type="date" class="form-control-modern" id="prod-date"></div><div class="col-6"><label>الصنف</label><select class="form-select-modern" id="prod-name"></select></div></div><div class="row g-2 mb-3"><div class="col-6"><label>الوزن</label><input type="text" class="form-control-modern" id="prod-weight"></div><div class="col-6"><label>عدد العلب</label><input type="number" class="form-control-modern" id="prod-count" oninput="calcProdTotal()"></div></div><h6>المنتجات المستخدمة</h6><table class="table-modern mb-2" id="prod-ing-table"><tbody></tbody></table><button class="btn btn-sm btn-light border mb-3" onclick="addProdIng()">+ منتج</button><h6>تكاليف تشغيلية</h6><table class="table-modern mb-2" id="prod-op-table"><tbody></tbody></table><button class="btn btn-sm btn-light border mb-3" onclick="addProdOp()">+ تكلفة</button><div class="row"><div class="col-6"><label>الإجمالي</label><input id="prod-total" class="form-control-modern" readonly></div><div class="col-6"><label>للوحدة</label><input id="prod-unit" class="form-control-modern" readonly></div></div></div><div class="modal-footer"><button class="btn btn-primary-modern" onclick="saveProduction()">حفظ</button></div></div></div></div>
+    <div class="modal fade" id="purchaseModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">مشتريات</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="pur-id"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="pur-date"></div><div class="mb-2"><label>الصنف</label><input type="text" class="form-control-modern" id="pur-item"></div><div class="row mb-2"><div class="col-6"><label>العدد</label><input type="number" class="form-control-modern" id="pur-count"></div><div class="col-6"><label>السعر</label><input type="number" class="form-control-modern" id="pur-amount"></div></div><div class="mb-2"><label>التصنيف</label><select class="form-select-modern" id="pur-cat"></select></div><div class="mb-2"><label>الحالة</label><select class="form-select-modern" id="pur-status" onchange="togglePurMethod()"><option value="Paid">مدفوع</option><option value="Unpaid">غير مدفوع</option></select></div><div id="pur-method-div"><div class="mb-2"><label>الطريقة</label><select class="form-select-modern" id="pur-method"><option value="Cash">كاش</option><option value="Benefit">بنفت</option></select></div><div class="mb-2"><label>تاريخ الدفع</label><input type="date" class="form-control-modern" id="pur-pay-date"></div></div></div><div class="modal-footer"><button class="btn btn-primary-modern" onclick="savePurchase()">حفظ</button></div></div></div></div>
     <div class="modal fade" id="salaryModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">راتب</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="sal-id"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="sal-date"></div><div class="mb-2"><label>التصنيف</label><select class="form-select-modern" id="sal-cat"><option>عمال</option><option>وجبات</option><option>سيارة</option></select></div><div class="mb-2"><label>المبلغ</label><input type="number" class="form-control-modern" id="sal-amount"></div><div class="mb-2"><label>الحالة</label><select class="form-select-modern" id="sal-status" onchange="toggleSalMethod()"><option value="Unpaid">غير مدفوع</option><option value="Paid">مدفوع</option></select></div><div id="sal-pay-div" class="d-none"><div class="mb-2"><label>الطريقة</label><select class="form-select-modern" id="sal-method"><option>Cash</option><option>Benefit</option></select></div><div class="mb-2"><label>تاريخ الدفع</label><input type="date" class="form-control-modern" id="sal-pay-date"></div></div><div class="mb-2"><textarea class="form-control-modern" id="sal-notes" placeholder="ملاحظات"></textarea></div></div><div class="modal-footer"><button class="btn btn-warning-modern" onclick="saveSalary()">حفظ</button></div></div></div></div>
     <div class="modal fade" id="transModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="trans-title"></h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="trans-id"><input type="hidden" id="trans-type"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="trans-date"></div><div class="mb-2"><label>المبلغ</label><input type="number" class="form-control-modern" id="trans-amount"></div><div class="mb-2"><label>الطريقة</label><select class="form-select-modern" id="trans-method"><option>Cash</option><option>Benefit</option></select></div><div class="mb-2"><textarea class="form-control-modern" id="trans-notes" placeholder="ملاحظات"></textarea></div></div><div class="modal-footer"><button class="btn btn-success-modern" onclick="saveTransaction()">حفظ</button></div></div></div></div>
 
@@ -400,6 +409,8 @@
             appData.budget.invoices.forEach(i => { if(checkDate(i.date) && i.status === 'Paid') i.method === 'Cash' ? cIn += parseFloat(i.total) : bIn += parseFloat(i.total); });
             // Add Paid Salaries to Cash/Benefit Out
             appData.budget.salaries.forEach(s => { if(checkDate(s.date) && s.status === 'Paid') s.method === 'Cash' ? cOut += parseFloat(s.amount) : bOut += parseFloat(s.amount); });
+            // Add Paid Purchases to Cash/Benefit Out (Assuming purchases are paid expenses from treasury)
+            appData.budget.purchases.forEach(p => { if(checkDate(p.date) && p.status === 'Paid') p.method === 'Cash' ? cOut += (parseFloat(p.count)*parseFloat(p.amount)) : bOut += (parseFloat(p.count)*parseFloat(p.amount)); });
 
             document.getElementById('rep-cash-in').innerText = formatMoney(cIn); document.getElementById('rep-benefit-in').innerText = formatMoney(bIn);
             document.getElementById('rep-cash-out').innerText = formatMoney(cOut); document.getElementById('rep-benefit-out').innerText = formatMoney(bOut);
@@ -412,13 +423,15 @@
             document.getElementById('rem-cash').innerText = formatMoney(cashNet);
             document.getElementById('rem-benefit').innerText = formatMoney(benefitNet);
 
-            // Expense Totals (Include Unpaid for Expense Report, but not for Cash Flow Remainder)
+            // Expense Totals
             const purTotal = appData.budget.purchases.filter(p => checkDate(p.date)).reduce((a,b)=>a+(parseFloat(b.count)*parseFloat(b.amount)),0);
             const salTotal = appData.budget.salaries.filter(s => checkDate(s.date)).reduce((a,b)=>a+parseFloat(b.amount),0);
             const totalExpenses = purTotal + salTotal;
 
-            // Remainder (Treasury Net - Purchases) *Since purchases are cash/credit, simplify to deduct total purchases from treasury net for "Final Remainder" visualization*
-            const finalRemainder = treasuryNet - purTotal; 
+            // Final Remainder = Treasury Net (Assuming Treasury tracks all flow)
+            // Or if Remainder means "Treasury Net" (Already calculated as rep-net)
+            // Let's set Remainder same as Net for now as it's the liquid cash available.
+            const finalRemainder = treasuryNet; 
             const remEl = document.getElementById('rep-final-remainder');
             remEl.innerText = formatMoney(finalRemainder);
             remEl.className = finalRemainder >= 0 ? "report-val text-success" : "report-val text-danger";
@@ -447,6 +460,8 @@
                 }
             }
 
+            const invs = appData.budget.invoices.filter(i => checkDate(i.date));
+            const paid = invs.filter(i => i.status === 'Paid');
             let productCosts = {}; appData.budget.productions.forEach(p => { if(!productCosts[p.name]) productCosts[p.name] = []; productCosts[p.name].push(parseFloat(p.boxValue)); });
             let totalSales = paid.reduce((a,b)=>a+parseFloat(b.total),0);
             let totalCOGS = 0;
@@ -459,11 +474,11 @@
             const budgetEl = document.getElementById('report-net-budget');
             budgetEl.innerText = formatMoney(netBudget);
 
-            const cats = {}; purs.forEach(p => { cats[p.category] = (cats[p.category]||0) + (parseFloat(p.count)*parseFloat(p.amount)); });
+            const cats = {}; appData.budget.purchases.filter(p=>checkDate(p.date)).forEach(p => { cats[p.category] = (cats[p.category]||0) + (parseFloat(p.count)*parseFloat(p.amount)); });
             if(chartInstance) chartInstance.destroy();
             chartInstance = new Chart(document.getElementById('expensesChart'), { type: 'bar', data: { labels: Object.keys(cats), datasets: [{ label: 'المصروفات', data: Object.values(cats), backgroundColor: '#6A1B9A' }] }, options: { maintainAspectRatio: false } });
             const salList = document.getElementById('rep-salary-list'); salList.innerHTML = '';
-            const salGroups = {}; sals.forEach(s => salGroups[s.status] = (salGroups[s.status]||0) + parseFloat(s.amount));
+            const salGroups = {}; appData.budget.salaries.filter(s=>checkDate(s.date)).forEach(s => salGroups[s.status] = (salGroups[s.status]||0) + parseFloat(s.amount));
             for(let k in salGroups) { salList.innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${k==='Paid'?'مدفوع':'غير مدفوع'}</span><span>${formatMoney(salGroups[k])}</span></li>`; }
         }
 
@@ -478,15 +493,7 @@
         function delItem(type, i) { if(confirm('حذف؟')) { appData.budget[type].splice(i,1); saveData(); updateBudgetUI(); } }
 
         // --- Modals Handlers ---
-        function openProductionModal(i){ 
-            const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
-            document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
-            if(i!==undefined){ 
-                const p = appData.budget.productions[i]; document.getElementById('prod-id').value=i; document.getElementById('prod-date').value=p.date; document.getElementById('prod-name').value=p.name; document.getElementById('prod-count').value=p.boxCount; document.getElementById('prod-weight').value=p.weight||'';
-            } else { document.getElementById('prod-id').value=''; document.getElementById('prod-date').valueAsDate=new Date(); document.getElementById('prod-count').value=''; }
-            new bootstrap.Modal(document.getElementById('productionModal')).show(); 
-        }
-        // Fixed: Defined global functions for Production Rows
+        // Defined Global functions to be accessible by onclick
         window.addProdIng = function() {
              const tb = document.getElementById('prod-ing-table').tBodies[0];
              let opts = '<option value="">اختر المنتج...</option>';
@@ -520,29 +527,41 @@
         }
         document.getElementById('prod-count').addEventListener('input', calcProdTotal);
 
+        function openProductionModal(i){ 
+            const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
+            document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
+            if(i!==undefined){ 
+                const p = appData.budget.productions[i]; document.getElementById('prod-id').value=i; document.getElementById('prod-date').value=p.date; document.getElementById('prod-name').value=p.name; document.getElementById('prod-count').value=p.boxCount; document.getElementById('prod-weight').value=p.weight||'';
+            } else { document.getElementById('prod-id').value=''; document.getElementById('prod-date').valueAsDate=new Date(); document.getElementById('prod-count').value=''; }
+            new bootstrap.Modal(document.getElementById('productionModal')).show(); 
+        }
+
         function openPurchaseModal(i){ 
             const sel=document.getElementById('pur-cat'); sel.innerHTML=''; categoriesList.forEach(c=>sel.innerHTML+=`<option>${c}</option>`);
             if(i!==undefined){
                 const p = appData.budget.purchases[i]; document.getElementById('pur-id').value=i; document.getElementById('pur-date').value=p.date; document.getElementById('pur-item').value=p.item; document.getElementById('pur-count').value=p.count; document.getElementById('pur-amount').value=p.amount; document.getElementById('pur-cat').value=p.category;
-                document.getElementById('pur-status').value=p.status||'Paid'; document.getElementById('pur-method').value=p.method||'Cash';
+                document.getElementById('pur-status').value=p.status||'Unpaid'; document.getElementById('pur-method').value=p.method||'Cash'; document.getElementById('pur-pay-date').value=p.paymentDate||'';
             } else { 
                 document.getElementById('pur-id').value=''; document.getElementById('pur-date').valueAsDate=new Date(); 
                 document.getElementById('pur-item').value=''; document.getElementById('pur-count').value=''; document.getElementById('pur-amount').value='';
-                document.getElementById('pur-status').value='Paid'; togglePurMethod();
+                document.getElementById('pur-status').value='Unpaid'; document.getElementById('pur-pay-date').value='';
             }
             togglePurMethod();
             new bootstrap.Modal(document.getElementById('purchaseModal')).show(); 
         }
-        function togglePurMethod() { document.getElementById('pur-method-div').style.display = document.getElementById('pur-status').value==='Paid'?'block':'none'; }
+        function togglePurMethod() { 
+            const isPaid = document.getElementById('pur-status').value === 'Paid';
+            document.getElementById('pur-method-div').style.display = isPaid ? 'block' : 'none';
+        }
 
         function openSalaryModal(i){ 
             if(i!==undefined){
-                const s = appData.budget.salaries[i]; document.getElementById('sal-id').value=i; document.getElementById('sal-date').value=s.date; document.getElementById('sal-cat').value=s.category; document.getElementById('sal-amount').value=s.amount; document.getElementById('sal-status').value=s.status; document.getElementById('sal-pay-date').value=s.paymentDate||''; document.getElementById('sal-notes').value=s.notes||''; toggleSalMethod();
+                const s = appData.budget.salaries[i]; document.getElementById('sal-id').value=i; document.getElementById('sal-date').value=s.date; document.getElementById('sal-cat').value=s.category; document.getElementById('sal-amount').value=s.amount; document.getElementById('sal-status').value=s.status; document.getElementById('sal-method').value=s.method||'Cash'; document.getElementById('sal-pay-date').value=s.paymentDate||''; document.getElementById('sal-notes').value=s.notes||''; 
             } else { 
                 document.getElementById('sal-id').value=''; document.getElementById('sal-date').valueAsDate=new Date(); 
-                document.getElementById('sal-amount').value=''; document.getElementById('sal-status').value='Unpaid'; document.getElementById('sal-notes').value='';
-                toggleSalMethod();
+                document.getElementById('sal-amount').value=''; document.getElementById('sal-status').value='Unpaid'; document.getElementById('sal-notes').value=''; document.getElementById('sal-pay-date').value='';
             }
+            toggleSalMethod();
             new bootstrap.Modal(document.getElementById('salaryModal')).show(); 
         }
         function toggleSalMethod() {
@@ -569,7 +588,7 @@
         function calcInvTotal() { const s = document.getElementById('inv-product'); const price = s.selectedIndex>0 ? parseFloat(s.options[s.selectedIndex].dataset.price) : 0; document.getElementById('inv-total').value = (price * (parseFloat(document.getElementById('inv-qty').value)||0)).toFixed(3); }
         function toggleInvMethod() { document.getElementById('inv-method-div').style.display = document.getElementById('inv-status').value==='Paid'?'block':'none'; }
         
-        // Save
+        // Save Functions (Updated to handle Edit by index)
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value };
             if(id) appData.budget.productions[id] = data; else appData.budget.productions.push(data);
@@ -577,15 +596,25 @@
         }
         function savePurchase() { 
              const id = document.getElementById('pur-id').value; 
+             const isPaid = document.getElementById('pur-status').value === 'Paid';
              const data = { 
                  date: document.getElementById('pur-date').value, item: document.getElementById('pur-item').value, count: document.getElementById('pur-count').value, amount: document.getElementById('pur-amount').value, category: document.getElementById('pur-cat').value,
-                 status: document.getElementById('pur-status').value, method: document.getElementById('pur-method').value
+                 status: document.getElementById('pur-status').value, 
+                 method: isPaid ? document.getElementById('pur-method').value : '-',
+                 paymentDate: isPaid ? document.getElementById('pur-pay-date').value : '-'
              };
              if(id) appData.budget.purchases[id] = data; else appData.budget.purchases.push(data);
              saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide(); 
         }
         function saveSalary() { 
-            const id = document.getElementById('sal-id').value; const data = { date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, method: document.getElementById('sal-method').value, paymentDate: document.getElementById('sal-pay-date').value, notes: document.getElementById('sal-notes').value };
+            const id = document.getElementById('sal-id').value; 
+            const isPaid = document.getElementById('sal-status').value === 'Paid';
+            const data = { 
+                date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, 
+                method: isPaid ? document.getElementById('sal-method').value : '-', 
+                paymentDate: isPaid ? document.getElementById('sal-pay-date').value : '-', 
+                notes: document.getElementById('sal-notes').value 
+            };
             if(id) appData.budget.salaries[id] = data; else appData.budget.salaries.push(data);
             saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('salaryModal')).hide(); 
         }
