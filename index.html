@@ -862,6 +862,9 @@
                     <button class="nav-link active" id="report-tab" data-bs-toggle="tab" data-bs-target="#report" type="button" role="tab" aria-controls="report" aria-selected="true"><i class="bi bi-pie-chart-fill"></i> التقرير</button>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="invoices-tab" data-bs-toggle="tab" data-bs-target="#invoices" type="button" role="tab" aria-controls="invoices" aria-selected="false"><i class="bi bi-receipt"></i> الفواتير</button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="production-tab" data-bs-toggle="tab" data-bs-target="#production" type="button" role="tab" aria-controls="production" aria-selected="false"><i class="bi bi-box-fill"></i> الناتج</button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -901,6 +904,34 @@
                             <i class="bi bi-wallet-fill stat-icon" style="color: var(--green-final);"></i>
                             <div class="stat-value" id="report-income-total">0.000 د.ب</div>
                             <div class="stat-label">المبالغ المستلمة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="invoices" role="tabpanel" aria-labelledby="invoices-tab">
+                    <div class="card-modern">
+                        <div class="card-header-modern d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-receipt"></i> سجل الفواتير</span>
+                            <button class="btn btn-light btn-sm" onclick="openInvoiceModal()"><i class="bi bi-plus-lg"></i> إضافة فاتورة</button>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="table-responsive">
+                                <table class="table-modern" id="invoices-table">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>العميل</th>
+                                            <th>الهاتف</th>
+                                            <th>المنتج</th>
+                                            <th>الإجمالي</th>
+                                            <th>الحالة</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="invoices-tbody">
+                                        </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -988,6 +1019,7 @@
                                                     <th>المبلغ (د.ب)</th>
                                                     <th>الحالة</th>
                                                     <th>طريقة الدفع</th>
+                                                    <th>تاريخ الدفع</th>
                                                     <th>ملاحظات</th>
                                                     <th>الإجراءات</th>
                                                 </tr>
@@ -1125,6 +1157,54 @@
         </div>
     </div>
 
+    <div class="modal fade preview-modal" id="productionPreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="bi bi-eye"></i> معاينة الإنتاج</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="preview-item">
+                                <div class="preview-label">التاريخ</div>
+                                <div class="preview-value" id="view-prod-date">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="preview-item">
+                                <div class="preview-label">اسم الصنف</div>
+                                <div class="preview-value" id="view-prod-name">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="preview-item">
+                                <div class="preview-label">عدد العلب</div>
+                                <div class="preview-value" id="view-prod-count">-</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="preview-item">
+                                <div class="preview-label">قيمة العلبة</div>
+                                <div class="preview-value" id="view-prod-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h6>المنتجات المستخدمة</h6>
+                    <ul class="list-group mb-3" id="view-prod-ingredients"></ul>
+                    <h6>التكاليف التشغيلية</h6>
+                    <ul class="list-group" id="view-prod-opcosts"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1170,6 +1250,66 @@
         </div>
     </div>
 
+    <div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="invoiceModalTitle">إضافة فاتورة</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="invoice-id">
+                    <div class="mb-3">
+                        <label class="form-label">التاريخ</label>
+                        <input type="date" class="form-control-modern" id="inv-date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">اسم العميل</label>
+                        <input type="text" class="form-control-modern" id="inv-customer" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" class="form-control-modern" id="inv-phone">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">المنتج</label>
+                        <select class="form-select-modern" id="inv-product" onchange="calculateInvoiceTotal()">
+                            <option value="">اختر المنتج</option>
+                            </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">العدد</label>
+                            <input type="number" class="form-control-modern" id="inv-qty" value="1" min="1" onchange="calculateInvoiceTotal()" oninput="calculateInvoiceTotal()">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">الإجمالي (د.ب)</label>
+                            <input type="number" class="form-control-modern" id="inv-total" readonly>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">حالة الدفع</label>
+                        <select class="form-select-modern" id="inv-status" onchange="toggleInvPaymentMethod()">
+                            <option value="Paid">مدفوع</option>
+                            <option value="Unpaid">غير مدفوع</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="inv-method-wrapper">
+                        <label class="form-label">طريقة الدفع</label>
+                        <select class="form-select-modern" id="inv-method">
+                            <option value="Cash">نقداً</option>
+                            <option value="Benefit">بنفت</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success-modern" onclick="saveInvoice()">حفظ الفاتورة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="salaryModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -1203,11 +1343,19 @@
                         </select>
                     </div>
                     <div class="mb-3 d-none" id="payment-method-wrapper">
-                        <label class="form-label">طريقة الدفع</label>
-                        <select class="form-select-modern" id="salary-method">
-                            <option value="Benefit">بنفت (Benefit)</option>
-                            <option value="Cash">كاش (Cash)</option>
-                        </select>
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label">طريقة الدفع</label>
+                                <select class="form-select-modern" id="salary-method">
+                                    <option value="Benefit">بنفت (Benefit)</option>
+                                    <option value="Cash">كاش (Cash)</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">تاريخ الدفع</label>
+                                <input type="date" class="form-control-modern" id="salary-payment-date">
+                            </div>
+                        </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">ملاحظات</label>
@@ -1347,7 +1495,8 @@
                 purchases: [],
                 salaries: [],
                 transactions: [],
-                productions: [] // مصفوفة جديدة للإنتاج
+                productions: [], // مصفوفة جديدة للإنتاج
+                invoices: [] // مصفوفة جديدة للفواتير
             }
         };
 
@@ -1360,9 +1509,10 @@
             if (savedData) {
                 const parsedData = JSON.parse(savedData);
                 appData.products = parsedData.products || [];
-                appData.budget = parsedData.budget || { purchases: [], salaries: [], transactions: [], productions: [] };
+                appData.budget = parsedData.budget || { purchases: [], salaries: [], transactions: [], productions: [], invoices: [] };
                 if(!appData.budget.salaries) appData.budget.salaries = [];
                 if(!appData.budget.productions) appData.budget.productions = [];
+                if(!appData.budget.invoices) appData.budget.invoices = [];
                 
                 // التأكد من وجود خاصية "المتبقي" للمشتريات القديمة
                 if(appData.budget.purchases.length > 0) {
@@ -1529,18 +1679,9 @@
             const piecesProduced = parseFloat(document.querySelector('#workers-table-2 tbody tr .pieces')?.value) || 1;
             const piecesPerBox = parseFloat(document.getElementById('sale-quantity').value) || 1;
 
-            // حساب التكاليف للعلبة الواحدة
-            // في طريقة الراتب: التكلفة الإجمالية المحسوبة هي للعلبة الواحدة بناءً على إنتاجية العامل
-            // في طريقة الوزن: التكلفة الإجمالية المحسوبة هي للعلبة الواحدة
-            const materialBoxCost = (materialsCost / (isSalaryMethod ? piecesProduced : 1)) * (isSalaryMethod ? piecesPerBox : 1);
-            // ملاحظة: إذا كانت طريقة الوزن، نفترض أن المواد والتغليف مدخلة للعلبة الواحدة أو تحتاج ضبط.
-            // للتبسيط وللحفاظ على المنطق الحالي، سنبقي معادلة المواد كما هي معتمدة على "عدد القطع المنتجة" في جدول العمال إذا كان موجوداً،
-            // لكن إذا اخترنا الوزن، جدول العمال مخفي. لذا سنفترض في طريقة الوزن أن المواد المدخلة هي للعلبة الواحدة مباشرة أو أن المستخدم سيدخل رقم 1 في الحقول المخفية.
-            // الحل الأفضل: استخدام piecesProduced = 1 عند اخفاء الجدول.
-            
             const adjustedMaterialBoxCost = isSalaryMethod ? 
                 (materialsCost / piecesProduced) * piecesPerBox : 
-                materialsCost; // افتراض أن المواد مدخلة للعلبة عند استخدام طريقة الوزن
+                materialsCost;
 
             const packagingBoxCost = packagingCost;
             const laborBoxCost = totalLaborCost;
@@ -1727,11 +1868,9 @@
             const product = products[index];
             editingIndex = index;
             
-            // الانتقال إلى صفحة حساب التكلفة
             window.location.hash = 'calculate-product';
             showPage('calculate-product');
             
-            // تعبئة البيانات الأساسية
             document.getElementById('product-name').value = product.name;
             document.getElementById('product-code').value = product.code;
             document.getElementById('sale-quantity').value = product.quantity;
@@ -1739,12 +1878,10 @@
             document.getElementById('profit-rate').value = profitRateText;
             document.getElementById('final-price-input').value = parseFloat(product.finalPrice.replace(/[^0-9.]/g, ''));
             
-            // تعبئة بيانات إهلاك المعدات
             if (product.depreciationRate) {
                 document.getElementById('depreciation-rate').value = product.depreciationRate;
             }
             
-            // تعبئة بيانات اليد العاملة
             if (product.laborMethod === 'weight') {
                 document.getElementById('laborMethodWeight').checked = true;
                 if(product.laborData) {
@@ -1762,7 +1899,6 @@
             }
             toggleLaborMethod();
             
-            // تعبئة بيانات المواد
             if (product.materialsData && product.materialsData.length > 0) {
                 document.getElementById('materials-tbody').innerHTML = '';
                 product.materialsData.forEach(material => {
@@ -1779,7 +1915,6 @@
                 });
             }
             
-            // تعبئة بيانات التغليف
             if (product.packagingData && product.packagingData.length > 0) {
                 document.getElementById('packaging-tbody').innerHTML = '';
                 product.packagingData.forEach(packaging => {
@@ -1802,7 +1937,6 @@
         function previewProduct(index) {
             const product = products[index];
             
-            // تعبئة بيانات المعاينة
             document.getElementById('preview-product-name').textContent = product.name;
             document.getElementById('preview-product-code').textContent = product.code;
             document.getElementById('preview-product-quantity').textContent = product.quantity;
@@ -1812,7 +1946,6 @@
             document.getElementById('preview-product-status').textContent = product.active ? 'مفعل' : 'غير مفعل';
             document.getElementById('preview-product-status').className = product.active ? 'status-active' : 'status-inactive';
             
-            // تعبئة البيانات الإضافية إذا كانت موجودة
             if (product.materialCost) {
                 document.getElementById('preview-material-cost').textContent = product.materialCost;
             }
@@ -1826,7 +1959,6 @@
                 document.getElementById('preview-depreciation-cost').textContent = product.depreciationCost;
             }
             
-            // عرض نافذة المعاينة
             const previewModal = new bootstrap.Modal(document.getElementById('productPreviewModal'));
             previewModal.show();
         }
@@ -1844,17 +1976,9 @@
         function validateForm() {
             let isValid = true;
             
-            // إخفاء جميع رسائل الخطأ
-            document.querySelectorAll('.error-message').forEach(el => {
-                el.style.display = 'none';
-            });
+            document.querySelectorAll('.error-message').forEach(el => { el.style.display = 'none'; });
+            document.querySelectorAll('.error-input').forEach(el => { el.classList.remove('error-input'); });
             
-            // إزالة فئة الخطأ من جميع الحقول
-            document.querySelectorAll('.error-input').forEach(el => {
-                el.classList.remove('error-input');
-            });
-            
-            // التحقق من الحقول المطلوبة
             const requiredFields = [
                 { id: 'product-name', errorId: 'product-name-error' },
                 { id: 'sale-quantity', errorId: 'sale-quantity-error' },
@@ -1869,9 +1993,7 @@
                     isValid = false;
                     document.getElementById(field.errorId).style.display = 'flex';
                     input.classList.add('error-input');
-                    if (isValid === false) {
-                        input.focus();
-                    }
+                    if (isValid === false) { input.focus(); }
                 }
             });
             
@@ -1902,17 +2024,13 @@
                     pieces.classList.add('error-input');
                     if (isValid === false) { pieces.focus(); }
                 }
-            } else {
-                // تحقق من حقول الوزن (اختياري يمكن جعله اجباري)
             }
             
             return isValid;
         }
 
         function saveProduct(){
-            if (!validateForm()) {
-                return;
-            }
+            if (!validateForm()) { return; }
             
             const name=document.getElementById('product-name').value;
             const code=document.getElementById('product-code').value;
@@ -1921,7 +2039,6 @@
             const finalPrice=document.getElementById('final-price-input').value;
             const depreciationRate=document.getElementById('depreciation-rate').value;
             
-            // جمع بيانات المواد
             const materialsData = [];
             document.querySelectorAll('#materials-tbody tr').forEach(row => {
                 const inputs = row.querySelectorAll('input');
@@ -1934,7 +2051,6 @@
                 });
             });
             
-            // جمع بيانات التغليف
             const packagingData = [];
             document.querySelectorAll('#packaging-tbody tr').forEach(row => {
                 const inputs = row.querySelectorAll('input');
@@ -1947,7 +2063,6 @@
                 });
             });
             
-            // جمع بيانات اليد العاملة
             const laborMethod = document.getElementById('laborMethodSalary').checked ? 'salary' : 'weight';
             let laborData = {};
             
@@ -1973,22 +2088,19 @@
                 finalPrice: formatCurrency(parseFloat(finalPrice)),
                 profitRate: profitRate + '%',
                 profitMargin: document.getElementById('final-profit').textContent,
-                active: true, // المنتج يكون مفعل افتراضياً عند الحفظ
-                // حفظ بيانات إضافية للمعاينة
+                active: true,
                 materialCost: document.getElementById('material-summary').textContent,
                 packagingCost: document.getElementById('packaging-summary').textContent,
                 laborCost: document.getElementById('labor-summary').textContent,
                 depreciationCost: document.getElementById('depreciation-summary').textContent,
                 depreciationRate: depreciationRate,
                 laborMethod: laborMethod,
-                // حفظ البيانات التفصيلية
                 materialsData: materialsData,
                 packagingData: packagingData,
                 laborData: laborData
             };
             
             if(editingIndex >= 0) {
-                // الحفاظ على حالة التفعيل عند التعديل
                 product.active = products[editingIndex].active;
                 products[editingIndex] = product;
                 editingIndex = -1;
@@ -2002,24 +2114,17 @@
             updateDashboard();
             clearForm();
             alert('تم حفظ المنتج بنجاح!');
-            
-            // العودة إلى صفحة إدارة المنتجات بعد الحفظ
             window.location.hash = 'manage-products';
             showPage('manage-products');
         }
 
-        // إضافة حدث input لجميع الحقول في جداول المواد والتغليف لتحديث النتائج مباشرة
         document.addEventListener('input', function(e) {
             if (e.target.closest('#materials-table') || e.target.closest('#packaging-table') || 
                 e.target.closest('#workers-table-1') || e.target.closest('#workers-table-2') ||
                 e.target.closest('#labor-weight-container')) {
                 updateCosts();
             }
-            
-            // تحديث عند تغيير سعر البيع النهائي
-            if (e.target.id === 'final-price-input') {
-                updateCosts();
-            }
+            if (e.target.id === 'final-price-input') { updateCosts(); }
         });
 
         document.getElementById('add-material').addEventListener('click',()=>addTableRow('materials-table'));
@@ -2039,8 +2144,6 @@
         function openPurchaseModal(index = null) {
             const modalTitle = document.getElementById('purchaseModalTitle');
             const categorySelect = document.getElementById('purchase-category');
-            
-            // ملء القائمة المنسدلة للتصنيفات
             categorySelect.innerHTML = '';
             categoriesList.forEach(cat => {
                 const opt = document.createElement('option');
@@ -2060,20 +2163,18 @@
                 modalTitle.textContent = 'تعديل مشتريات';
             } else {
                 document.getElementById('purchase-id').value = '';
-                document.getElementById('purchase-date').valueAsDate = new Date(); // التاريخ الحالي
+                document.getElementById('purchase-date').valueAsDate = new Date();
                 document.getElementById('purchase-item').value = '';
                 document.getElementById('purchase-count').value = '';
                 document.getElementById('purchase-amount').value = '';
                 document.getElementById('purchase-category').value = categoriesList[0];
                 modalTitle.textContent = 'إضافة مشتريات';
             }
-            
-            calculatePurchaseTotal(); // تحديث المجموع عند الفتح
+            calculatePurchaseTotal();
             const modal = new bootstrap.Modal(document.getElementById('purchaseModal'));
             modal.show();
         }
 
-        // حساب المجموع تلقائياً في نافذة المشتريات
         function calculatePurchaseTotal() {
             const count = parseFloat(document.getElementById('purchase-count').value) || 0;
             const amount = parseFloat(document.getElementById('purchase-amount').value) || 0;
@@ -2096,14 +2197,12 @@
                 return;
             }
 
-            // حفظ بيانات المشتريات مع حقل "المتبقي" للمخزون
             const purchaseData = { 
                 date, item, count, amount, category, 
-                remaining: parseFloat(count) // المتبقي يبدأ بنفس عدد الشراء
+                remaining: parseFloat(count)
             };
 
             if (id !== '') {
-                // في حالة التعديل، نحافظ على المتبقي القديم إذا لم يتغير العدد
                 purchaseData.remaining = parseFloat(count);
                 appData.budget.purchases[id] = purchaseData;
             } else {
@@ -2112,7 +2211,6 @@
 
             saveData();
             updateBudgetUI();
-            
             const modalEl = document.getElementById('purchaseModal');
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();
@@ -2138,6 +2236,7 @@
                 document.getElementById('salary-amount').value = salary.amount;
                 document.getElementById('salary-status').value = salary.status;
                 document.getElementById('salary-method').value = salary.method || 'Benefit';
+                document.getElementById('salary-payment-date').value = salary.paymentDate || '';
                 document.getElementById('salary-notes').value = salary.notes || '';
                 modalTitle.textContent = 'تعديل راتب';
             } else {
@@ -2147,11 +2246,11 @@
                 document.getElementById('salary-amount').value = '';
                 document.getElementById('salary-status').value = 'Unpaid';
                 document.getElementById('salary-method').value = 'Benefit';
+                document.getElementById('salary-payment-date').value = '';
                 document.getElementById('salary-notes').value = '';
                 modalTitle.textContent = 'إضافة راتب';
             }
-            
-            togglePaymentMethod(); // تحديث ظهور طريقة الدفع
+            togglePaymentMethod();
             const modal = new bootstrap.Modal(document.getElementById('salaryModal'));
             modal.show();
         }
@@ -2161,8 +2260,13 @@
             const methodWrapper = document.getElementById('payment-method-wrapper');
             if (status === 'Paid') {
                 methodWrapper.classList.remove('d-none');
+                // إذا لم يكن هناك تاريخ دفع، نضع تاريخ اليوم افتراضياً
+                if(!document.getElementById('salary-payment-date').value) {
+                    document.getElementById('salary-payment-date').valueAsDate = new Date();
+                }
             } else {
                 methodWrapper.classList.add('d-none');
+                document.getElementById('salary-payment-date').value = '';
             }
         }
 
@@ -2173,6 +2277,7 @@
             const amount = parseFloat(document.getElementById('salary-amount').value);
             const status = document.getElementById('salary-status').value;
             const method = status === 'Paid' ? document.getElementById('salary-method').value : null;
+            const paymentDate = status === 'Paid' ? document.getElementById('salary-payment-date').value : null;
             const notes = document.getElementById('salary-notes').value;
 
             if (!date || isNaN(amount)) {
@@ -2180,7 +2285,7 @@
                 return;
             }
 
-            const salaryData = { date, category, amount, status, method, notes };
+            const salaryData = { date, category, amount, status, method, paymentDate, notes };
 
             if (id !== '') {
                 appData.budget.salaries[id] = salaryData;
@@ -2190,7 +2295,6 @@
 
             saveData();
             updateBudgetUI();
-            
             const modalEl = document.getElementById('salaryModal');
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();
@@ -2209,7 +2313,6 @@
             const modalTitle = document.getElementById('productionModalTitle');
             const modal = new bootstrap.Modal(document.getElementById('productionModal'));
             
-            // Reset fields
             document.getElementById('prod-date').valueAsDate = new Date();
             document.getElementById('prod-name').value = '';
             document.getElementById('prod-weight').value = '';
@@ -2220,7 +2323,6 @@
             document.getElementById('prod-box-value').value = '';
 
             if (index !== null) {
-                // Edit Mode
                 const prod = appData.budget.productions[index];
                 document.getElementById('prod-id').value = index;
                 document.getElementById('prod-date').value = prod.date;
@@ -2229,31 +2331,62 @@
                 document.getElementById('prod-box-count').value = prod.boxCount;
                 modalTitle.textContent = 'تعديل ناتج';
 
-                // Restore Ingredients
                 if(prod.ingredients) {
                     prod.ingredients.forEach(ing => {
                         addIngredientRow(ing.purchaseIdx, ing.usedQty); 
                     });
                 }
-
-                // Restore Op Costs
                 if(prod.opCosts) {
                     prod.opCosts.forEach(op => {
-                        // Find original index based on name/amount logic or store index in opCosts
-                        // Since we didn't store index, we try to match. Better to add manually for now or clear.
-                        // For simplicity in this demo, let's just re-add manually or skip complex restoration logic to keep code simple.
-                        // Actually, let's allow adding new ones.
+                        // إعادة التكاليف التشغيلية (مبسط)
+                        const tbody = document.getElementById('prod-op-cost-tbody');
+                        const row = document.createElement('tr');
+                        row.innerHTML = `<td><select class="form-select-modern prod-op-select" disabled><option selected>${op.name}</option></select></td><td class="prod-op-amount">${op.amount}</td><td></td>`;
+                        tbody.appendChild(row);
                     });
                 }
-                // Recalculate totals
                 calculateProductionTotals();
-
             } else {
-                // Add Mode
                 document.getElementById('prod-id').value = '';
                 modalTitle.textContent = 'إضافة ناتج';
             }
+            modal.show();
+        }
 
+        function openProductionPreview(index) {
+            const prod = appData.budget.productions[index];
+            document.getElementById('view-prod-date').textContent = prod.date;
+            document.getElementById('view-prod-name').textContent = prod.name;
+            document.getElementById('view-prod-count').textContent = prod.boxCount;
+            document.getElementById('view-prod-value').textContent = formatCurrency(parseFloat(prod.boxValue));
+            
+            const ingList = document.getElementById('view-prod-ingredients');
+            ingList.innerHTML = '';
+            if (prod.ingredients && prod.ingredients.length > 0) {
+                prod.ingredients.forEach(ing => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.innerHTML = `${ing.name} <span class="badge bg-primary rounded-pill">${ing.usedQty}</span>`;
+                    ingList.appendChild(li);
+                });
+            } else {
+                ingList.innerHTML = '<li class="list-group-item text-muted">لا يوجد</li>';
+            }
+
+            const opList = document.getElementById('view-prod-opcosts');
+            opList.innerHTML = '';
+            if (prod.opCosts && prod.opCosts.length > 0) {
+                prod.opCosts.forEach(op => {
+                    const li = document.createElement('li');
+                    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    li.innerHTML = `${op.name} <span class="badge bg-warning text-dark rounded-pill">${op.amount}</span>`;
+                    opList.appendChild(li);
+                });
+            } else {
+                opList.innerHTML = '<li class="list-group-item text-muted">لا يوجد</li>';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('productionPreviewModal'));
             modal.show();
         }
 
@@ -2276,11 +2409,7 @@
             }
 
             row.innerHTML = `
-                <td>
-                    <select class="form-select-modern prod-ing-select" onchange="updateProdRow(this)">
-                        ${options}
-                    </select>
-                </td>
+                <td><select class="form-select-modern prod-ing-select" onchange="updateProdRow(this)">${options}</select></td>
                 <td><input type="number" class="form-control-modern prod-ing-qty" oninput="validateProdQty(this)" ${preSelectedIdx !== null ? '' : 'disabled'} value="${preSelectedQty || ''}"></td>
                 <td class="prod-ing-cost">0.000</td>
                 <td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove(); calculateProductionTotals();"><i class="bi bi-trash"></i></button></td>
@@ -2288,7 +2417,7 @@
             tbody.appendChild(row);
             
             if(preSelectedIdx !== null && preSelectedQty !== null) {
-                validateProdQty(row.querySelector('.prod-ing-qty')); // Trigger calculation
+                validateProdQty(row.querySelector('.prod-ing-qty'));
             }
         }
 
@@ -2309,30 +2438,18 @@
             const price = parseFloat(option.getAttribute('data-price'));
             let qty = parseFloat(input.value);
 
-            // In Edit mode, we need logic to allow existing qty without error if it matches remaining.
-            // For simplicity, we just check max.
-            
-            if (qty > remaining) {
-                // If editing, the logic gets complex (old qty + remaining). Skipped for simple one-file constraint.
-                // Just alerting for now.
-            }
-
             const cost = qty * price;
             row.querySelector('.prod-ing-cost').textContent = isNaN(cost) ? '0.000' : cost.toFixed(3);
             calculateProductionTotals();
         }
 
-        // إضافة صف تكلفة تشغيلية (رواتب)
         function addOpCostRow() {
             const tbody = document.getElementById('prod-op-cost-tbody');
             const row = document.createElement('tr');
-
-            // الحصول على القيم المختارة مسبقاً لمنع التكرار
             const selectedSalaries = Array.from(document.querySelectorAll('.prod-op-select')).map(s => s.value);
             
             let options = '<option value="" selected disabled>اختر البند</option>';
             appData.budget.salaries.forEach((s, idx) => {
-                // إذا لم يتم اختياره مسبقاً
                 if (!selectedSalaries.includes(idx.toString())) {
                     options += `<option value="${idx}" data-amount="${s.amount}">${s.date} - ${s.category} (${formatCurrency(parseFloat(s.amount))})</option>`;
                 }
@@ -2344,11 +2461,7 @@
             }
 
             row.innerHTML = `
-                <td>
-                    <select class="form-select-modern prod-op-select" onchange="updateOpCostRow(this)">
-                        ${options}
-                    </select>
-                </td>
+                <td><select class="form-select-modern prod-op-select" onchange="updateOpCostRow(this)">${options}</select></td>
                 <td class="prod-op-amount">0.000</td>
                 <td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove(); calculateProductionTotals();"><i class="bi bi-trash"></i></button></td>
             `;
@@ -2359,21 +2472,15 @@
             const row = select.closest('tr');
             const option = select.options[select.selectedIndex];
             const amount = parseFloat(option.getAttribute('data-amount')) || 0;
-            
             row.querySelector('.prod-op-amount').textContent = amount.toFixed(3);
             calculateProductionTotals();
         }
 
         function calculateProductionTotals() {
             let materialCost = 0;
-            document.querySelectorAll('.prod-ing-cost').forEach(el => {
-                materialCost += parseFloat(el.textContent) || 0;
-            });
-
+            document.querySelectorAll('.prod-ing-cost').forEach(el => { materialCost += parseFloat(el.textContent) || 0; });
             let opCost = 0;
-            document.querySelectorAll('.prod-op-amount').forEach(el => {
-                opCost += parseFloat(el.textContent) || 0;
-            });
+            document.querySelectorAll('.prod-op-amount').forEach(el => { opCost += parseFloat(el.textContent) || 0; });
 
             const totalCost = materialCost + opCost;
             const boxCount = parseFloat(document.getElementById('prod-box-count').value) || 1;
@@ -2383,7 +2490,6 @@
             document.getElementById('prod-box-value').value = isFinite(boxValue) ? boxValue.toFixed(3) : '0.000';
         }
 
-        // ربط الأحداث للحساب التلقائي
         document.getElementById('prod-box-count').addEventListener('input', calculateProductionTotals);
 
         function saveProduction() {
@@ -2400,7 +2506,6 @@
                 return;
             }
 
-            // جمع المكونات المستخدمة
             const ingredients = [];
             const ingRows = document.querySelectorAll('#prod-ingredients-tbody tr');
             for (let row of ingRows) {
@@ -2414,19 +2519,14 @@
                 const purchaseIdx = select.value;
                 const cost = row.querySelector('.prod-ing-cost').textContent;
                 const itemName = select.options[select.selectedIndex].text.split(' (')[0];
-                
-                ingredients.push({
-                    purchaseIdx, name: itemName, usedQty: qty, cost
-                });
+                ingredients.push({ purchaseIdx, name: itemName, usedQty: qty, cost });
 
-                // خصم المخزون (فقط عند الاضافة الجديدة لتبسيط الكود)
                 if(id === '') {
                     appData.budget.purchases[purchaseIdx].remaining -= qty;
                     if (appData.budget.purchases[purchaseIdx].remaining < 0) appData.budget.purchases[purchaseIdx].remaining = 0;
                 }
             }
 
-            // جمع التكاليف التشغيلية
             const opCosts = [];
             const opRows = document.querySelectorAll('#prod-op-cost-tbody tr');
             for (let row of opRows) {
@@ -2438,9 +2538,7 @@
                 }
             }
 
-            const productionData = {
-                date, name, weight, boxCount, totalCost, boxValue, ingredients, opCosts
-            };
+            const productionData = { date, name, weight, boxCount, totalCost, boxValue, ingredients, opCosts };
 
             if (id !== '') {
                 appData.budget.productions[id] = productionData;
@@ -2450,7 +2548,6 @@
 
             saveData();
             updateBudgetUI();
-            
             const modalEl = document.getElementById('productionModal');
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();
@@ -2464,7 +2561,96 @@
             }
         }
 
-        // 4. إدارة العمليات (المالية)
+        // 4. إدارة الفواتير (جديد)
+        function openInvoiceModal() {
+            const modalTitle = document.getElementById('invoiceModalTitle');
+            const productSelect = document.getElementById('inv-product');
+            
+            productSelect.innerHTML = '<option value="">اختر المنتج</option>';
+            appData.products.forEach((p, index) => {
+                if(p.active) {
+                    // استخراج الرقم من نص السعر "5.000 د.ب" -> 5.000
+                    const price = parseFloat(p.finalPrice.split(' ')[0]);
+                    productSelect.innerHTML += `<option value="${index}" data-price="${price}">${p.name} - ${p.finalPrice}</option>`;
+                }
+            });
+
+            document.getElementById('invoice-id').value = '';
+            document.getElementById('inv-date').valueAsDate = new Date();
+            document.getElementById('inv-customer').value = '';
+            document.getElementById('inv-phone').value = '';
+            document.getElementById('inv-product').value = '';
+            document.getElementById('inv-qty').value = '1';
+            document.getElementById('inv-total').value = '';
+            document.getElementById('inv-status').value = 'Paid';
+            document.getElementById('inv-method').value = 'Cash';
+            toggleInvPaymentMethod();
+
+            const modal = new bootstrap.Modal(document.getElementById('invoiceModal'));
+            modal.show();
+        }
+
+        function calculateInvoiceTotal() {
+            const productSelect = document.getElementById('inv-product');
+            const qty = parseFloat(document.getElementById('inv-qty').value) || 0;
+            
+            if(productSelect.selectedIndex > 0) {
+                const price = parseFloat(productSelect.options[productSelect.selectedIndex].getAttribute('data-price')) || 0;
+                document.getElementById('inv-total').value = (price * qty).toFixed(3);
+            } else {
+                document.getElementById('inv-total').value = '';
+            }
+        }
+
+        function toggleInvPaymentMethod() {
+            const status = document.getElementById('inv-status').value;
+            const methodWrapper = document.getElementById('inv-method-wrapper');
+            if(status === 'Paid') {
+                methodWrapper.style.display = 'block';
+            } else {
+                methodWrapper.style.display = 'none';
+            }
+        }
+
+        function saveInvoice() {
+            const date = document.getElementById('inv-date').value;
+            const customer = document.getElementById('inv-customer').value;
+            const phone = document.getElementById('inv-phone').value;
+            const productSelect = document.getElementById('inv-product');
+            const qty = document.getElementById('inv-qty').value;
+            const total = document.getElementById('inv-total').value;
+            const status = document.getElementById('inv-status').value;
+            const method = status === 'Paid' ? document.getElementById('inv-method').value : '-';
+
+            if(!date || !customer || !productSelect.value || !total) {
+                alert('يرجى ملء كافة البيانات المطلوبة');
+                return;
+            }
+
+            const productName = productSelect.options[productSelect.selectedIndex].text.split(' - ')[0];
+
+            const invoice = {
+                date, customer, phone, productName, qty, total, status, method
+            };
+
+            appData.budget.invoices.push(invoice);
+            saveData();
+            updateBudgetUI();
+            
+            const modalEl = document.getElementById('invoiceModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+        }
+
+        function deleteInvoice(index) {
+            if(confirm('هل أنت متأكد من حذف هذه الفاتورة؟')) {
+                appData.budget.invoices.splice(index, 1);
+                saveData();
+                updateBudgetUI();
+            }
+        }
+
+        // 5. إدارة العمليات (المالية)
         function openTransactionModal(type) {
             const modalHeader = document.getElementById('transactionModalHeader');
             const modalTitle = document.getElementById('transactionModalTitle');
@@ -2525,21 +2711,20 @@
             }
         }
 
-        // 5. تحديث واجهة الميزانية والتقارير
+        // 6. تحديث واجهة الميزانية والتقارير
         function updateBudgetUI() {
             const monthFilter = document.getElementById('budget-month-filter');
             
-            // ملء فلتر الأشهر
             const allDates = [
                 ...appData.budget.purchases.map(p => p.date),
                 ...appData.budget.salaries.map(s => s.date),
                 ...appData.budget.transactions.map(t => t.date),
-                ...appData.budget.productions.map(p => p.date)
+                ...appData.budget.productions.map(p => p.date),
+                ...appData.budget.invoices.map(i => i.date)
             ];
             
             const uniqueMonths = [...new Set(allDates.map(d => d.substring(0, 7)))].sort().reverse();
             
-            // حفظ القيمة الحالية للفلتر
             let currentSelection = monthFilter.value;
             const currentMonth = new Date().toISOString().substring(0, 7);
             
@@ -2599,6 +2784,7 @@
                         <td>${formatCurrency(parseFloat(p.totalCost))}</td>
                         <td class="fw-bold text-primary">${formatCurrency(parseFloat(p.boxValue))}</td>
                         <td>
+                            <button class="btn btn-info btn-sm" onclick="openProductionPreview(${p.originalIndex})"><i class="bi bi-eye"></i></button>
                             <button class="btn btn-primary-modern btn-sm" onclick="openProductionModal(${p.originalIndex})"><i class="bi bi-pencil"></i></button>
                             <button class="btn btn-danger-modern btn-sm" onclick="deleteProduction(${p.originalIndex})"><i class="bi bi-trash"></i></button>
                         </td>
@@ -2642,7 +2828,7 @@
                 .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
             if (filteredSalaries.length === 0) {
-                salariesTbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">لا توجد سجلات رواتب</td></tr>';
+                salariesTbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted">لا توجد سجلات رواتب</td></tr>';
             } else {
                 filteredSalaries.forEach(s => {
                     const isPaid = s.status === 'Paid';
@@ -2654,6 +2840,7 @@
                         <td>${formatCurrency(parseFloat(s.amount))}</td>
                         <td>${statusBadge}</td>
                         <td>${isPaid ? s.method : '-'}</td>
+                        <td>${isPaid ? s.paymentDate : '-'}</td>
                         <td><small>${s.notes || '-'}</small></td>
                         <td>
                             <button class="btn btn-primary-modern btn-sm" onclick="openSalaryModal(${s.originalIndex})"><i class="bi bi-pencil"></i></button>
@@ -2691,6 +2878,34 @@
                     transactionsTbody.appendChild(row);
                 });
             }
+
+            // 5. جدول الفواتير
+            const invoicesTbody = document.getElementById('invoices-tbody');
+            invoicesTbody.innerHTML = '';
+            const filteredInvoices = appData.budget.invoices.map((item, index) => ({...item, originalIndex: index}))
+                .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+
+            if (filteredInvoices.length === 0) {
+                invoicesTbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">لا توجد فواتير</td></tr>';
+            } else {
+                filteredInvoices.forEach(i => {
+                    const statusClass = i.status === 'Paid' ? 'bg-success' : 'bg-warning text-dark';
+                    const statusText = i.status === 'Paid' ? 'مدفوع' : 'غير مدفوع';
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${i.date}</td>
+                        <td>${i.customer}</td>
+                        <td>${i.phone || '-'}</td>
+                        <td>${i.productName} <span class="badge bg-secondary rounded-pill">${i.qty}</span></td>
+                        <td class="fw-bold">${formatCurrency(parseFloat(i.total))}</td>
+                        <td><span class="badge ${statusClass}">${statusText}</span></td>
+                        <td>
+                            <button class="btn btn-danger-modern btn-sm" onclick="deleteInvoice(${i.originalIndex})"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+                    invoicesTbody.appendChild(row);
+                });
+            }
         }
 
         function renderBudgetReport() {
@@ -2701,11 +2916,16 @@
             const filteredSalaries = appData.budget.salaries.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
             const filteredTransactions = appData.budget.transactions.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
             const filteredProd = appData.budget.productions.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+            const filteredInvoices = appData.budget.invoices.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
             // الحسابات
             const totalPurchases = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.count) * parseFloat(item.amount) || 0), 0);
             const totalSalaries = filteredSalaries.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
             const totalIncome = filteredTransactions.filter(t => t.type === 'in').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+            
+            // إضافة الفواتير المدفوعة إلى الدخل
+            const totalInvoicesPaid = filteredInvoices.filter(i => i.status === 'Paid').reduce((sum, item) => sum + parseFloat(item.total || 0), 0);
+            
             const totalRefund = filteredTransactions.filter(t => t.type === 'out').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
             const totalBoxes = filteredProd.reduce((sum, item) => sum + parseFloat(item.boxCount || 0), 0);
 
@@ -2713,7 +2933,7 @@
             document.getElementById('report-production-boxes').textContent = totalBoxes;
             document.getElementById('report-purchases-total').textContent = formatCurrency(totalPurchases);
             document.getElementById('report-salaries-total').textContent = formatCurrency(totalSalaries);
-            document.getElementById('report-income-total').textContent = formatCurrency(totalIncome);
+            document.getElementById('report-income-total').textContent = formatCurrency(totalIncome + totalInvoicesPaid);
         }
 
         // تحديث الجداول عند تحميل الصفحة
