@@ -15,7 +15,7 @@
             --primary-light: #4A148C;
             --secondary-color: #9C27B0;
             --accent-color: #AB47BC;
-            --background: #FCF9FD; /* خلفية فاتحة جداً مائلة للأبيض */
+            --background: #FEFCFF; /* خلفية شبه بيضاء تماماً */
             --surface: #ffffff;
             --text-primary: #333;
             --text-secondary: #666;
@@ -139,6 +139,11 @@
             margin-bottom: 1.5rem;
             box-shadow: 0 4px 15px rgba(106, 27, 154, 0.2);
         }
+        /* تعديل ألوان النصوص في بطاقات الربح لتكون بيضاء بالكامل */
+        .profit-highlight h5, .profit-highlight small, .profit-highlight h2 {
+            color: #ffffff !important;
+        }
+
         .report-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
         .report-card { background: white; border-radius: 12px; padding: 1.5rem; border: 1px solid #eee; height: 100%; box-shadow: var(--shadow-sm); }
         .report-header { font-weight: 700; color: var(--text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.5rem; border-bottom: 2px solid #f0f0f0; }
@@ -228,16 +233,16 @@
             <div class="row mb-4 g-3">
                 <div class="col-md-6">
                     <div class="profit-highlight h-100 d-flex flex-column justify-content-center">
-                        <h5 class="mb-2 text-white-50">صافي الربح من المبيعات</h5>
+                        <h5 class="mb-2">صافي الربح من المبيعات</h5>
                         <h2 class="fw-bold m-0" id="report-net-benefit">0.000 د.ب</h2>
-                        <small class="text-white-50">المبيعات - تكلفة البضاعة المباعة</small>
+                        <small>المبيعات - تكلفة البضاعة المباعة</small>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="profit-highlight h-100 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, var(--secondary-color), var(--primary-light));">
-                        <h5 class="mb-2 text-white-50">صافي الربح بناءً على الميزانية</h5>
+                        <h5 class="mb-2">صافي الربح بناءً على الميزانية</h5>
                         <h2 class="fw-bold m-0" id="report-net-budget">0.000 د.ب</h2>
-                        <small class="text-white-50">إجمالي المبيعات - إجمالي المصروفات</small>
+                        <small>إجمالي المبيعات - إجمالي المصروفات</small>
                     </div>
                 </div>
             </div>
@@ -251,7 +256,8 @@
                     <div class="report-row"><span>استرداد (كاش)</span><span class="report-val text-danger" id="rep-cash-out">0.000</span></div>
                     <div class="report-row"><span>استرداد (بنفت)</span><span class="report-val text-danger" id="rep-benefit-out">0.000</span></div>
                     <hr class="my-2">
-                    <div class="report-row fw-bold"><span>المتبقي</span><span class="report-val" id="rep-net">0.000</span></div>
+                    <div class="report-row fw-bold"><span>المجموع</span><span class="report-val" id="rep-net">0.000</span></div>
+                    <div class="report-row fw-bold mt-2 pt-2 border-top"><span>المتبقي (المجموع - المصروفات)</span><span class="report-val" id="rep-final-remainder">0.000</span></div>
                 </div>
 
                 <div class="report-card" style="border-top: 4px solid var(--error);">
@@ -265,7 +271,8 @@
                 <div class="report-card" style="border-top: 4px solid var(--warning);">
                     <div class="report-header text-warning"><i class="bi bi-box-seam"></i> الإنتاج</div>
                     <div class="report-row"><span>عدد العلب المنتجة</span><span class="report-val" id="rep-prod-boxes">0</span></div>
-                    <div class="report-row"><span>متوسط تكلفة الكيلو (2 علبة)</span><span class="report-val" id="rep-prod-avg">0.000</span></div>
+                    <div class="report-row"><span>متوسط تكلفة الكيلو</span><span class="report-val" id="rep-prod-avg">0.000</span></div>
+                    <small class="text-muted d-block mt-2 text-center">* الكيلو = 2 علبة</small>
                 </div>
 
                 <div class="report-card" style="border-top: 4px solid var(--blue-cost);">
@@ -283,7 +290,7 @@
                     <div class="card-modern">
                         <div class="card-header-modern">تحليل المصروفات</div>
                         <div class="card-body-modern d-flex justify-content-center">
-                            <div style="height: 250px; width: 100%; max-width: 400px;">
+                            <div style="height: 400px; width: 100%;">
                                 <canvas id="expensesChart"></canvas>
                             </div>
                         </div>
@@ -537,9 +544,8 @@
             if(id === 'product-main') { switchProductView('list'); renderProducts(); }
             if(id === 'dashboard') updateBudgetUI();
             if(id === 'budget-ops') { 
-                // Populate ops filter when page opens
                 populateFilter('ops-month-filter'); 
-                renderAllTables(); // Render based on ops filter
+                renderAllTables(); 
             }
 
             document.getElementById('sidebar').classList.remove('show');
@@ -560,26 +566,17 @@
             
             filter.innerHTML = '';
             
-            // 1. Current Month (Default)
-            // Use specific localized name for UI nicety
             const currName = new Date().toLocaleDateString('ar-BH', { month: 'long', year: 'numeric' });
             filter.add(new Option(`الشهر الحالي (${currName})`, currentMonth));
-            
-            // 2. All
             filter.add(new Option('كل الأشهر', 'all'));
-            
-            // 3. Custom
             filter.add(new Option('فترة مخصصة', 'custom'));
             
-            // 4. Other Months
             months.forEach(m => {
                 if(m !== currentMonth) {
                     const label = new Date(m + '-01').toLocaleDateString('ar-BH', { month: 'long', year: 'numeric' });
                     filter.add(new Option(label, m));
                 }
             });
-            
-            // Select Current Month
             filter.value = currentMonth;
         }
 
@@ -592,19 +589,12 @@
             if(prefix === 'ops' && type !== 'custom') renderAllTables();
         }
 
-        // Generic Date Checker used by both pages
-        function checkDate(date, prefix = 'budget') {
+        function checkDate(date) {
             if(!date) return false;
-            // Determine which filter to use based on prefix context or page
-            // If called from dashboard update, use budget filter. If from ops table render, use ops filter?
-            // Actually, `renderAllTables` is called by both. We need to know context.
-            // Simplified: If user is on dashboard, use dashboard filter. If on ops, use ops filter.
             const page = document.querySelector('.page.active').id;
             const filterId = (page === 'dashboard') ? 'budget-month-filter' : 'ops-month-filter';
-            
             const typeElement = document.getElementById(filterId);
-            if(!typeElement) return true; // Fallback
-            
+            if(!typeElement) return true; 
             const type = typeElement.value;
             
             if(type === 'all') return true;
@@ -707,7 +697,9 @@
             });
             document.getElementById('rep-cash-in').innerText = formatMoney(cIn); document.getElementById('rep-benefit-in').innerText = formatMoney(bIn);
             document.getElementById('rep-cash-out').innerText = formatMoney(cOut); document.getElementById('rep-benefit-out').innerText = formatMoney(bOut);
-            document.getElementById('rep-net').innerText = formatMoney((cIn+bIn)-(cOut+bOut));
+            
+            const treasuryNet = (cIn + bIn) - (cOut + bOut);
+            document.getElementById('rep-net').innerText = formatMoney(treasuryNet);
 
             // 2. Invoices & Expenses
             const invs = appData.budget.invoices.filter(i => checkDate(i.date));
@@ -718,6 +710,12 @@
             const purTotal = purs.reduce((a,b)=>a+(parseFloat(b.count)*parseFloat(b.amount)),0);
             const salTotal = sals.reduce((a,b)=>a+parseFloat(b.amount),0);
             const totalExpenses = purTotal + salTotal;
+
+            // Update Remainder in Treasury
+            const finalRemainder = treasuryNet - totalExpenses;
+            const remEl = document.getElementById('rep-final-remainder');
+            remEl.innerText = formatMoney(finalRemainder);
+            remEl.className = finalRemainder >= 0 ? "report-val text-success" : "report-val text-danger";
 
             document.getElementById('rep-purchases-total').innerText = formatMoney(purTotal);
             document.getElementById('rep-salaries-total').innerText = formatMoney(salTotal);
@@ -744,12 +742,12 @@
             const netBenefit = totalSales - totalCOGS;
             const benefitEl = document.getElementById('report-net-benefit');
             benefitEl.innerText = formatMoney(netBenefit);
-            benefitEl.className = netBenefit >= 0 ? "fw-bold m-0 text-success" : "fw-bold m-0 text-danger";
+            benefitEl.className = netBenefit >= 0 ? "fw-bold m-0 text-white" : "fw-bold m-0 text-white";
 
             const netBudget = totalSales - totalExpenses;
             const budgetEl = document.getElementById('report-net-budget');
             budgetEl.innerText = formatMoney(netBudget);
-            budgetEl.className = netBudget >= 0 ? "fw-bold m-0 text-white" : "fw-bold m-0 text-danger"; // White contrast due to colored bg
+            budgetEl.className = netBudget >= 0 ? "fw-bold m-0 text-white" : "fw-bold m-0 text-white";
 
             // Chart & List
             const cats = {}; purs.forEach(p => { cats[p.category] = (cats[p.category]||0) + (parseFloat(p.count)*parseFloat(p.amount)); });
@@ -765,10 +763,9 @@
             const itb = document.getElementById('invoices-tbody'); itb.innerHTML = ''; appData.budget.invoices.forEach((i, idx) => { if(chk(i.date)) itb.innerHTML += `<tr><td>${i.date}</td><td>${i.customer}</td><td>${i.productName}</td><td>${formatMoney(i.total)}</td><td><span class="status-badge ${i.status==='Paid'?'status-active':'status-inactive'}">${i.status==='Paid'?'مدفوع':'غير مدفوع'}</span></td><td><button class="btn btn-info-modern btn-sm" onclick="viewInv(${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openInvoiceModal()"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('invoices',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
             
             // Production Table Update (Avg Kilo Cost)
-            const ptb = document.getElementById('production-tbody'); ptb.innerHTML = ''; 
+            const ptb = document.getElementById('production-table').querySelector('tbody'); ptb.innerHTML = ''; 
             appData.budget.productions.forEach((p, idx) => { 
                 if(chk(p.date)) {
-                    // Avg Kilo for this specific row = boxValue * 2
                     const rowKiloCost = parseFloat(p.boxValue) * 2;
                     ptb.innerHTML += `<tr><td>${p.date}</td><td>${p.name}</td><td>${p.boxCount}</td><td>${formatMoney(p.totalCost)}</td><td>${formatMoney(rowKiloCost)}</td><td><button class="btn btn-info-modern btn-sm" onclick="viewProd(${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openProductionModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('productions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; 
                 }
@@ -795,8 +792,8 @@
 
         // --- Init ---
         loadData(); initRouting(); calcProduct(); 
-        populateFilter('budget-month-filter'); // Populate Dashboard Filter
-        populateFilter('ops-month-filter'); // Populate Ops Filter
+        populateFilter('budget-month-filter'); 
+        populateFilter('ops-month-filter'); 
         document.getElementById('product-code').value="PRD-"+String(productCounter).padStart(4,'0');
     </script>
 </body>
