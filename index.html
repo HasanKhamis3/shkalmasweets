@@ -119,6 +119,16 @@
         .price-input-container::after { content: "د.ب"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #999; font-size: 0.8rem; }
         .price-input-container input { padding-left: 35px; }
 
+        .profit-highlight {
+            background: linear-gradient(135deg, #198754 0%, #146c43 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(25, 135, 84, 0.2);
+        }
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(100%); }
             .sidebar.show { transform: translateX(0); }
@@ -342,6 +352,12 @@
                         </div>
                     </div>
 
+                    <div class="profit-highlight">
+                        <h5 class="mb-2 text-white-50">الفائدة (الربح التقديري من المبيعات)</h5>
+                        <h1 class="fw-bold m-0" id="report-net-benefit">0.000 د.ب</h1>
+                        <small class="text-white-50">إجمالي المبيعات - تكلفة البضاعة المباعة</small>
+                    </div>
+
                     <div class="report-grid">
                         <div class="report-card" style="border-top: 4px solid var(--success);">
                             <div class="report-title text-success"><i class="bi bi-cash-stack me-2"></i> المالية (التدفقات)</div>
@@ -373,7 +389,8 @@
                         <div class="report-card" style="border-top: 4px solid var(--accent-color);">
                             <div class="report-title text-warning"><i class="bi bi-box-seam me-2"></i> الناتج</div>
                             <div class="report-row"><span>عدد العلب المنتجة</span><span class="report-val" id="rep-prod-boxes">0</span></div>
-                            <div class="report-row"><span>متوسط قيمة العلبة</span><span class="report-val" id="rep-prod-avg">0.000</span></div>
+                            <div class="report-row"><span>متوسط قيمة الكيلو (الإنتاج)</span><span class="report-val" id="rep-prod-avg">0.000</span></div>
+                            <small class="text-muted d-block mt-2">* الكيلو = 2 علبة</small>
                         </div>
                     </div>
 
@@ -552,7 +569,6 @@
                     transactions: p.budget?.transactions||[], productions: p.budget?.productions||[], 
                     invoices: p.budget?.invoices||[] 
                 }};
-                // Legacy Fix
                 appData.budget.purchases.forEach(x => { if(x.remaining === undefined) x.remaining = parseFloat(x.count); });
             }
             productCounter = appData.products.length + 1;
@@ -653,10 +669,10 @@
             const profit = finalP - total;
             document.getElementById('final-profit').innerText = `ربح: ${formatMoney(profit)} (${total>0?(profit/total*100).toFixed(1):0}%)`;
         }
-        // Save Product Logic Omitted for brevity but implies similar structure to previous request, ensuring all fields are saved.
+        
         let editingIdx = -1;
         function saveProduct() {
-            // ... (Save logic extracting all fields)
+            // Saving Logic...
             const p = {
                 code: document.getElementById('product-code').value,
                 name: document.getElementById('product-name').value,
@@ -664,12 +680,10 @@
                 finalPrice: formatMoney(parseFloat(document.getElementById('final-price-input').value)),
                 totalCost: document.getElementById('grand-total-cost').innerText,
                 profitMargin: document.getElementById('final-profit').innerText,
-                // ... store other data needed for edit
-                materialsData: [], packagingData: [], // populate these
-                laborData: {}, // populate
+                // store all data needed...
+                materialsData: [], packagingData: [], laborData: {},
                 depreciationRate: document.getElementById('depreciation-rate').value
             };
-            // Simplification: Assume validation passed
             if(editingIdx >= 0) appData.products[editingIdx] = p;
             else appData.products.push(p);
             saveData(); showPage('manage-products');
@@ -678,16 +692,14 @@
         function delProduct(i) { if(confirm('حذف؟')) { appData.products.splice(i,1); saveData(); renderProducts(); updateDashboard(); } }
         function viewProduct(i) { /* Show Modal */ }
         
-        // Add Row Helpers
         document.getElementById('add-material').onclick = () => { document.getElementById('materials-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern"></td><td style="display:none"><input value="1"></td><td><input class="form-control-modern" type="number" step="0.001"></td><td><input class="form-control-modern" type="number"></td><td class="material-cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         document.getElementById('add-packaging').onclick = () => { document.getElementById('packaging-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern"></td><td style="display:none"><input value="1"></td><td><input class="form-control-modern" type="number" step="0.001"></td><td><input class="form-control-modern" type="number"></td><td class="packaging-cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         function attachEvents() { document.querySelectorAll('input').forEach(i => i.oninput = calcProduct); }
         attachEvents();
 
-        // --- Budget Logic (The Core Request) ---
+        // --- Budget Logic (Report & Profit) ---
         
         function updateBudget() {
-            // Filter Logic
             const filter = document.getElementById('budget-month-filter');
             const dates = [...appData.budget.purchases, ...appData.budget.salaries, ...appData.budget.transactions, ...appData.budget.invoices, ...appData.budget.productions].map(x=>x.date);
             const months = [...new Set(dates.map(d=>d.substring(0,7)))].sort().reverse();
@@ -739,7 +751,7 @@
             document.getElementById('rep-inv-unpaid-count').innerText = unpaid.length;
             document.getElementById('rep-inv-unpaid-val').innerText = formatMoney(unpaid.reduce((a,b)=>a+parseFloat(b.total),0));
 
-            // 3. Expenses (Purchases categories & Salary status)
+            // 3. Expenses
             const purs = appData.budget.purchases.filter(p => chk(p.date));
             const sals = appData.budget.salaries.filter(s => chk(s.date));
             
@@ -750,7 +762,7 @@
             document.getElementById('rep-salaries-total').innerText = formatMoney(salTotal);
             document.getElementById('rep-expenses-total').innerText = formatMoney(purTotal + salTotal);
 
-            // Chart: Purchases Categories
+            // Chart
             const cats = {};
             purs.forEach(p => { cats[p.category] = (cats[p.category]||0) + (parseFloat(p.count)*parseFloat(p.amount)); });
             
@@ -764,7 +776,7 @@
                 }
             });
 
-            // Salaries Breakdown List
+            // Salaries List
             const salList = document.getElementById('rep-salary-list'); salList.innerHTML = '';
             const salGroups = {};
             sals.forEach(s => salGroups[s.status] = (salGroups[s.status]||0) + parseFloat(s.amount));
@@ -772,46 +784,66 @@
                 salList.innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${k==='Paid'?'مدفوع':'غير مدفوع'}</span><span>${formatMoney(salGroups[k])}</span></li>`;
             }
 
-            // 4. Production
+            // 4. Production (With Kilo Logic) & Profit Calculation
             const prods = appData.budget.productions.filter(p => chk(p.date));
             const totalBoxes = prods.reduce((a,b)=>a+parseFloat(b.boxCount),0);
-            const avgVal = prods.length ? prods.reduce((a,b)=>a+parseFloat(b.boxValue),0)/prods.length : 0;
+            const totalProdCost = prods.reduce((a,b)=>a+parseFloat(b.totalCost),0);
+            
+            // Avg Kilo Value (1 Kilo = 2 Boxes)
+            const avgBoxCost = totalBoxes > 0 ? totalProdCost / totalBoxes : 0;
+            const avgKiloCost = avgBoxCost * 2;
+            
             document.getElementById('rep-prod-boxes').innerText = totalBoxes;
-            document.getElementById('rep-prod-avg').innerText = formatMoney(avgVal);
+            document.getElementById('rep-prod-avg').innerText = formatMoney(avgKiloCost);
+
+            // 5. Estimated Profit (Interest)
+            // Logic: Total Sales (Paid) - Cost of Goods Sold
+            // We need mapping of average cost per product from production history
+            let productCosts = {};
+            appData.budget.productions.forEach(p => {
+                if(!productCosts[p.name]) productCosts[p.name] = [];
+                productCosts[p.name].push(parseFloat(p.boxValue));
+            });
+            
+            let totalCOGS = 0;
+            paid.forEach(inv => {
+                const costs = productCosts[inv.productName];
+                // if we have production history, avg cost, else 0
+                const avg = costs ? costs.reduce((a,b)=>a+b,0)/costs.length : 0;
+                totalCOGS += parseFloat(inv.qty) * avg;
+            });
+            
+            const totalSales = paid.reduce((a,b)=>a+parseFloat(b.total),0);
+            const profit = totalSales - totalCOGS;
+            
+            document.getElementById('report-net-benefit').innerText = formatMoney(profit);
         }
 
-        // --- Modals & Table Renders ---
-        
-        // Render All Tables
+        // --- Modals Logic ---
         function renderAllTables() {
             const f = document.getElementById('budget-month-filter').value;
             const chk = (d) => f === 'all' || d.startsWith(f);
 
-            // Invoices
             const itb = document.getElementById('invoices-tbody'); itb.innerHTML = '';
             appData.budget.invoices.forEach((i, idx) => {
                 if(chk(i.date)) itb.innerHTML += `<tr><td>${i.date}</td><td>${i.customer}</td><td>${i.productName}</td><td>${formatMoney(i.total)}</td><td><span class="badge ${i.status==='Paid'?'bg-success':'bg-secondary'}">${i.status==='Paid'?'مدفوع':'غير مدفوع'}</span></td><td><button class="btn btn-danger-modern btn-sm" onclick="delItem('invoices',${idx})">x</button></td></tr>`;
             });
 
-            // Production
             const ptb = document.getElementById('production-tbody'); ptb.innerHTML = '';
             appData.budget.productions.forEach((p, idx) => {
                 if(chk(p.date)) ptb.innerHTML += `<tr><td>${p.date}</td><td>${p.name}</td><td>${p.boxCount}</td><td>${formatMoney(p.totalCost)}</td><td>${formatMoney(p.boxValue)}</td><td><button class="btn btn-info btn-sm text-white" onclick="viewProd(${idx})">عرض</button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('productions',${idx})">x</button></td></tr>`;
             });
 
-            // Purchases
             const putb = document.getElementById('purchases-tbody'); putb.innerHTML = '';
             appData.budget.purchases.forEach((p, idx) => {
                 if(chk(p.date)) putb.innerHTML += `<tr><td>${p.date}</td><td>${p.item}</td><td>${p.count}</td><td>${formatMoney(p.amount)}</td><td>${formatMoney(p.count*p.amount)}</td><td>${p.category}</td><td><button class="btn btn-danger-modern btn-sm" onclick="delItem('purchases',${idx})">x</button></td></tr>`;
             });
 
-            // Salaries
             const stb = document.getElementById('salaries-tbody'); stb.innerHTML = '';
             appData.budget.salaries.forEach((s, idx) => {
                 if(chk(s.date)) stb.innerHTML += `<tr><td>${s.date}</td><td>${s.category}</td><td>${formatMoney(s.amount)}</td><td>${s.status==='Paid'?'مدفوع':'غير مدفوع'}</td><td>${s.paymentDate||'-'}</td><td><button class="btn btn-primary-modern btn-sm" onclick="editSalary(${idx})">تعديل</button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('salaries',${idx})">x</button></td></tr>`;
             });
 
-            // Transactions
             const ttb = document.getElementById('transactions-tbody'); ttb.innerHTML = '';
             appData.budget.transactions.forEach((t, idx) => {
                 if(chk(t.date)) ttb.innerHTML += `<tr><td>${t.date}</td><td><span class="badge ${t.type==='in'?'bg-success':'bg-danger'}">${t.type==='in'?'استلام':'استرداد'}</span></td><td>${formatMoney(t.amount)}</td><td>${t.method}</td><td>${t.notes}</td><td><button class="btn btn-danger-modern btn-sm" onclick="delItem('transactions',${idx})">x</button></td></tr>`;
@@ -820,8 +852,6 @@
 
         function delItem(type, i) { if(confirm('حذف؟')) { appData.budget[type].splice(i,1); saveData(); updateBudget(); } }
 
-        // --- Modals Logic ---
-        
         // Invoice
         function openInvoiceModal() {
             const s = document.getElementById('inv-product'); s.innerHTML = '<option value="">اختر...</option>';
@@ -871,7 +901,7 @@
             saveData(); updateBudget(); bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide();
         }
 
-        // Salary (With Payment Date Logic)
+        // Salary
         let salEditIdx = -1;
         function openSalaryModal() {
             salEditIdx = -1;
@@ -888,8 +918,6 @@
             document.getElementById('sal-amount').value = s.amount;
             document.getElementById('sal-status').value = s.status;
             document.getElementById('sal-notes').value = s.notes || '';
-            
-            // Populate Payment Date if Paid
             if(s.status === 'Paid') {
                 document.getElementById('sal-method').value = s.method;
                 document.getElementById('sal-pay-date').value = s.paymentDate;
@@ -919,7 +947,7 @@
             saveData(); updateBudget(); bootstrap.Modal.getInstance(document.getElementById('salaryModal')).hide();
         }
 
-        // Production (Simplified for clean code)
+        // Production
         function openProductionModal() {
             document.getElementById('prod-date').valueAsDate = new Date();
             document.getElementById('prod-ing-table').tBodies[0].innerHTML = '';
@@ -958,7 +986,6 @@
             document.getElementById('prod-unit').value = (total/count).toFixed(3);
         }
         function saveProduction() {
-            // Inventory Logic included
             const ings = [];
             document.querySelectorAll('#prod-ing-table tbody tr').forEach(r => {
                 const s = r.querySelector('select'); const qty = parseFloat(r.querySelector('input').value);
