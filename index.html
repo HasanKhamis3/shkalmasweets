@@ -1261,17 +1261,26 @@
                     </table>
                     <button type="button" class="btn btn-light btn-sm mb-3" onclick="addIngredientRow()"><i class="bi bi-plus"></i> إضافة منتج</button>
 
+                    <h6 class="mb-3">التكاليف التشغيلية (الرواتب)</h6>
+                    <table class="table-modern mb-3" id="prod-op-cost-table">
+                        <thead>
+                            <tr>
+                                <th>البند (من الرواتب)</th>
+                                <th>المبلغ</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="prod-op-cost-tbody">
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-light btn-sm mb-3" onclick="addOpCostRow()"><i class="bi bi-plus"></i> إضافة تكلفة تشغيلية</button>
+
                     <div class="row mb-3">
-                        <div class="col-md-4">
-                            <label class="form-label">التكلفة التشغيلية (من الرواتب)</label>
-                            <input type="number" class="form-control-modern" id="prod-op-cost" step="0.001">
-                            <small class="text-muted">مجموع رواتب هذا الشهر</small>
-                        </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label">إجمالي التكلفة</label>
                             <input type="number" class="form-control-modern" id="prod-total-cost" readonly>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label">قيمة العلبة</label>
                             <input type="number" class="form-control-modern" id="prod-box-value" readonly>
                         </div>
@@ -1994,8 +2003,6 @@
 
             if (id !== '') {
                 // في حالة التعديل، نحافظ على المتبقي القديم إذا لم يتغير العدد
-                // ولكن للتبسيط هنا، سنعيد تعيين المتبقي ليساوي العدد الجديد (اعتباراً أنه تصحيح)
-                // أو يمكننا تحسين المنطق ليحسب الفارق. هنا سنعيد التعيين.
                 purchaseData.remaining = parseFloat(count);
                 appData.budget.purchases[id] = purchaseData;
             } else {
@@ -2103,14 +2110,8 @@
             document.getElementById('prod-weight').value = '';
             document.getElementById('prod-box-count').value = '';
             document.getElementById('prod-ingredients-tbody').innerHTML = '';
+            document.getElementById('prod-op-cost-tbody').innerHTML = ''; // مسح جدول الرواتب
             
-            // حساب التكلفة التشغيلية (مجموع الرواتب للشهر الحالي)
-            const currentMonth = new Date().toISOString().substring(0, 7);
-            const monthlySalaries = appData.budget.salaries
-                .filter(s => s.date.startsWith(currentMonth))
-                .reduce((sum, s) => sum + parseFloat(s.amount), 0);
-            
-            document.getElementById('prod-op-cost').value = monthlySalaries.toFixed(3);
             calculateProductionTotals();
 
             const modal = new bootstrap.Modal(document.getElementById('productionModal'));
@@ -2121,20 +2122,18 @@
             const tbody = document.getElementById('prod-ingredients-tbody');
             const row = document.createElement('tr');
             
-            // إنشاء قائمة المنتجات المتوفرة فقط (المتبقي > 0)
+            // إنشاء قائمة المنتجات المتوفرة فقط (المتبقي > 0) والمصنفة مواد أولية أو تغليف
             let options = '<option value="" selected disabled>اختر المنتج</option>';
             appData.budget.purchases.forEach((p, idx) => {
-                if (parseFloat(p.remaining) > 0) {
-                    // السعر للوحدة الواحدة = المبلغ / العدد
-                    // لكن في المشتريات المبلغ المدخل هو سعر الوحدة حسب السياق السابق (purchase-amount)
-                    // إذا كان المبلغ هو السعر الإجمالي، يجب القسمة. هنا سنفترض أن purchase-amount هو سعر الوحدة كما هو متبع في باقي الكود
+                // الفلترة: مواد أولية أو تغليف فقط، والكمية المتبقية أكبر من 0
+                if ((p.category === 'مواد أولية' || p.category === 'تغليف') && parseFloat(p.remaining) > 0) {
                     const unitPrice = parseFloat(p.amount); 
                     options += `<option value="${idx}" data-price="${unitPrice}" data-remaining="${p.remaining}">${p.item} (متبقي: ${p.remaining})</option>`;
                 }
             });
 
             if (options === '<option value="" selected disabled>اختر المنتج</option>') {
-                alert('لا توجد منتجات متوفرة في المخزون. يرجى إضافة مشتريات أولاً.');
+                alert('لا توجد منتجات (مواد أولية أو تغليف) متوفرة في المخزون. يرجى إضافة مشتريات أولاً.');
                 return;
             }
 
@@ -2179,13 +2178,59 @@
             calculateProductionTotals();
         }
 
+        // إضافة صف تكلفة تشغيلية (رواتب)
+        function addOpCostRow() {
+            const tbody = document.getElementById('prod-op-cost-tbody');
+            const row = document.createElement('tr');
+
+            // الحصول على القيم المختارة مسبقاً لمنع التكرار
+            const selectedSalaries = Array.from(document.querySelectorAll('.prod-op-select')).map(s => s.value);
+            
+            let options = '<option value="" selected disabled>اختر البند</option>';
+            appData.budget.salaries.forEach((s, idx) => {
+                // إذا لم يتم اختياره مسبقاً
+                if (!selectedSalaries.includes(idx.toString())) {
+                    options += `<option value="${idx}" data-amount="${s.amount}">${s.date} - ${s.category} (${formatCurrency(parseFloat(s.amount))})</option>`;
+                }
+            });
+
+            if (options === '<option value="" selected disabled>اختر البند</option>') {
+                alert('لا توجد رواتب متاحة أو تم اختيار جميع الرواتب.');
+                return;
+            }
+
+            row.innerHTML = `
+                <td>
+                    <select class="form-select-modern prod-op-select" onchange="updateOpCostRow(this)">
+                        ${options}
+                    </select>
+                </td>
+                <td class="prod-op-amount">0.000</td>
+                <td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove(); calculateProductionTotals();"><i class="bi bi-trash"></i></button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function updateOpCostRow(select) {
+            const row = select.closest('tr');
+            const option = select.options[select.selectedIndex];
+            const amount = parseFloat(option.getAttribute('data-amount')) || 0;
+            
+            row.querySelector('.prod-op-amount').textContent = amount.toFixed(3);
+            calculateProductionTotals();
+        }
+
         function calculateProductionTotals() {
             let materialCost = 0;
             document.querySelectorAll('.prod-ing-cost').forEach(el => {
                 materialCost += parseFloat(el.textContent) || 0;
             });
 
-            const opCost = parseFloat(document.getElementById('prod-op-cost').value) || 0;
+            let opCost = 0;
+            document.querySelectorAll('.prod-op-amount').forEach(el => {
+                opCost += parseFloat(el.textContent) || 0;
+            });
+
             const totalCost = materialCost + opCost;
             const boxCount = parseFloat(document.getElementById('prod-box-count').value) || 1;
             const boxValue = totalCost / boxCount;
@@ -2195,7 +2240,6 @@
         }
 
         // ربط الأحداث للحساب التلقائي
-        document.getElementById('prod-op-cost').addEventListener('input', calculateProductionTotals);
         document.getElementById('prod-box-count').addEventListener('input', calculateProductionTotals);
 
         function saveProduction() {
@@ -2211,43 +2255,44 @@
                 return;
             }
 
-            // جمع المكونات المستخدمة وتحديث المخزون
+            // جمع المكونات المستخدمة
             const ingredients = [];
-            const rows = document.querySelectorAll('#prod-ingredients-tbody tr');
-            
-            // التحقق النهائي من الكميات قبل الحفظ
-            for (let row of rows) {
+            const ingRows = document.querySelectorAll('#prod-ingredients-tbody tr');
+            for (let row of ingRows) {
                 const select = row.querySelector('.prod-ing-select');
                 const qtyInput = row.querySelector('.prod-ing-qty');
                 if (!select.value || !qtyInput.value) {
-                    alert('يرجى اختيار المنتج وتحديد الكمية لجميع الصفوف');
+                    alert('يرجى اكمال بيانات المنتجات المستخدمة');
                     return;
                 }
-            }
-
-            // تنفيذ الخصم من المخزون
-            rows.forEach(row => {
-                const select = row.querySelector('.prod-ing-select');
-                const qty = parseFloat(row.querySelector('.prod-ing-qty').value);
+                const qty = parseFloat(qtyInput.value);
                 const purchaseIdx = select.value;
                 const cost = row.querySelector('.prod-ing-cost').textContent;
                 const itemName = select.options[select.selectedIndex].text.split(' (')[0];
-
+                
                 ingredients.push({
-                    purchaseIdx: purchaseIdx,
-                    name: itemName,
-                    usedQty: qty,
-                    cost: cost
+                    purchaseIdx, name: itemName, usedQty: qty, cost
                 });
 
-                // تحديث المخزون
+                // خصم المخزون
                 appData.budget.purchases[purchaseIdx].remaining -= qty;
-                // حماية من الكسور السالبة الصغيرة جداً
                 if (appData.budget.purchases[purchaseIdx].remaining < 0) appData.budget.purchases[purchaseIdx].remaining = 0;
-            });
+            }
+
+            // جمع التكاليف التشغيلية
+            const opCosts = [];
+            const opRows = document.querySelectorAll('#prod-op-cost-tbody tr');
+            for (let row of opRows) {
+                const select = row.querySelector('.prod-op-select');
+                if (select.value) {
+                    const amount = row.querySelector('.prod-op-amount').textContent;
+                    const itemName = select.options[select.selectedIndex].text;
+                    opCosts.push({ name: itemName, amount });
+                }
+            }
 
             const productionData = {
-                date, name, weight, boxCount, totalCost, boxValue, ingredients
+                date, name, weight, boxCount, totalCost, boxValue, ingredients, opCosts
             };
 
             appData.budget.productions.push(productionData);
