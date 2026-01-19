@@ -336,11 +336,11 @@
             </div>
 
             <ul class="nav nav-pills nav-tabs-modern" id="budgetTabs" role="tablist">
-                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#report-tab">التقرير</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#invoices-tab">الفواتير</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#production-tab">الناتج</button></li>
+                <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#report-tab">ملخص الميزانية</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#invoices-tab">المبيعات</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#production-tab">الإنتاج</button></li>
                 <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#expenses-tab">المصروفات</button></li>
-                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#financials-tab">المالية</button></li>
+                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#financials-tab">الخزينة</button></li>
             </ul>
 
             <div class="tab-content">
@@ -360,18 +360,18 @@
 
                     <div class="report-grid">
                         <div class="report-card" style="border-top: 4px solid var(--success);">
-                            <div class="report-title text-success"><i class="bi bi-cash-stack me-2"></i> المالية (التدفقات)</div>
+                            <div class="report-title text-success"><i class="bi bi-cash-stack me-2"></i> الخزينة (التدفقات)</div>
                             <div class="report-row"><span>استلام (كاش)</span><span class="report-val text-success" id="rep-cash-in">0.000</span></div>
                             <div class="report-row"><span>استلام (بنفت)</span><span class="report-val text-success" id="rep-benefit-in">0.000</span></div>
                             <hr class="my-2">
                             <div class="report-row"><span>استرداد (كاش)</span><span class="report-val text-danger" id="rep-cash-out">0.000</span></div>
                             <div class="report-row"><span>استرداد (بنفت)</span><span class="report-val text-danger" id="rep-benefit-out">0.000</span></div>
                             <hr class="my-2">
-                            <div class="report-row"><span class="fw-bold">المتبقي (الصافي)</span><span class="report-val" id="rep-net">0.000</span></div>
+                            <div class="report-row"><span class="fw-bold">الصافي المتبقي</span><span class="report-val" id="rep-net">0.000</span></div>
                         </div>
 
                         <div class="report-card" style="border-top: 4px solid var(--blue-cost);">
-                            <div class="report-title text-primary"><i class="bi bi-receipt me-2"></i> الفواتير (المبيعات)</div>
+                            <div class="report-title text-primary"><i class="bi bi-receipt me-2"></i> المبيعات</div>
                             <div class="report-row"><span>عدد الفواتير</span><span class="report-val" id="rep-inv-count">0</span></div>
                             <div class="report-row"><span>القيمة الإجمالية</span><span class="report-val" id="rep-inv-total">0.000</span></div>
                             <hr class="my-2">
@@ -387,9 +387,9 @@
                         </div>
 
                         <div class="report-card" style="border-top: 4px solid var(--accent-color);">
-                            <div class="report-title text-warning"><i class="bi bi-box-seam me-2"></i> الناتج</div>
+                            <div class="report-title text-warning"><i class="bi bi-box-seam me-2"></i> الإنتاج</div>
                             <div class="report-row"><span>عدد العلب المنتجة</span><span class="report-val" id="rep-prod-boxes">0</span></div>
-                            <div class="report-row"><span>متوسط قيمة الكيلو (الإنتاج)</span><span class="report-val" id="rep-prod-avg">0.000</span></div>
+                            <div class="report-row"><span>متوسط تكلفة الكيلو</span><span class="report-val" id="rep-prod-avg">0.000</span></div>
                             <small class="text-muted d-block mt-2">* الكيلو = 2 علبة</small>
                         </div>
                     </div>
@@ -418,7 +418,7 @@
                 <div class="tab-pane fade" id="invoices-tab">
                     <div class="card-modern">
                         <div class="card-header-modern">
-                            <span>سجل الفواتير</span>
+                            <span>سجل المبيعات</span>
                             <button class="btn btn-success-modern btn-sm" onclick="openInvoiceModal()"><i class="bi bi-plus-lg"></i> فاتورة جديدة</button>
                         </div>
                         <div class="card-body-modern p-0">
@@ -718,7 +718,7 @@
             const f = document.getElementById('budget-month-filter').value;
             const chk = (d) => f === 'all' || d.startsWith(f);
 
-            // 1. Financials
+            // 1. Financials (Treasury)
             let cIn=0, bIn=0, cOut=0, bOut=0;
             // Transactions
             appData.budget.transactions.forEach(t => {
@@ -727,20 +727,22 @@
                     else t.method === 'Cash' ? cOut += parseFloat(t.amount) : bOut += parseFloat(t.amount);
                 }
             });
-            // Paid Invoices
+            // Paid Invoices (Income to Treasury)
             appData.budget.invoices.forEach(i => {
                 if(chk(i.date) && i.status === 'Paid') {
                     i.method === 'Cash' ? cIn += parseFloat(i.total) : bIn += parseFloat(i.total);
                 }
             });
-            // Update UI
+            // Salaries Paid (Expense from Treasury) - *Assuming Salaries are paid from Cash/Benefit logic if tracked*
+            // However, request asked for specific layout. We follow previous layout + new requests.
+            
             document.getElementById('rep-cash-in').innerText = formatMoney(cIn);
             document.getElementById('rep-benefit-in').innerText = formatMoney(bIn);
             document.getElementById('rep-cash-out').innerText = formatMoney(cOut);
             document.getElementById('rep-benefit-out').innerText = formatMoney(bOut);
             document.getElementById('rep-net').innerText = formatMoney((cIn+bIn)-(cOut+bOut));
 
-            // 2. Invoices
+            // 2. Invoices (Sales)
             const invs = appData.budget.invoices.filter(i => chk(i.date));
             const paid = invs.filter(i => i.status === 'Paid');
             const unpaid = invs.filter(i => i.status === 'Unpaid');
