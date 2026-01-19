@@ -437,6 +437,28 @@
             font-size: 1.2rem;
             font-weight: 700;
         }
+
+        /* أنماط صفحة الميزانية */
+        .budget-tabs .nav-link {
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+        .budget-tabs .nav-link.active {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        .filter-container {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
         
         @media (max-width: 768px) {
             .sidebar { transform: translateX(100%); }
@@ -457,12 +479,12 @@
                 <li class="nav-item"><a class="nav-link active" href="#dashboard" data-page="dashboard"><i class="bi bi-speedometer2"></i><span>لوحة التحكم</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="#calculate-product" data-page="calculate-product"><i class="bi bi-calculator"></i><span>حساب تكلفة المنتج</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="#manage-products" data-page="manage-products"><i class="bi bi-box-seam"></i><span>إدارة المنتجات</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="#budget" data-page="budget"><i class="bi bi-wallet2"></i><span>الميزانية</span></a></li>
             </ul>
         </nav>
     </div>
 
     <div class="main-content">
-        <!-- صفحة لوحة التحكم -->
         <div id="dashboard" class="page active">
             <div class="content-header"><h2 class="content-title"><i class="bi bi-speedometer2"></i> لوحة التحكم</h2></div>
             <div class="dashboard-stats">
@@ -484,7 +506,6 @@
             </div>
         </div>
 
-        <!-- صفحة حساب تكلفة المنتج -->
         <div id="calculate-product" class="page">
             <div class="content-header"><h2 class="content-title"><i class="bi bi-calculator"></i> حساب تكلفة المنتج</h2></div>
             
@@ -748,7 +769,6 @@
             </div>
         </div>
 
-        <!-- صفحة إدارة المنتجات -->
         <div id="manage-products" class="page">
             <div class="content-header"><h2 class="content-title"><i class="bi bi-box-seam"></i> إدارة المنتجات</h2></div>
             <div class="card-modern">
@@ -776,9 +796,130 @@
                 </div>
             </div>
         </div>
+
+        <div id="budget" class="page">
+            <div class="content-header"><h2 class="content-title"><i class="bi bi-wallet2"></i> الميزانية</h2></div>
+            
+            <ul class="nav nav-pills mb-4 nav-tabs-modern" id="budgetTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="report-tab" data-bs-toggle="tab" data-bs-target="#report" type="button" role="tab" aria-controls="report" aria-selected="true"><i class="bi bi-pie-chart-fill"></i> التقرير</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="purchases-tab" data-bs-toggle="tab" data-bs-target="#purchases" type="button" role="tab" aria-controls="purchases" aria-selected="false"><i class="bi bi-cart-fill"></i> المشتريات</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="amount-tab" data-bs-toggle="tab" data-bs-target="#amount" type="button" role="tab" aria-controls="amount" aria-selected="false"><i class="bi bi-cash-coin"></i> المبلغ</button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="budgetTabsContent">
+                <div class="tab-pane fade show active" id="report" role="tabpanel" aria-labelledby="report-tab">
+                    <div class="filter-container">
+                        <label class="fw-bold ms-2"><i class="bi bi-filter"></i> فلترة حسب:</label>
+                        <select id="budget-month-filter" class="form-select-modern" style="width: 250px;">
+                            <option value="all">كل الأشهر</option>
+                            </select>
+                    </div>
+                    
+                    <div class="dashboard-stats mb-4">
+                        <div class="stat-card">
+                            <i class="bi bi-cart-check-fill stat-icon" style="color: var(--blue-cost);"></i>
+                            <div class="stat-value" id="report-purchases-total">0.000 د.ب</div>
+                            <div class="stat-label">إجمالي المشتريات</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="bi bi-wallet-fill stat-icon" style="color: var(--green-final);"></i>
+                            <div class="stat-value" id="report-income-total">0.000 د.ب</div>
+                            <div class="stat-label">المبالغ المستلمة</div>
+                        </div>
+                        <div class="stat-card">
+                            <i class="bi bi-arrow-return-left stat-icon" style="color: var(--error);"></i>
+                            <div class="stat-value" id="report-refund-total">0.000 د.ب</div>
+                            <div class="stat-label">المبالغ المستردة</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="purchases" role="tabpanel" aria-labelledby="purchases-tab">
+                    <div class="card-modern">
+                        <div class="card-header-modern d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-cart"></i> سجل المشتريات</span>
+                            <button class="btn btn-light btn-sm" onclick="openPurchaseModal()"><i class="bi bi-plus-lg"></i> إضافة مشتريات</button>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="table-responsive">
+                                <table class="table-modern" id="purchases-table">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>الصنف</th>
+                                            <th>العدد</th>
+                                            <th>المبلغ (د.ب)</th>
+                                            <th>التصنيف</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="purchases-tbody">
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="amount" role="tabpanel" aria-labelledby="amount-tab">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card-modern h-100">
+                                <div class="card-body-modern text-center d-flex flex-column justify-content-center align-items-center">
+                                    <i class="bi bi-box-arrow-in-down-right text-success mb-3" style="font-size: 3rem;"></i>
+                                    <h4 class="mb-4">استلام مبلغ</h4>
+                                    <button class="btn btn-success-modern btn-lg w-75" onclick="openTransactionModal('in')">
+                                        <i class="bi bi-plus-circle"></i> تسجيل استلام مبلغ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-modern h-100">
+                                <div class="card-body-modern text-center d-flex flex-column justify-content-center align-items-center">
+                                    <i class="bi bi-box-arrow-up-right text-danger mb-3" style="font-size: 3rem;"></i>
+                                    <h4 class="mb-4">استرداد مبلغ</h4>
+                                    <button class="btn btn-danger-modern btn-lg w-75" onclick="openTransactionModal('out')">
+                                        <i class="bi bi-dash-circle"></i> تسجيل استرداد مبلغ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-modern mt-4">
+                        <div class="card-header-modern"><i class="bi bi-arrow-left-right"></i> سجل العمليات المالية</div>
+                        <div class="card-body-modern">
+                            <div class="table-responsive">
+                                <table class="table-modern" id="transactions-table">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>النوع</th>
+                                            <th>المبلغ</th>
+                                            <th>طريقة الاستلام</th>
+                                            <th>الملاحظات</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="transactions-tbody">
+                                        </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- نافذة معاينة المنتج -->
     <div class="modal fade preview-modal" id="productPreviewModal" tabindex="-1" aria-labelledby="productPreviewModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -849,18 +990,106 @@
         </div>
     </div>
 
+    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="purchaseModalTitle">إضافة مشتريات</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="purchase-id">
+                    <div class="mb-3">
+                        <label class="form-label">التاريخ</label>
+                        <input type="date" class="form-control-modern" id="purchase-date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الصنف</label>
+                        <input type="text" class="form-control-modern" id="purchase-item" required>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">العدد</label>
+                            <input type="number" class="form-control-modern" id="purchase-count" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">المبلغ (د.ب)</label>
+                            <input type="number" class="form-control-modern" id="purchase-amount" step="0.001" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">التصنيف</label>
+                        <select class="form-select-modern" id="purchase-category">
+                            </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary-modern" onclick="savePurchase()">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white" id="transactionModalHeader">
+                    <h5 class="modal-title" id="transactionModalTitle">تسجيل مبلغ</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="transaction-id">
+                    <input type="hidden" id="transaction-type"> <div class="mb-3">
+                        <label class="form-label">التاريخ</label>
+                        <input type="date" class="form-control-modern" id="transaction-date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">المبلغ (د.ب)</label>
+                        <input type="number" class="form-control-modern" id="transaction-amount" step="0.001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">طريقة الاستلام</label>
+                        <select class="form-select-modern" id="transaction-method">
+                            <option value="Benefit">بنفت (Benefit)</option>
+                            <option value="Cash">كاش (Cash)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">ملاحظات</label>
+                        <textarea class="form-control-modern" id="transaction-notes" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success-modern" id="transaction-save-btn" onclick="saveTransaction()">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // قاعدة بيانات محلية لتخزين البيانات
         let appData = {
-            products: []
+            products: [],
+            budget: {
+                purchases: [],
+                transactions: []
+            }
         };
+
+        // فئات التصنيف (إعدادات افتراضية)
+        const categoriesList = ["مواد أولية", "تغليف", "أدوات ومعدات", "رواتب", "تسويق", "صيانة", "أخرى"];
 
         // محاولة تحميل البيانات من localStorage
         function loadData() {
             const savedData = localStorage.getItem('baizaAppData');
             if (savedData) {
-                appData = JSON.parse(savedData);
+                const parsedData = JSON.parse(savedData);
+                appData.products = parsedData.products || [];
+                // التأكد من وجود كائن الميزانية حتى لو كانت البيانات قديمة
+                appData.budget = parsedData.budget || { purchases: [], transactions: [] };
             }
         }
 
@@ -912,6 +1141,8 @@
                 updateProductsTable();
             } else if (pageId === 'dashboard') {
                 updateDashboard();
+            } else if (pageId === 'budget') {
+                updateBudgetUI();
             }
         }
 
@@ -919,7 +1150,8 @@
             const titles = {
                 'dashboard': 'لوحة التحكم',
                 'calculate-product': 'حساب تكلفة المنتج',
-                'manage-products': 'إدارة المنتجات'
+                'manage-products': 'إدارة المنتجات',
+                'budget': 'الميزانية'
             };
             return titles[pageId] || 'برنامج بيزة';
         }
@@ -1462,6 +1694,279 @@
             document.getElementById(id).addEventListener('keyup',updateCosts);
         });
 
+        /* ===================== وظائف الميزانية (الجديدة) ===================== */
+
+        // 1. إدارة المشتريات
+        function openPurchaseModal(index = null) {
+            const modalTitle = document.getElementById('purchaseModalTitle');
+            const categorySelect = document.getElementById('purchase-category');
+            
+            // ملء القائمة المنسدلة للتصنيفات
+            categorySelect.innerHTML = '';
+            categoriesList.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat;
+                opt.text = cat;
+                categorySelect.appendChild(opt);
+            });
+
+            if (index !== null) {
+                const purchase = appData.budget.purchases[index];
+                document.getElementById('purchase-id').value = index;
+                document.getElementById('purchase-date').value = purchase.date;
+                document.getElementById('purchase-item').value = purchase.item;
+                document.getElementById('purchase-count').value = purchase.count;
+                document.getElementById('purchase-amount').value = purchase.amount;
+                document.getElementById('purchase-category').value = purchase.category;
+                modalTitle.textContent = 'تعديل مشتريات';
+            } else {
+                document.getElementById('purchase-id').value = '';
+                document.getElementById('purchase-date').valueAsDate = new Date(); // التاريخ الحالي
+                document.getElementById('purchase-item').value = '';
+                document.getElementById('purchase-count').value = '';
+                document.getElementById('purchase-amount').value = '';
+                document.getElementById('purchase-category').value = categoriesList[0];
+                modalTitle.textContent = 'إضافة مشتريات';
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('purchaseModal'));
+            modal.show();
+        }
+
+        function savePurchase() {
+            const id = document.getElementById('purchase-id').value;
+            const date = document.getElementById('purchase-date').value;
+            const item = document.getElementById('purchase-item').value;
+            const count = document.getElementById('purchase-count').value;
+            const amount = parseFloat(document.getElementById('purchase-amount').value);
+            const category = document.getElementById('purchase-category').value;
+
+            if (!date || !item || !count || isNaN(amount)) {
+                alert('يرجى ملء جميع الحقول بشكل صحيح');
+                return;
+            }
+
+            const purchaseData = { date, item, count, amount, category };
+
+            if (id !== '') {
+                appData.budget.purchases[id] = purchaseData;
+            } else {
+                appData.budget.purchases.push(purchaseData);
+            }
+
+            saveData();
+            updateBudgetUI();
+            
+            // إغلاق المودال
+            const modalEl = document.getElementById('purchaseModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+        }
+
+        function deletePurchase(index) {
+            if(confirm('هل أنت متأكد من مسح هذا السجل؟')) {
+                appData.budget.purchases.splice(index, 1);
+                saveData();
+                updateBudgetUI();
+            }
+        }
+
+        // 2. إدارة العمليات (استلام/استرداد)
+        function openTransactionModal(type) {
+            const modalHeader = document.getElementById('transactionModalHeader');
+            const modalTitle = document.getElementById('transactionModalTitle');
+            const saveBtn = document.getElementById('transaction-save-btn');
+            
+            document.getElementById('transaction-type').value = type;
+            document.getElementById('transaction-date').valueAsDate = new Date();
+            document.getElementById('transaction-amount').value = '';
+            document.getElementById('transaction-method').value = 'Benefit';
+            document.getElementById('transaction-notes').value = '';
+
+            if (type === 'in') {
+                modalHeader.classList.remove('bg-danger');
+                modalHeader.classList.add('bg-success');
+                modalTitle.textContent = 'استلام مبلغ';
+                saveBtn.classList.remove('btn-danger-modern');
+                saveBtn.classList.add('btn-success-modern');
+            } else {
+                modalHeader.classList.remove('bg-success');
+                modalHeader.classList.add('bg-danger');
+                modalTitle.textContent = 'استرداد مبلغ';
+                saveBtn.classList.remove('btn-success-modern');
+                saveBtn.classList.add('btn-danger-modern');
+            }
+
+            const modal = new bootstrap.Modal(document.getElementById('transactionModal'));
+            modal.show();
+        }
+
+        function saveTransaction() {
+            const type = document.getElementById('transaction-type').value;
+            const date = document.getElementById('transaction-date').value;
+            const amount = parseFloat(document.getElementById('transaction-amount').value);
+            const method = document.getElementById('transaction-method').value;
+            const notes = document.getElementById('transaction-notes').value;
+
+            if (!date || isNaN(amount)) {
+                alert('يرجى التأكد من التاريخ والمبلغ');
+                return;
+            }
+
+            const transactionData = { type, date, amount, method, notes };
+            appData.budget.transactions.push(transactionData);
+            
+            saveData();
+            updateBudgetUI();
+            
+            const modalEl = document.getElementById('transactionModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+        }
+
+        function deleteTransaction(index) {
+            if(confirm('هل أنت متأكد من مسح هذه العملية؟')) {
+                appData.budget.transactions.splice(index, 1);
+                saveData();
+                updateBudgetUI();
+            }
+        }
+
+        // 3. تحديث واجهة الميزانية والتقارير
+        function updateBudgetUI() {
+            const monthFilter = document.getElementById('budget-month-filter');
+            
+            // ملء فلتر الأشهر
+            const allDates = [
+                ...appData.budget.purchases.map(p => p.date),
+                ...appData.budget.transactions.map(t => t.date)
+            ];
+            
+            const uniqueMonths = [...new Set(allDates.map(d => d.substring(0, 7)))].sort().reverse();
+            
+            // حفظ القيمة الحالية للفلتر أو تعيين الشهر الحالي
+            let currentSelection = monthFilter.value;
+            const currentMonth = new Date().toISOString().substring(0, 7);
+            
+            monthFilter.innerHTML = '<option value="all">كل الأشهر</option>';
+            uniqueMonths.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m;
+                // تحويل YYYY-MM إلى اسم شهر عربي وسنة
+                const dateObj = new Date(m + '-01');
+                const monthName = dateObj.toLocaleDateString('ar-BH', { month: 'long', year: 'numeric' });
+                opt.text = monthName;
+                monthFilter.appendChild(opt);
+            });
+
+            // تعيين القيمة المختارة (أو الافتراضية)
+            if (currentSelection === 'all' || uniqueMonths.includes(currentSelection)) {
+                monthFilter.value = currentSelection;
+            } else if (uniqueMonths.includes(currentMonth)) {
+                monthFilter.value = currentMonth;
+            } else {
+                 // إذا لم يتم تحديد قيمة سابقة، نجعلها الشهر الحالي إذا وجد، وإلا "كل الأشهر"
+                 if(uniqueMonths.includes(currentMonth)) {
+                     monthFilter.value = currentMonth;
+                 } else {
+                     monthFilter.value = 'all'; 
+                 }
+            }
+            
+            // إذا كانت هذه أول مرة يتم فتح الصفحة ولا يوجد تحديد
+            if (currentSelection === '' || currentSelection === undefined) {
+                 if (uniqueMonths.includes(currentMonth)) monthFilter.value = currentMonth;
+            }
+
+            renderBudgetTables();
+            renderBudgetReport();
+        }
+
+        // الاستماع لتغيير الفلتر
+        document.getElementById('budget-month-filter').addEventListener('change', () => {
+             renderBudgetTables();
+             renderBudgetReport();
+        });
+
+        function renderBudgetTables() {
+            const filterValue = document.getElementById('budget-month-filter').value;
+            
+            // 1. جدول المشتريات
+            const purchasesTbody = document.getElementById('purchases-tbody');
+            purchasesTbody.innerHTML = '';
+            
+            const filteredPurchases = appData.budget.purchases.map((item, index) => ({...item, originalIndex: index}))
+                .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+
+            if (filteredPurchases.length === 0) {
+                purchasesTbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">لا توجد سجلات</td></tr>';
+            } else {
+                filteredPurchases.forEach(p => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${p.date}</td>
+                        <td>${p.item}</td>
+                        <td>${p.count}</td>
+                        <td>${formatCurrency(parseFloat(p.amount))}</td>
+                        <td><span class="badge bg-secondary">${p.category}</span></td>
+                        <td>
+                            <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${p.originalIndex})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-danger-modern btn-sm" onclick="deletePurchase(${p.originalIndex})"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+                    purchasesTbody.appendChild(row);
+                });
+            }
+
+            // 2. جدول العمليات (المبلغ)
+            const transactionsTbody = document.getElementById('transactions-tbody');
+            transactionsTbody.innerHTML = '';
+
+            const filteredTransactions = appData.budget.transactions.map((item, index) => ({...item, originalIndex: index}))
+                .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+
+            if (filteredTransactions.length === 0) {
+                transactionsTbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">لا توجد عمليات</td></tr>';
+            } else {
+                filteredTransactions.forEach(t => {
+                    const isIncome = t.type === 'in';
+                    const typeLabel = isIncome ? '<span class="badge bg-success">استلام</span>' : '<span class="badge bg-danger">استرداد</span>';
+                    const amountClass = isIncome ? 'text-success' : 'text-danger';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${t.date}</td>
+                        <td>${typeLabel}</td>
+                        <td class="${amountClass} fw-bold" dir="ltr">${isIncome ? '+' : '-'} ${formatCurrency(parseFloat(t.amount))}</td>
+                        <td>${t.method}</td>
+                        <td><small>${t.notes || '-'}</small></td>
+                        <td>
+                            <button class="btn btn-danger-modern btn-sm" onclick="deleteTransaction(${t.originalIndex})"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+                    transactionsTbody.appendChild(row);
+                });
+            }
+        }
+
+        function renderBudgetReport() {
+            const filterValue = document.getElementById('budget-month-filter').value;
+
+            // تصفية البيانات للحساب
+            const filteredPurchases = appData.budget.purchases.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+            const filteredTransactions = appData.budget.transactions.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+
+            // حساب المجاميع
+            const totalPurchases = filteredPurchases.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+            const totalIncome = filteredTransactions.filter(t => t.type === 'in').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+            const totalRefund = filteredTransactions.filter(t => t.type === 'out').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+
+            // تحديث البطاقات
+            document.getElementById('report-purchases-total').textContent = formatCurrency(totalPurchases);
+            document.getElementById('report-income-total').textContent = formatCurrency(totalIncome);
+            document.getElementById('report-refund-total').textContent = formatCurrency(totalRefund);
+        }
+
         // تحديث الجداول عند تحميل الصفحة
         updateProductsTable();
         updateDashboard();
@@ -1469,4 +1974,3 @@
     </script>
 </body>
 </html>
-000
