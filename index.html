@@ -459,6 +459,21 @@
             align-items: center;
             gap: 1rem;
         }
+
+        /* أنماط التبويبات الداخلية */
+        .inner-pills .nav-link {
+            border-radius: 20px;
+            padding: 0.5rem 1.5rem;
+            color: var(--text-secondary);
+            background-color: var(--surface);
+            border: 1px solid var(--border-color);
+            margin-left: 0.5rem;
+        }
+        .inner-pills .nav-link.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
         
         @media (max-width: 768px) {
             .sidebar { transform: translateX(100%); }
@@ -805,10 +820,10 @@
                     <button class="nav-link active" id="report-tab" data-bs-toggle="tab" data-bs-target="#report" type="button" role="tab" aria-controls="report" aria-selected="true"><i class="bi bi-pie-chart-fill"></i> التقرير</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="purchases-tab" data-bs-toggle="tab" data-bs-target="#purchases" type="button" role="tab" aria-controls="purchases" aria-selected="false"><i class="bi bi-cart-fill"></i> المشتريات</button>
+                    <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button" role="tab" aria-controls="expenses" aria-selected="false"><i class="bi bi-receipt-cutoff"></i> المصروفات</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="amount-tab" data-bs-toggle="tab" data-bs-target="#amount" type="button" role="tab" aria-controls="amount" aria-selected="false"><i class="bi bi-cash-coin"></i> المبلغ</button>
+                    <button class="nav-link" id="financials-tab" data-bs-toggle="tab" data-bs-target="#financials" type="button" role="tab" aria-controls="financials" aria-selected="false"><i class="bi bi-cash-coin"></i> المالية</button>
                 </li>
             </ul>
 
@@ -828,6 +843,11 @@
                             <div class="stat-label">إجمالي المشتريات</div>
                         </div>
                         <div class="stat-card">
+                            <i class="bi bi-people-fill stat-icon" style="color: var(--warning);"></i>
+                            <div class="stat-value" id="report-salaries-total">0.000 د.ب</div>
+                            <div class="stat-label">إجمالي الرواتب</div>
+                        </div>
+                        <div class="stat-card">
                             <i class="bi bi-wallet-fill stat-icon" style="color: var(--green-final);"></i>
                             <div class="stat-value" id="report-income-total">0.000 د.ب</div>
                             <div class="stat-label">المبالغ المستلمة</div>
@@ -840,34 +860,77 @@
                     </div>
                 </div>
 
-                <div class="tab-pane fade" id="purchases" role="tabpanel" aria-labelledby="purchases-tab">
-                    <div class="card-modern">
-                        <div class="card-header-modern d-flex justify-content-between align-items-center">
-                            <span><i class="bi bi-cart"></i> سجل المشتريات</span>
-                            <button class="btn btn-light btn-sm" onclick="openPurchaseModal()"><i class="bi bi-plus-lg"></i> إضافة مشتريات</button>
+                <div class="tab-pane fade" id="expenses" role="tabpanel" aria-labelledby="expenses-tab">
+                    
+                    <ul class="nav nav-pills inner-pills mb-3" role="tablist">
+                        <li class="nav-item">
+                            <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#sub-purchases" type="button"><i class="bi bi-cart"></i> المشتريات</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link" data-bs-toggle="pill" data-bs-target="#sub-salaries" type="button"><i class="bi bi-person-badge"></i> الرواتب</button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="sub-purchases">
+                            <div class="card-modern">
+                                <div class="card-header-modern d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-cart"></i> سجل المشتريات</span>
+                                    <button class="btn btn-light btn-sm" onclick="openPurchaseModal()"><i class="bi bi-plus-lg"></i> إضافة مشتريات</button>
+                                </div>
+                                <div class="card-body-modern">
+                                    <div class="table-responsive">
+                                        <table class="table-modern" id="purchases-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>التاريخ</th>
+                                                    <th>الصنف</th>
+                                                    <th>العدد</th>
+                                                    <th>المبلغ (د.ب)</th>
+                                                    <th>المجموع (د.ب)</th>
+                                                    <th>التصنيف</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="purchases-tbody">
+                                                </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body-modern">
-                            <div class="table-responsive">
-                                <table class="table-modern" id="purchases-table">
-                                    <thead>
-                                        <tr>
-                                            <th>التاريخ</th>
-                                            <th>الصنف</th>
-                                            <th>العدد</th>
-                                            <th>المبلغ (د.ب)</th>
-                                            <th>التصنيف</th>
-                                            <th>الإجراءات</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="purchases-tbody">
-                                        </tbody>
-                                </table>
+
+                        <div class="tab-pane fade" id="sub-salaries">
+                             <div class="card-modern">
+                                <div class="card-header-modern d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-person-badge"></i> سجل الرواتب</span>
+                                    <button class="btn btn-light btn-sm" onclick="openSalaryModal()"><i class="bi bi-plus-lg"></i> إضافة راتب</button>
+                                </div>
+                                <div class="card-body-modern">
+                                    <div class="table-responsive">
+                                        <table class="table-modern" id="salaries-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>التاريخ</th>
+                                                    <th>التصنيف</th>
+                                                    <th>المبلغ (د.ب)</th>
+                                                    <th>الحالة</th>
+                                                    <th>طريقة الدفع</th>
+                                                    <th>ملاحظات</th>
+                                                    <th>الإجراءات</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="salaries-tbody">
+                                                </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="tab-pane fade" id="amount" role="tabpanel" aria-labelledby="amount-tab">
+                <div class="tab-pane fade" id="financials" role="tabpanel" aria-labelledby="financials-tab">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card-modern h-100">
@@ -1018,6 +1081,10 @@
                         </div>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">المجموع (د.ب)</label>
+                        <input type="number" class="form-control-modern" id="purchase-total" readonly>
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">التصنيف</label>
                         <select class="form-select-modern" id="purchase-category">
                             </select>
@@ -1026,6 +1093,58 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
                     <button type="button" class="btn btn-primary-modern" onclick="savePurchase()">حفظ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="salaryModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-white">
+                    <h5 class="modal-title" id="salaryModalTitle">إضافة راتب</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="salary-id">
+                    <div class="mb-3">
+                        <label class="form-label">التاريخ</label>
+                        <input type="date" class="form-control-modern" id="salary-date" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">التصنيف</label>
+                        <select class="form-select-modern" id="salary-category">
+                            <option value="عمال">عمال</option>
+                            <option value="وجبات">وجبات</option>
+                            <option value="سيارة">سيارة</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">المبلغ (د.ب)</label>
+                        <input type="number" class="form-control-modern" id="salary-amount" step="0.001" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">الحالة</label>
+                        <select class="form-select-modern" id="salary-status" onchange="togglePaymentMethod()">
+                            <option value="Unpaid">غير مدفوع</option>
+                            <option value="Paid">مدفوع</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 d-none" id="payment-method-wrapper">
+                        <label class="form-label">طريقة الدفع</label>
+                        <select class="form-select-modern" id="salary-method">
+                            <option value="Benefit">بنفت (Benefit)</option>
+                            <option value="Cash">كاش (Cash)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">ملاحظات</label>
+                        <textarea class="form-control-modern" id="salary-notes" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary-modern" onclick="saveSalary()">حفظ</button>
                 </div>
             </div>
         </div>
@@ -1075,12 +1194,13 @@
             products: [],
             budget: {
                 purchases: [],
+                salaries: [],
                 transactions: []
             }
         };
 
         // فئات التصنيف (إعدادات افتراضية)
-        const categoriesList = ["مواد أولية", "تغليف", "أدوات ومعدات", "رواتب", "تسويق", "صيانة", "أخرى"];
+        const categoriesList = ["مواد أولية", "تغليف", "أدوات ومعدات", "تسويق", "صيانة", "أخرى"];
 
         // محاولة تحميل البيانات من localStorage
         function loadData() {
@@ -1089,7 +1209,8 @@
                 const parsedData = JSON.parse(savedData);
                 appData.products = parsedData.products || [];
                 // التأكد من وجود كائن الميزانية حتى لو كانت البيانات قديمة
-                appData.budget = parsedData.budget || { purchases: [], transactions: [] };
+                appData.budget = parsedData.budget || { purchases: [], salaries: [], transactions: [] };
+                if(!appData.budget.salaries) appData.budget.salaries = [];
             }
         }
 
@@ -1728,10 +1849,21 @@
                 document.getElementById('purchase-category').value = categoriesList[0];
                 modalTitle.textContent = 'إضافة مشتريات';
             }
-
+            
+            calculatePurchaseTotal(); // تحديث المجموع عند الفتح
             const modal = new bootstrap.Modal(document.getElementById('purchaseModal'));
             modal.show();
         }
+
+        // حساب المجموع تلقائياً في نافذة المشتريات
+        function calculatePurchaseTotal() {
+            const count = parseFloat(document.getElementById('purchase-count').value) || 0;
+            const amount = parseFloat(document.getElementById('purchase-amount').value) || 0;
+            document.getElementById('purchase-total').value = (count * amount).toFixed(3);
+        }
+
+        document.getElementById('purchase-count').addEventListener('input', calculatePurchaseTotal);
+        document.getElementById('purchase-amount').addEventListener('input', calculatePurchaseTotal);
 
         function savePurchase() {
             const id = document.getElementById('purchase-id').value;
@@ -1757,7 +1889,6 @@
             saveData();
             updateBudgetUI();
             
-            // إغلاق المودال
             const modalEl = document.getElementById('purchaseModal');
             const modal = bootstrap.Modal.getInstance(modalEl);
             modal.hide();
@@ -1771,7 +1902,85 @@
             }
         }
 
-        // 2. إدارة العمليات (استلام/استرداد)
+        // 2. إدارة الرواتب (جديد)
+        function openSalaryModal(index = null) {
+            const modalTitle = document.getElementById('salaryModalTitle');
+            
+            if (index !== null) {
+                const salary = appData.budget.salaries[index];
+                document.getElementById('salary-id').value = index;
+                document.getElementById('salary-date').value = salary.date;
+                document.getElementById('salary-category').value = salary.category;
+                document.getElementById('salary-amount').value = salary.amount;
+                document.getElementById('salary-status').value = salary.status;
+                document.getElementById('salary-method').value = salary.method || 'Benefit';
+                document.getElementById('salary-notes').value = salary.notes || '';
+                modalTitle.textContent = 'تعديل راتب';
+            } else {
+                document.getElementById('salary-id').value = '';
+                document.getElementById('salary-date').valueAsDate = new Date();
+                document.getElementById('salary-category').value = 'عمال';
+                document.getElementById('salary-amount').value = '';
+                document.getElementById('salary-status').value = 'Unpaid';
+                document.getElementById('salary-method').value = 'Benefit';
+                document.getElementById('salary-notes').value = '';
+                modalTitle.textContent = 'إضافة راتب';
+            }
+            
+            togglePaymentMethod(); // تحديث ظهور طريقة الدفع
+            const modal = new bootstrap.Modal(document.getElementById('salaryModal'));
+            modal.show();
+        }
+
+        function togglePaymentMethod() {
+            const status = document.getElementById('salary-status').value;
+            const methodWrapper = document.getElementById('payment-method-wrapper');
+            if (status === 'Paid') {
+                methodWrapper.classList.remove('d-none');
+            } else {
+                methodWrapper.classList.add('d-none');
+            }
+        }
+
+        function saveSalary() {
+            const id = document.getElementById('salary-id').value;
+            const date = document.getElementById('salary-date').value;
+            const category = document.getElementById('salary-category').value;
+            const amount = parseFloat(document.getElementById('salary-amount').value);
+            const status = document.getElementById('salary-status').value;
+            const method = status === 'Paid' ? document.getElementById('salary-method').value : null;
+            const notes = document.getElementById('salary-notes').value;
+
+            if (!date || isNaN(amount)) {
+                alert('يرجى ملء البيانات بشكل صحيح');
+                return;
+            }
+
+            const salaryData = { date, category, amount, status, method, notes };
+
+            if (id !== '') {
+                appData.budget.salaries[id] = salaryData;
+            } else {
+                appData.budget.salaries.push(salaryData);
+            }
+
+            saveData();
+            updateBudgetUI();
+            
+            const modalEl = document.getElementById('salaryModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+        }
+
+        function deleteSalary(index) {
+            if(confirm('هل أنت متأكد من مسح هذا الراتب؟')) {
+                appData.budget.salaries.splice(index, 1);
+                saveData();
+                updateBudgetUI();
+            }
+        }
+
+        // 3. إدارة العمليات (المالية)
         function openTransactionModal(type) {
             const modalHeader = document.getElementById('transactionModalHeader');
             const modalTitle = document.getElementById('transactionModalTitle');
@@ -1832,19 +2041,20 @@
             }
         }
 
-        // 3. تحديث واجهة الميزانية والتقارير
+        // 4. تحديث واجهة الميزانية والتقارير
         function updateBudgetUI() {
             const monthFilter = document.getElementById('budget-month-filter');
             
             // ملء فلتر الأشهر
             const allDates = [
                 ...appData.budget.purchases.map(p => p.date),
+                ...appData.budget.salaries.map(s => s.date),
                 ...appData.budget.transactions.map(t => t.date)
             ];
             
             const uniqueMonths = [...new Set(allDates.map(d => d.substring(0, 7)))].sort().reverse();
             
-            // حفظ القيمة الحالية للفلتر أو تعيين الشهر الحالي
+            // حفظ القيمة الحالية للفلتر
             let currentSelection = monthFilter.value;
             const currentMonth = new Date().toISOString().substring(0, 7);
             
@@ -1865,7 +2075,6 @@
             } else if (uniqueMonths.includes(currentMonth)) {
                 monthFilter.value = currentMonth;
             } else {
-                 // إذا لم يتم تحديد قيمة سابقة، نجعلها الشهر الحالي إذا وجد، وإلا "كل الأشهر"
                  if(uniqueMonths.includes(currentMonth)) {
                      monthFilter.value = currentMonth;
                  } else {
@@ -1873,7 +2082,6 @@
                  }
             }
             
-            // إذا كانت هذه أول مرة يتم فتح الصفحة ولا يوجد تحديد
             if (currentSelection === '' || currentSelection === undefined) {
                  if (uniqueMonths.includes(currentMonth)) monthFilter.value = currentMonth;
             }
@@ -1899,18 +2107,21 @@
                 .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
             if (filteredPurchases.length === 0) {
-                purchasesTbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted">لا توجد سجلات</td></tr>';
+                purchasesTbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">لا توجد سجلات</td></tr>';
             } else {
                 filteredPurchases.forEach(p => {
+                    const total = (p.count * p.amount).toFixed(3);
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${p.date}</td>
                         <td>${p.item}</td>
                         <td>${p.count}</td>
                         <td>${formatCurrency(parseFloat(p.amount))}</td>
+                        <td class="fw-bold">${total} ${currentCurrency}</td>
                         <td><span class="badge bg-secondary">${p.category}</span></td>
                         <td>
                             <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${p.originalIndex})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${p.originalIndex})"><i class="bi bi-eye"></i></button>
                             <button class="btn btn-danger-modern btn-sm" onclick="deletePurchase(${p.originalIndex})"><i class="bi bi-trash"></i></button>
                         </td>
                     `;
@@ -1918,7 +2129,38 @@
                 });
             }
 
-            // 2. جدول العمليات (المبلغ)
+            // 2. جدول الرواتب
+            const salariesTbody = document.getElementById('salaries-tbody');
+            salariesTbody.innerHTML = '';
+            
+            const filteredSalaries = appData.budget.salaries.map((item, index) => ({...item, originalIndex: index}))
+                .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+
+            if (filteredSalaries.length === 0) {
+                salariesTbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted">لا توجد سجلات رواتب</td></tr>';
+            } else {
+                filteredSalaries.forEach(s => {
+                    const isPaid = s.status === 'Paid';
+                    const statusBadge = isPaid ? '<span class="badge bg-success">مدفوع</span>' : '<span class="badge bg-warning text-dark">غير مدفوع</span>';
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${s.date}</td>
+                        <td>${s.category}</td>
+                        <td>${formatCurrency(parseFloat(s.amount))}</td>
+                        <td>${statusBadge}</td>
+                        <td>${isPaid ? s.method : '-'}</td>
+                        <td><small>${s.notes || '-'}</small></td>
+                        <td>
+                            <button class="btn btn-primary-modern btn-sm" onclick="openSalaryModal(${s.originalIndex})"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-danger-modern btn-sm" onclick="deleteSalary(${s.originalIndex})"><i class="bi bi-trash"></i></button>
+                        </td>
+                    `;
+                    salariesTbody.appendChild(row);
+                });
+            }
+
+            // 3. جدول العمليات (المالية)
             const transactionsTbody = document.getElementById('transactions-tbody');
             transactionsTbody.innerHTML = '';
 
@@ -1954,15 +2196,18 @@
 
             // تصفية البيانات للحساب
             const filteredPurchases = appData.budget.purchases.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+            const filteredSalaries = appData.budget.salaries.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
             const filteredTransactions = appData.budget.transactions.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
             // حساب المجاميع
-            const totalPurchases = filteredPurchases.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+            const totalPurchases = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.count) * parseFloat(item.amount) || 0), 0);
+            const totalSalaries = filteredSalaries.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0); // مجموع الرواتب (المدفوعة وغير المدفوعة)
             const totalIncome = filteredTransactions.filter(t => t.type === 'in').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
             const totalRefund = filteredTransactions.filter(t => t.type === 'out').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
 
             // تحديث البطاقات
             document.getElementById('report-purchases-total').textContent = formatCurrency(totalPurchases);
+            document.getElementById('report-salaries-total').textContent = formatCurrency(totalSalaries);
             document.getElementById('report-income-total').textContent = formatCurrency(totalIncome);
             document.getElementById('report-refund-total').textContent = formatCurrency(totalRefund);
         }
