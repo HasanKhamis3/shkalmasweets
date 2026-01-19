@@ -820,6 +820,9 @@
                     <button class="nav-link active" id="report-tab" data-bs-toggle="tab" data-bs-target="#report" type="button" role="tab" aria-controls="report" aria-selected="true"><i class="bi bi-pie-chart-fill"></i> التقرير</button>
                 </li>
                 <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="production-tab" data-bs-toggle="tab" data-bs-target="#production" type="button" role="tab" aria-controls="production" aria-selected="false"><i class="bi bi-box-fill"></i> الناتج</button>
+                </li>
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="expenses-tab" data-bs-toggle="tab" data-bs-target="#expenses" type="button" role="tab" aria-controls="expenses" aria-selected="false"><i class="bi bi-receipt-cutoff"></i> المصروفات</button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -838,6 +841,11 @@
                     
                     <div class="dashboard-stats mb-4">
                         <div class="stat-card">
+                            <i class="bi bi-box-fill stat-icon" style="color: var(--secondary-color);"></i>
+                            <div class="stat-value" id="report-production-boxes">0</div>
+                            <div class="stat-label">إجمالي العلب المنتجة</div>
+                        </div>
+                        <div class="stat-card">
                             <i class="bi bi-cart-check-fill stat-icon" style="color: var(--blue-cost);"></i>
                             <div class="stat-value" id="report-purchases-total">0.000 د.ب</div>
                             <div class="stat-label">إجمالي المشتريات</div>
@@ -852,10 +860,31 @@
                             <div class="stat-value" id="report-income-total">0.000 د.ب</div>
                             <div class="stat-label">المبالغ المستلمة</div>
                         </div>
-                        <div class="stat-card">
-                            <i class="bi bi-arrow-return-left stat-icon" style="color: var(--error);"></i>
-                            <div class="stat-value" id="report-refund-total">0.000 د.ب</div>
-                            <div class="stat-label">المبالغ المستردة</div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="production" role="tabpanel" aria-labelledby="production-tab">
+                    <div class="card-modern">
+                        <div class="card-header-modern d-flex justify-content-between align-items-center">
+                            <span><i class="bi bi-box-fill"></i> سجل الإنتاج</span>
+                            <button class="btn btn-light btn-sm" onclick="openProductionModal()"><i class="bi bi-plus-lg"></i> إضافة ناتج</button>
+                        </div>
+                        <div class="card-body-modern">
+                            <div class="table-responsive">
+                                <table class="table-modern" id="production-table">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>الصنف</th>
+                                            <th>عدد العلب</th>
+                                            <th>التكلفة الإجمالية</th>
+                                            <th>قيمة العلبة</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="production-tbody">
+                                        </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1187,6 +1216,75 @@
         </div>
     </div>
 
+    <div class="modal fade" id="productionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-secondary text-white">
+                    <h5 class="modal-title">إضافة ناتج</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">التاريخ</label>
+                            <input type="date" class="form-control-modern" id="prod-date" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">اسم الصنف</label>
+                            <input type="text" class="form-control-modern" id="prod-name" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">الوزن</label>
+                            <input type="text" class="form-control-modern" id="prod-weight">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">عدد العلب</label>
+                            <input type="number" class="form-control-modern" id="prod-box-count" required>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    <h6 class="mb-3">المنتجات المستخدمة</h6>
+                    <table class="table-modern mb-3" id="prod-ingredients-table">
+                        <thead>
+                            <tr>
+                                <th>المنتج (المتاح)</th>
+                                <th>الكمية المستخدمة</th>
+                                <th>التكلفة</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="prod-ingredients-tbody">
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-light btn-sm mb-3" onclick="addIngredientRow()"><i class="bi bi-plus"></i> إضافة منتج</button>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">التكلفة التشغيلية (من الرواتب)</label>
+                            <input type="number" class="form-control-modern" id="prod-op-cost" step="0.001">
+                            <small class="text-muted">مجموع رواتب هذا الشهر</small>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">إجمالي التكلفة</label>
+                            <input type="number" class="form-control-modern" id="prod-total-cost" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">قيمة العلبة</label>
+                            <input type="number" class="form-control-modern" id="prod-box-value" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success-modern" onclick="saveProduction()">حفظ الناتج</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // قاعدة بيانات محلية لتخزين البيانات
@@ -1195,7 +1293,8 @@
             budget: {
                 purchases: [],
                 salaries: [],
-                transactions: []
+                transactions: [],
+                productions: [] // مصفوفة جديدة للإنتاج
             }
         };
 
@@ -1208,9 +1307,18 @@
             if (savedData) {
                 const parsedData = JSON.parse(savedData);
                 appData.products = parsedData.products || [];
-                // التأكد من وجود كائن الميزانية حتى لو كانت البيانات قديمة
-                appData.budget = parsedData.budget || { purchases: [], salaries: [], transactions: [] };
+                appData.budget = parsedData.budget || { purchases: [], salaries: [], transactions: [], productions: [] };
                 if(!appData.budget.salaries) appData.budget.salaries = [];
+                if(!appData.budget.productions) appData.budget.productions = [];
+                
+                // التأكد من وجود خاصية "المتبقي" للمشتريات القديمة
+                if(appData.budget.purchases.length > 0) {
+                    appData.budget.purchases.forEach(p => {
+                        if (p.remaining === undefined) {
+                            p.remaining = parseFloat(p.count);
+                        }
+                    });
+                }
             }
         }
 
@@ -1878,9 +1986,17 @@
                 return;
             }
 
-            const purchaseData = { date, item, count, amount, category };
+            // حفظ بيانات المشتريات مع حقل "المتبقي" للمخزون
+            const purchaseData = { 
+                date, item, count, amount, category, 
+                remaining: parseFloat(count) // المتبقي يبدأ بنفس عدد الشراء
+            };
 
             if (id !== '') {
+                // في حالة التعديل، نحافظ على المتبقي القديم إذا لم يتغير العدد
+                // ولكن للتبسيط هنا، سنعيد تعيين المتبقي ليساوي العدد الجديد (اعتباراً أنه تصحيح)
+                // أو يمكننا تحسين المنطق ليحسب الفارق. هنا سنعيد التعيين.
+                purchaseData.remaining = parseFloat(count);
                 appData.budget.purchases[id] = purchaseData;
             } else {
                 appData.budget.purchases.push(purchaseData);
@@ -1902,7 +2018,7 @@
             }
         }
 
-        // 2. إدارة الرواتب (جديد)
+        // 2. إدارة الرواتب
         function openSalaryModal(index = null) {
             const modalTitle = document.getElementById('salaryModalTitle');
             
@@ -1980,7 +2096,170 @@
             }
         }
 
-        // 3. إدارة العمليات (المالية)
+        // 3. إدارة الناتج (الإنتاج)
+        function openProductionModal() {
+            document.getElementById('prod-date').valueAsDate = new Date();
+            document.getElementById('prod-name').value = '';
+            document.getElementById('prod-weight').value = '';
+            document.getElementById('prod-box-count').value = '';
+            document.getElementById('prod-ingredients-tbody').innerHTML = '';
+            
+            // حساب التكلفة التشغيلية (مجموع الرواتب للشهر الحالي)
+            const currentMonth = new Date().toISOString().substring(0, 7);
+            const monthlySalaries = appData.budget.salaries
+                .filter(s => s.date.startsWith(currentMonth))
+                .reduce((sum, s) => sum + parseFloat(s.amount), 0);
+            
+            document.getElementById('prod-op-cost').value = monthlySalaries.toFixed(3);
+            calculateProductionTotals();
+
+            const modal = new bootstrap.Modal(document.getElementById('productionModal'));
+            modal.show();
+        }
+
+        function addIngredientRow() {
+            const tbody = document.getElementById('prod-ingredients-tbody');
+            const row = document.createElement('tr');
+            
+            // إنشاء قائمة المنتجات المتوفرة فقط (المتبقي > 0)
+            let options = '<option value="" selected disabled>اختر المنتج</option>';
+            appData.budget.purchases.forEach((p, idx) => {
+                if (parseFloat(p.remaining) > 0) {
+                    // السعر للوحدة الواحدة = المبلغ / العدد
+                    // لكن في المشتريات المبلغ المدخل هو سعر الوحدة حسب السياق السابق (purchase-amount)
+                    // إذا كان المبلغ هو السعر الإجمالي، يجب القسمة. هنا سنفترض أن purchase-amount هو سعر الوحدة كما هو متبع في باقي الكود
+                    const unitPrice = parseFloat(p.amount); 
+                    options += `<option value="${idx}" data-price="${unitPrice}" data-remaining="${p.remaining}">${p.item} (متبقي: ${p.remaining})</option>`;
+                }
+            });
+
+            if (options === '<option value="" selected disabled>اختر المنتج</option>') {
+                alert('لا توجد منتجات متوفرة في المخزون. يرجى إضافة مشتريات أولاً.');
+                return;
+            }
+
+            row.innerHTML = `
+                <td>
+                    <select class="form-select-modern prod-ing-select" onchange="updateProdRow(this)">
+                        ${options}
+                    </select>
+                </td>
+                <td><input type="number" class="form-control-modern prod-ing-qty" oninput="validateProdQty(this)" disabled></td>
+                <td class="prod-ing-cost">0.000</td>
+                <td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove(); calculateProductionTotals();"><i class="bi bi-trash"></i></button></td>
+            `;
+            tbody.appendChild(row);
+        }
+
+        function updateProdRow(select) {
+            const row = select.closest('tr');
+            const qtyInput = row.querySelector('.prod-ing-qty');
+            qtyInput.disabled = false;
+            qtyInput.value = '';
+            row.querySelector('.prod-ing-cost').textContent = '0.000';
+            calculateProductionTotals();
+        }
+
+        function validateProdQty(input) {
+            const row = input.closest('tr');
+            const select = row.querySelector('.prod-ing-select');
+            const option = select.options[select.selectedIndex];
+            const remaining = parseFloat(option.getAttribute('data-remaining'));
+            const price = parseFloat(option.getAttribute('data-price'));
+            let qty = parseFloat(input.value);
+
+            if (qty > remaining) {
+                alert(`خطأ: الكمية المستخدمة (${qty}) أكبر من الكمية المتبقية (${remaining})`);
+                input.value = remaining;
+                qty = remaining;
+            }
+
+            const cost = qty * price;
+            row.querySelector('.prod-ing-cost').textContent = isNaN(cost) ? '0.000' : cost.toFixed(3);
+            calculateProductionTotals();
+        }
+
+        function calculateProductionTotals() {
+            let materialCost = 0;
+            document.querySelectorAll('.prod-ing-cost').forEach(el => {
+                materialCost += parseFloat(el.textContent) || 0;
+            });
+
+            const opCost = parseFloat(document.getElementById('prod-op-cost').value) || 0;
+            const totalCost = materialCost + opCost;
+            const boxCount = parseFloat(document.getElementById('prod-box-count').value) || 1;
+            const boxValue = totalCost / boxCount;
+
+            document.getElementById('prod-total-cost').value = totalCost.toFixed(3);
+            document.getElementById('prod-box-value').value = isFinite(boxValue) ? boxValue.toFixed(3) : '0.000';
+        }
+
+        // ربط الأحداث للحساب التلقائي
+        document.getElementById('prod-op-cost').addEventListener('input', calculateProductionTotals);
+        document.getElementById('prod-box-count').addEventListener('input', calculateProductionTotals);
+
+        function saveProduction() {
+            const date = document.getElementById('prod-date').value;
+            const name = document.getElementById('prod-name').value;
+            const weight = document.getElementById('prod-weight').value;
+            const boxCount = document.getElementById('prod-box-count').value;
+            const totalCost = document.getElementById('prod-total-cost').value;
+            const boxValue = document.getElementById('prod-box-value').value;
+
+            if (!date || !name || !boxCount) {
+                alert('يرجى ملء البيانات الأساسية');
+                return;
+            }
+
+            // جمع المكونات المستخدمة وتحديث المخزون
+            const ingredients = [];
+            const rows = document.querySelectorAll('#prod-ingredients-tbody tr');
+            
+            // التحقق النهائي من الكميات قبل الحفظ
+            for (let row of rows) {
+                const select = row.querySelector('.prod-ing-select');
+                const qtyInput = row.querySelector('.prod-ing-qty');
+                if (!select.value || !qtyInput.value) {
+                    alert('يرجى اختيار المنتج وتحديد الكمية لجميع الصفوف');
+                    return;
+                }
+            }
+
+            // تنفيذ الخصم من المخزون
+            rows.forEach(row => {
+                const select = row.querySelector('.prod-ing-select');
+                const qty = parseFloat(row.querySelector('.prod-ing-qty').value);
+                const purchaseIdx = select.value;
+                const cost = row.querySelector('.prod-ing-cost').textContent;
+                const itemName = select.options[select.selectedIndex].text.split(' (')[0];
+
+                ingredients.push({
+                    purchaseIdx: purchaseIdx,
+                    name: itemName,
+                    usedQty: qty,
+                    cost: cost
+                });
+
+                // تحديث المخزون
+                appData.budget.purchases[purchaseIdx].remaining -= qty;
+                // حماية من الكسور السالبة الصغيرة جداً
+                if (appData.budget.purchases[purchaseIdx].remaining < 0) appData.budget.purchases[purchaseIdx].remaining = 0;
+            });
+
+            const productionData = {
+                date, name, weight, boxCount, totalCost, boxValue, ingredients
+            };
+
+            appData.budget.productions.push(productionData);
+            saveData();
+            updateBudgetUI();
+            
+            const modalEl = document.getElementById('productionModal');
+            const modal = bootstrap.Modal.getInstance(modalEl);
+            modal.hide();
+        }
+
+        // 4. إدارة العمليات (المالية)
         function openTransactionModal(type) {
             const modalHeader = document.getElementById('transactionModalHeader');
             const modalTitle = document.getElementById('transactionModalTitle');
@@ -2041,7 +2320,7 @@
             }
         }
 
-        // 4. تحديث واجهة الميزانية والتقارير
+        // 5. تحديث واجهة الميزانية والتقارير
         function updateBudgetUI() {
             const monthFilter = document.getElementById('budget-month-filter');
             
@@ -2049,7 +2328,8 @@
             const allDates = [
                 ...appData.budget.purchases.map(p => p.date),
                 ...appData.budget.salaries.map(s => s.date),
-                ...appData.budget.transactions.map(t => t.date)
+                ...appData.budget.transactions.map(t => t.date),
+                ...appData.budget.productions.map(p => p.date)
             ];
             
             const uniqueMonths = [...new Set(allDates.map(d => d.substring(0, 7)))].sort().reverse();
@@ -2062,14 +2342,12 @@
             uniqueMonths.forEach(m => {
                 const opt = document.createElement('option');
                 opt.value = m;
-                // تحويل YYYY-MM إلى اسم شهر عربي وسنة
                 const dateObj = new Date(m + '-01');
                 const monthName = dateObj.toLocaleDateString('ar-BH', { month: 'long', year: 'numeric' });
                 opt.text = monthName;
                 monthFilter.appendChild(opt);
             });
 
-            // تعيين القيمة المختارة (أو الافتراضية)
             if (currentSelection === 'all' || uniqueMonths.includes(currentSelection)) {
                 monthFilter.value = currentSelection;
             } else if (uniqueMonths.includes(currentMonth)) {
@@ -2090,7 +2368,6 @@
             renderBudgetReport();
         }
 
-        // الاستماع لتغيير الفلتر
         document.getElementById('budget-month-filter').addEventListener('change', () => {
              renderBudgetTables();
              renderBudgetReport();
@@ -2099,10 +2376,31 @@
         function renderBudgetTables() {
             const filterValue = document.getElementById('budget-month-filter').value;
             
-            // 1. جدول المشتريات
+            // 1. جدول الناتج (الإنتاج)
+            const prodTbody = document.getElementById('production-table').querySelector('tbody');
+            prodTbody.innerHTML = '';
+            const filteredProd = appData.budget.productions.map((item, index) => ({...item, originalIndex: index}))
+                .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+
+            if (filteredProd.length === 0) {
+                prodTbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">لا توجد سجلات إنتاج</td></tr>';
+            } else {
+                filteredProd.forEach(p => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${p.date}</td>
+                        <td>${p.name}</td>
+                        <td>${p.boxCount}</td>
+                        <td>${formatCurrency(parseFloat(p.totalCost))}</td>
+                        <td class="fw-bold text-primary">${formatCurrency(parseFloat(p.boxValue))}</td>
+                    `;
+                    prodTbody.appendChild(row);
+                });
+            }
+
+            // 2. جدول المشتريات
             const purchasesTbody = document.getElementById('purchases-tbody');
             purchasesTbody.innerHTML = '';
-            
             const filteredPurchases = appData.budget.purchases.map((item, index) => ({...item, originalIndex: index}))
                 .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
@@ -2121,7 +2419,6 @@
                         <td><span class="badge bg-secondary">${p.category}</span></td>
                         <td>
                             <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${p.originalIndex})"><i class="bi bi-pencil"></i></button>
-                            <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${p.originalIndex})"><i class="bi bi-eye"></i></button>
                             <button class="btn btn-danger-modern btn-sm" onclick="deletePurchase(${p.originalIndex})"><i class="bi bi-trash"></i></button>
                         </td>
                     `;
@@ -2129,10 +2426,9 @@
                 });
             }
 
-            // 2. جدول الرواتب
+            // 3. جدول الرواتب
             const salariesTbody = document.getElementById('salaries-tbody');
             salariesTbody.innerHTML = '';
-            
             const filteredSalaries = appData.budget.salaries.map((item, index) => ({...item, originalIndex: index}))
                 .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
@@ -2142,7 +2438,6 @@
                 filteredSalaries.forEach(s => {
                     const isPaid = s.status === 'Paid';
                     const statusBadge = isPaid ? '<span class="badge bg-success">مدفوع</span>' : '<span class="badge bg-warning text-dark">غير مدفوع</span>';
-                    
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${s.date}</td>
@@ -2160,10 +2455,9 @@
                 });
             }
 
-            // 3. جدول العمليات (المالية)
+            // 4. جدول العمليات (المالية)
             const transactionsTbody = document.getElementById('transactions-tbody');
             transactionsTbody.innerHTML = '';
-
             const filteredTransactions = appData.budget.transactions.map((item, index) => ({...item, originalIndex: index}))
                 .filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
@@ -2174,7 +2468,6 @@
                     const isIncome = t.type === 'in';
                     const typeLabel = isIncome ? '<span class="badge bg-success">استلام</span>' : '<span class="badge bg-danger">استرداد</span>';
                     const amountClass = isIncome ? 'text-success' : 'text-danger';
-                    
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${t.date}</td>
@@ -2194,22 +2487,24 @@
         function renderBudgetReport() {
             const filterValue = document.getElementById('budget-month-filter').value;
 
-            // تصفية البيانات للحساب
+            // تصفية البيانات
             const filteredPurchases = appData.budget.purchases.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
             const filteredSalaries = appData.budget.salaries.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
             const filteredTransactions = appData.budget.transactions.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
+            const filteredProd = appData.budget.productions.filter(item => filterValue === 'all' || item.date.startsWith(filterValue));
 
-            // حساب المجاميع
+            // الحسابات
             const totalPurchases = filteredPurchases.reduce((sum, item) => sum + (parseFloat(item.count) * parseFloat(item.amount) || 0), 0);
-            const totalSalaries = filteredSalaries.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0); // مجموع الرواتب (المدفوعة وغير المدفوعة)
+            const totalSalaries = filteredSalaries.reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
             const totalIncome = filteredTransactions.filter(t => t.type === 'in').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
             const totalRefund = filteredTransactions.filter(t => t.type === 'out').reduce((sum, item) => sum + parseFloat(item.amount || 0), 0);
+            const totalBoxes = filteredProd.reduce((sum, item) => sum + parseFloat(item.boxCount || 0), 0);
 
             // تحديث البطاقات
+            document.getElementById('report-production-boxes').textContent = totalBoxes;
             document.getElementById('report-purchases-total').textContent = formatCurrency(totalPurchases);
             document.getElementById('report-salaries-total').textContent = formatCurrency(totalSalaries);
             document.getElementById('report-income-total').textContent = formatCurrency(totalIncome);
-            document.getElementById('report-refund-total').textContent = formatCurrency(totalRefund);
         }
 
         // تحديث الجداول عند تحميل الصفحة
