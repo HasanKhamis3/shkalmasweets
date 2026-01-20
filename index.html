@@ -444,7 +444,33 @@
             const stb = document.getElementById('salaries-tbody'); stb.innerHTML = ''; appData.budget.salaries.forEach((s, idx) => { if(chk(s.date)) stb.innerHTML += `<tr><td>${s.date}</td><td>${s.category}</td><td>${formatMoney(s.amount)}</td><td>${s.status==='Paid'?'مدفوع':'غير مدفوع'}</td><td>${s.paymentDate||'-'}</td><td><button class="btn btn-primary-modern btn-sm" onclick="openSalaryModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('salaries',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
             const ttb = document.getElementById('transactions-tbody'); ttb.innerHTML = ''; appData.budget.transactions.forEach((t, idx) => { if(chk(t.date)) ttb.innerHTML += `<tr><td>${t.date}</td><td><span class="status-badge ${t.type==='in'?'status-active':'status-inactive'}">${t.type==='in'?'استلام':'استرداد'}</span></td><td>${formatMoney(t.amount)}</td><td>${t.method}</td><td>${t.notes}</td><td><button class="btn btn-primary-modern btn-sm" onclick="openTransactionModal('${t.type}', ${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('transactions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
         }
-        function delItem(type, i) { if(confirm('حذف؟')) { appData.budget[type].splice(i,1); saveData(); updateBudgetUI(); } }
+        
+        function delItem(type, i) { 
+            if(confirm('حذف؟')) { 
+                // Restore Inventory and Ops status if deleting Production
+                if (type === 'productions') {
+                    const prod = appData.budget.productions[i];
+                    if (prod.usedIngredients) {
+                        prod.usedIngredients.forEach(item => {
+                            if (appData.budget.purchases[item.id]) {
+                                appData.budget.purchases[item.id].remaining = (parseFloat(appData.budget.purchases[item.id].remaining) || 0) + parseFloat(item.qty);
+                            }
+                        });
+                    }
+                    if (prod.usedOps) {
+                        prod.usedOps.forEach(item => {
+                            if (appData.budget.salaries[item.id]) {
+                                appData.budget.salaries[item.id].isUsedInProduction = false;
+                            }
+                        });
+                    }
+                }
+                
+                appData.budget[type].splice(i,1); 
+                saveData(); 
+                updateBudgetUI(); 
+            } 
+        }
 
         // --- Modals Handlers ---
         window.addProdIng = function() {
@@ -546,7 +572,29 @@
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; 
             
-            // Logic to update Inventory and Ops Status based on usage
+            // If editing, first revert old usage
+            if (id && appData.budget.productions[id]) {
+                const oldProd = appData.budget.productions[id];
+                if (oldProd.usedIngredients) {
+                    oldProd.usedIngredients.forEach(item => {
+                        if (appData.budget.purchases[item.id]) {
+                            appData.budget.purchases[item.id].remaining += parseFloat(item.qty);
+                        }
+                    });
+                }
+                if (oldProd.usedOps) {
+                    oldProd.usedOps.forEach(item => {
+                        if (appData.budget.salaries[item.id]) {
+                            appData.budget.salaries[item.id].isUsedInProduction = false;
+                        }
+                    });
+                }
+            }
+
+            // Capture new usage
+            let usedIngredients = [];
+            let usedOps = [];
+
             const ingRows = document.querySelectorAll('#prod-ing-table tbody tr');
             ingRows.forEach(row => {
                 const select = row.querySelector('select');
@@ -556,6 +604,7 @@
                     if(appData.budget.purchases[idx]) {
                          appData.budget.purchases[idx].remaining -= usedQty;
                          if(appData.budget.purchases[idx].remaining < 0) appData.budget.purchases[idx].remaining = 0;
+                         usedIngredients.push({ id: idx, qty: usedQty });
                     }
                 }
             });
@@ -567,11 +616,13 @@
                  if(idx !== "") {
                      if(appData.budget.salaries[idx]) {
                          appData.budget.salaries[idx].isUsedInProduction = true;
+                         usedOps.push({ id: idx });
                      }
                  }
             });
 
-            const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value };
+            const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value, usedIngredients: usedIngredients, usedOps: usedOps };
+            
             if(id) appData.budget.productions[id] = data; else appData.budget.productions.push(data);
             saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('productionModal')).hide(); 
         }
@@ -579,7 +630,6 @@
              const id = document.getElementById('pur-id').value; const isPaid = document.getElementById('pur-status').value === 'Paid';
              const data = { date: document.getElementById('pur-date').value, item: document.getElementById('pur-item').value, count: document.getElementById('pur-count').value, amount: document.getElementById('pur-amount').value, category: document.getElementById('pur-cat').value, status: document.getElementById('pur-status').value, method: isPaid ? document.getElementById('pur-method').value : '-', paymentDate: isPaid ? document.getElementById('pur-pay-date').value : '-', remaining: document.getElementById('pur-count').value };
              if(id) { 
-                 // Maintain remaining if updating existing (or reset if logic requires, here we preserve unless count changes significantly, but simpler to reset for editing flow simplicity in this context)
                  data.remaining = appData.budget.purchases[id].remaining; 
                  appData.budget.purchases[id] = data; 
              } else {
