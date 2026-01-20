@@ -33,27 +33,26 @@
         .sidebar { 
             background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-light) 100%); 
             min-height: 100vh; color: white; position: fixed; top: 0; right: 0; width: 260px; z-index: 1000; 
-            box-shadow: -4px 0 15px rgba(0,0,0,0.1); 
-            display: flex; flex-direction: column; 
+            box-shadow: -4px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; 
         }
         .sidebar-header { padding: 2rem 1rem; text-align: center; background: rgba(0,0,0,0.1); }
         .sidebar-logo-img { max-width: 130px; margin-bottom: 10px; filter: brightness(0) invert(1); }
         .sidebar-title { font-size: 1.4rem; font-weight: 700; color: #fff; line-height: 1.2; }
         .sidebar-subtitle { font-size: 0.9rem; font-weight: 300; opacity: 0.9; letter-spacing: 1px; margin-top: 5px; }
-        
         .sidebar-nav { flex-grow: 1; overflow-y: auto; }
         .sidebar .nav-link { color: rgba(255,255,255,0.85); padding: 0.9rem 1.2rem; margin: 0.4rem 0.8rem; border-radius: 12px; display: flex; align-items: center; gap: 0.8rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-5px); backdrop-filter: blur(5px); }
         
-        /* Footer Logo (Fixed) */
+        /* Fixed Footer Logo Area */
         .sidebar-footer-logo { 
             padding: 20px; text-align: center; margin-top: auto; 
-            background: rgba(0,0,0,0.2); /* خلفية داكنة قليلاً لضمان التباين */
+            background: rgba(0,0,0,0.1); /* Slight darken to pop the logo */
         }
         .sidebar-footer-logo img { 
-            max-width: 100px; 
-            filter: brightness(0) invert(1); /* تحويل أي شعار للون الأبيض */
-            opacity: 1;
+            max-width: 110px; 
+            /* السحر هنا: قلب الألوان لجعل النص أبيض، ودمج الخلفية لإزالة المربع الأبيض */
+            filter: invert(1) brightness(2); 
+            mix-blend-mode: screen; 
         }
 
         /* Main Content */
@@ -61,17 +60,18 @@
         .page { display: none; animation: fadeIn 0.4s ease; } .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Grid & Cards */
+        /* Grid */
         .budget-grid-layout { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--gap-size); align-items: start; }
-        .area-treasury { grid-column: 1; } .area-expenses { grid-column: 2; } .area-prod { grid-column: 3; grid-row: 1 / span 2; height: 100%; }
+        .area-treasury { grid-column: 1; } .area-expenses { grid-column: 2; } .area-prod { grid-column: 3; grid-row: 1 / span 2; }
         .area-chart { grid-column: 1; } .area-salaries { grid-column: 2; }
 
+        /* Cards & Components */
         .card-modern { background: var(--surface); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; height: 100%; margin-bottom: 0; }
         #calculate-product .card-modern, #product-main .card-modern, #invoices-main .card-modern { margin-bottom: var(--gap-size); }
         .card-header-modern { background: #fff; padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
         .card-body-modern { padding: 1.5rem; flex-grow: 1; }
-        .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; background: #fff; box-shadow: var(--shadow-sm); }
-        .card-header-dark { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* Themed Containers */
         .card-theme-container { border: 2px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; background: #F3E5F5; box-shadow: var(--shadow-sm); }
         .card-header-theme { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .card-theme-container .form-control-modern { background: #ffffff; }
@@ -122,6 +122,7 @@
         .profit-btn-orange { background: #fff3e0; color: #ef6c00; border-color: #ef6c00; }
         .depreciation-note { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; border-radius: 8px; padding: 10px; text-align: center; font-weight: 600; font-size: 0.9rem; margin-top: 15px; }
         .text-blue-custom { color: #1976d2; font-weight: 700; } .text-orange-custom { color: #f57c00; font-weight: 700; }
+        .save-btn-container { text-align: center; margin-top: 20px; }
         .save-btn-custom { background: #00c853; color: white; font-size: 1.1rem; padding: 10px 40px; border-radius: 8px; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .save-btn-custom:hover { background: #009624; color: white; }
 
@@ -150,7 +151,7 @@
             </ul>
         </nav>
         <div class="sidebar-footer-logo">
-            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo" onerror="this.src='https://placehold.co/100x100/ffffff/6a1b9a?text=LOGO';">
+            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo">
         </div>
     </div>
 
@@ -253,21 +254,25 @@
         let productCounter = 1;
         let chartInstance = null;
 
-        // Force Initialization of all Arrays to prevent "Undefined" errors
+        // Force Initialization and Repair of Data
         function loadData() {
             const d = localStorage.getItem('baizaAppData');
             if (d) {
-                const p = JSON.parse(d);
-                appData.products = p.products || [];
-                if(!p.budget) p.budget = {};
-                appData.budget = { 
-                    purchases: p.budget.purchases || [], 
-                    salaries: p.budget.salaries || [], 
-                    transactions: p.budget.transactions || [], 
-                    productions: p.budget.productions || [], 
-                    invoices: p.budget.invoices || [] 
-                };
-                appData.budget.purchases.forEach(x => { if(x.remaining === undefined) x.remaining = parseFloat(x.count); });
+                try {
+                    const p = JSON.parse(d);
+                    // Ensure structure integrity
+                    appData.products = Array.isArray(p.products) ? p.products : [];
+                    appData.budget = p.budget || {};
+                    // Repair Arrays if missing
+                    ['purchases', 'salaries', 'transactions', 'productions', 'invoices'].forEach(key => {
+                        if (!Array.isArray(appData.budget[key])) appData.budget[key] = [];
+                    });
+                    // Data migration if needed
+                    appData.budget.purchases.forEach(x => { if(x.remaining === undefined) x.remaining = parseFloat(x.count); });
+                } catch(e) {
+                    console.error("Data corrupted, resetting", e);
+                    // If corrupted, keep defaults
+                }
             }
             productCounter = appData.products.length + 1;
         }
@@ -292,7 +297,15 @@
             const filter = document.getElementById(elementId);
             if(!filter) return;
             const currentMonth = new Date().toISOString().slice(0, 7);
-            const dates = [...appData.budget.purchases, ...appData.budget.salaries, ...appData.budget.transactions, ...appData.budget.invoices, ...appData.budget.productions].map(x=>x.date);
+            // Safe mapping with checks
+            const allItems = [
+                ...appData.budget.purchases, 
+                ...appData.budget.salaries, 
+                ...appData.budget.transactions, 
+                ...appData.budget.invoices, 
+                ...appData.budget.productions
+            ];
+            const dates = allItems.map(x=>x.date).filter(d => d); // Filter undefined dates
             const months = [...new Set(dates.map(d=>d.substring(0,7)))].sort().reverse();
             filter.innerHTML = '';
             const currName = new Date().toLocaleDateString('ar-BH', { month: 'long', year: 'numeric' });
@@ -400,7 +413,6 @@
         function editProduct(i) { editingIdx=i; switchProductView('calc'); /* logic assumed */ }
         function delProduct(i) { if(confirm('حذف؟')) { appData.products.splice(i,1); saveData(); renderProducts(); } }
         function clearForm() { editingIdx=-1; document.querySelectorAll('#view-product-calc input').forEach(i=>i.value=''); document.getElementById('product-code').value="PRD-"+String(productCounter++).padStart(4,'0'); }
-        
         document.getElementById('add-material').onclick = () => { document.getElementById('materials-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         document.getElementById('add-packaging').onclick = () => { document.getElementById('packaging-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         function attachEvents() { document.querySelectorAll('input').forEach(i => i.oninput = calcProduct); } attachEvents();
@@ -479,10 +491,9 @@
             for(let k in salGroups) { salList.innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${k==='Paid'?'مدفوع':'غير مدفوع'}</span><span>${formatMoney(salGroups[k])}</span></li>`; }
         }
 
-        // --- Render Tables for BOTH Dashboard and Ops Page ---
+        // --- Important: Updated Render to target BOTH dashboard and operations tables by class ---
         function renderAllTables() {
             const chk = checkDate;
-            
             const render = (type, data, cols, actions) => {
                  document.querySelectorAll(`.${type}-tbody-render`).forEach(tbody => {
                      tbody.innerHTML = '';
@@ -504,7 +515,7 @@
         }
         function delItem(type, i) { if(confirm('حذف؟')) { appData.budget[type].splice(i,1); saveData(); updateBudgetUI(); } }
 
-        // --- Global Helpers for Dynamic Rows ---
+        // --- Modals Handlers ---
         window.addProdIng = function() {
              const tb = document.getElementById('prod-ing-table').tBodies[0];
              let opts = '<option value="">اختر المنتج...</option>';
@@ -537,7 +548,6 @@
         }
         document.getElementById('prod-count').addEventListener('input', calcProdTotal);
 
-        // --- Modals Logic ---
         function openProductionModal(i){ 
             const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
             document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
@@ -592,7 +602,7 @@
         function calcInvTotal() { const s = document.getElementById('inv-product'); const price = s.selectedIndex>0 ? parseFloat(s.options[s.selectedIndex].dataset.price) : 0; document.getElementById('inv-total').value = (price * (parseFloat(document.getElementById('inv-qty').value)||0)).toFixed(3); }
         function toggleInvMethod() { document.getElementById('inv-method-div').style.display = document.getElementById('inv-status').value==='Paid'?'block':'none'; }
         
-        // --- Save Functions (Now Updates UI Immediately) ---
+        // Save Functions (Force Update UI Immediately)
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value };
             // Simple inventory deduction logic for new items
@@ -617,14 +627,8 @@
              saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide(); 
         }
         function saveSalary() { 
-            const id = document.getElementById('sal-id').value; 
-            const isPaid = document.getElementById('sal-status').value === 'Paid';
-            const data = { 
-                date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, 
-                method: isPaid ? document.getElementById('sal-method').value : '-', 
-                paymentDate: isPaid ? document.getElementById('sal-pay-date').value : '-', 
-                notes: document.getElementById('sal-notes').value 
-            };
+            const id = document.getElementById('sal-id').value; const isPaid = document.getElementById('sal-status').value === 'Paid';
+            const data = { date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, method: isPaid ? document.getElementById('sal-method').value : '-', paymentDate: isPaid ? document.getElementById('sal-pay-date').value : '-', notes: document.getElementById('sal-notes').value };
             if(id !== '') appData.budget.salaries[id] = data; else appData.budget.salaries.push(data);
             saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('salaryModal')).hide(); 
         }
