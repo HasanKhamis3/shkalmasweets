@@ -29,7 +29,7 @@
         * { box-sizing: border-box; }
         body { font-family: 'IBM Plex Sans Arabic', sans-serif; background-color: var(--background); color: var(--text-primary); line-height: 1.6; margin: 0; padding: 0; }
         
-        /* Sidebar - Flex Column for Logo Positioning */
+        /* Sidebar */
         .sidebar { 
             background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-light) 100%); 
             min-height: 100vh; color: white; position: fixed; top: 0; right: 0; width: 260px; z-index: 1000; 
@@ -41,17 +41,20 @@
         .sidebar-title { font-size: 1.4rem; font-weight: 700; color: #fff; line-height: 1.2; }
         .sidebar-subtitle { font-size: 0.9rem; font-weight: 300; opacity: 0.9; letter-spacing: 1px; margin-top: 5px; }
         
-        .sidebar-nav { flex-grow: 1; overflow-y: auto; } /* Pushes footer down */
-        
+        .sidebar-nav { flex-grow: 1; overflow-y: auto; }
         .sidebar .nav-link { color: rgba(255,255,255,0.85); padding: 0.9rem 1.2rem; margin: 0.4rem 0.8rem; border-radius: 12px; display: flex; align-items: center; gap: 0.8rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-5px); backdrop-filter: blur(5px); }
         
+        /* Footer Logo (Fixed) */
         .sidebar-footer-logo { 
-            padding: 20px; text-align: center; 
-            margin-top: auto; /* Ensures it stays at bottom */
-            background: rgba(0,0,0,0.05);
+            padding: 20px; text-align: center; margin-top: auto; 
+            background: rgba(0,0,0,0.2); /* خلفية داكنة قليلاً لضمان التباين */
         }
-        .sidebar-footer-logo img { max-width: 100px; opacity: 0.9; filter: brightness(0) invert(1); }
+        .sidebar-footer-logo img { 
+            max-width: 100px; 
+            filter: brightness(0) invert(1); /* تحويل أي شعار للون الأبيض */
+            opacity: 1;
+        }
 
         /* Main Content */
         .main-content { margin-right: 260px; padding: 2rem; min-height: 100vh; }
@@ -67,6 +70,8 @@
         #calculate-product .card-modern, #product-main .card-modern, #invoices-main .card-modern { margin-bottom: var(--gap-size); }
         .card-header-modern { background: #fff; padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
         .card-body-modern { padding: 1.5rem; flex-grow: 1; }
+        .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; background: #fff; box-shadow: var(--shadow-sm); }
+        .card-header-dark { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .card-theme-container { border: 2px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; background: #F3E5F5; box-shadow: var(--shadow-sm); }
         .card-header-theme { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
         .card-theme-container .form-control-modern { background: #ffffff; }
@@ -86,20 +91,30 @@
 
         .profit-highlight { background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%); color: white; padding: 1.5rem; border-radius: 16px; text-align: center; margin-bottom: 1.5rem; box-shadow: 0 4px 15px rgba(106, 27, 154, 0.2); }
         .profit-highlight h5, .profit-highlight small, .profit-highlight h2 { color: #ffffff !important; opacity: 1 !important; }
+
         .report-row { display: flex; justify-content: space-between; margin-bottom: 0.8rem; font-size: 0.95rem; } .report-val { font-weight: 700; }
+        .prod-item { border-bottom: 1px solid #f0f0f0; padding-bottom: 1rem; margin-bottom: 1rem; } .prod-item:last-child { border: none; margin: 0; padding: 0; }
+        .prod-item-name { font-weight: bold; color: var(--primary-color); margin-bottom: 0.5rem; display: block; }
+        .prod-item-stat { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.2rem; } .prod-item-val { font-weight: 700; color: #333; }
+        
         .cost-summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
         .cost-card { background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 1.2rem; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .cost-card-title { font-size: 0.85rem; color: #777; margin-bottom: 0.5rem; font-weight: 500; }
         .cost-card-value { font-size: 1.3rem; font-weight: 700; color: var(--primary-color); }
+        .cost-card.profit { border-color: var(--warning); } .cost-card.profit .cost-card-value { color: var(--warning); }
+        .cost-card.final { border-color: var(--success); background: #e8f5e9; } .cost-card.final .cost-card-value { color: var(--success); }
+
         .nav-tabs-modern { border: none; gap: 8px; margin-bottom: 1.5rem; }
         .nav-tabs-modern .nav-link { border: 1px solid var(--border-color); border-radius: 20px; color: var(--text-secondary); padding: 0.6rem 1.5rem; font-weight: 500; background: white; }
         .nav-tabs-modern .nav-link.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
         .price-input-container { position: relative; }
         .price-input-container::after { content: "د.ب"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #999; font-size: 0.8rem; }
         .price-input-container input { padding-left: 35px; }
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
         .status-active { background: #e8f5e9; color: #2e7d32; } .status-inactive { background: #ffebee; color: #c62828; }
         .filter-wrapper { background: white; padding: 10px; border-radius: 12px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); margin-bottom: 20px; }
+
         .summary-input-large { font-size: 1.5rem; font-weight: 700; text-align: center; height: 60px; background: #fff; color: #333; border: 1px solid #ddd; }
         .summary-label { font-size: 0.9rem; color: var(--primary-color); margin-bottom: 8px; font-weight: 700; display: block; text-align: center; }
         .profit-btn-display { border-radius: 8px; padding: 8px; font-weight: 600; font-size: 0.9rem; text-align: center; margin-top: 10px; border: 1px solid transparent; }
@@ -107,7 +122,6 @@
         .profit-btn-orange { background: #fff3e0; color: #ef6c00; border-color: #ef6c00; }
         .depreciation-note { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; border-radius: 8px; padding: 10px; text-align: center; font-weight: 600; font-size: 0.9rem; margin-top: 15px; }
         .text-blue-custom { color: #1976d2; font-weight: 700; } .text-orange-custom { color: #f57c00; font-weight: 700; }
-        .save-btn-container { text-align: center; margin-top: 20px; }
         .save-btn-custom { background: #00c853; color: white; font-size: 1.1rem; padding: 10px 40px; border-radius: 8px; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .save-btn-custom:hover { background: #009624; color: white; }
 
@@ -136,7 +150,7 @@
             </ul>
         </nav>
         <div class="sidebar-footer-logo">
-            <img src="https://via.placeholder.com/150/ffffff/000000?text=LOGO" alt="Logo">
+            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo" onerror="this.src='https://placehold.co/100x100/ffffff/6a1b9a?text=LOGO';">
         </div>
     </div>
 
@@ -239,11 +253,20 @@
         let productCounter = 1;
         let chartInstance = null;
 
+        // Force Initialization of all Arrays to prevent "Undefined" errors
         function loadData() {
             const d = localStorage.getItem('baizaAppData');
             if (d) {
                 const p = JSON.parse(d);
-                appData = { products: p.products||[], budget: { purchases: p.budget?.purchases||[], salaries: p.budget?.salaries||[], transactions: p.budget?.transactions||[], productions: p.budget?.productions||[], invoices: p.budget?.invoices||[] } };
+                appData.products = p.products || [];
+                if(!p.budget) p.budget = {};
+                appData.budget = { 
+                    purchases: p.budget.purchases || [], 
+                    salaries: p.budget.salaries || [], 
+                    transactions: p.budget.transactions || [], 
+                    productions: p.budget.productions || [], 
+                    invoices: p.budget.invoices || [] 
+                };
                 appData.budget.purchases.forEach(x => { if(x.remaining === undefined) x.remaining = parseFloat(x.count); });
             }
             productCounter = appData.products.length + 1;
@@ -377,6 +400,7 @@
         function editProduct(i) { editingIdx=i; switchProductView('calc'); /* logic assumed */ }
         function delProduct(i) { if(confirm('حذف؟')) { appData.products.splice(i,1); saveData(); renderProducts(); } }
         function clearForm() { editingIdx=-1; document.querySelectorAll('#view-product-calc input').forEach(i=>i.value=''); document.getElementById('product-code').value="PRD-"+String(productCounter++).padStart(4,'0'); }
+        
         document.getElementById('add-material').onclick = () => { document.getElementById('materials-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         document.getElementById('add-packaging').onclick = () => { document.getElementById('packaging-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button type="button" class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         function attachEvents() { document.querySelectorAll('input').forEach(i => i.oninput = calcProduct); } attachEvents();
@@ -385,10 +409,10 @@
 
         function renderReport() {
             let cIn=0, bIn=0, cOut=0, bOut=0;
-            // Treasury only counts MANUAL Transactions (Not Expenses)
+            // Treasury only counts MANUAL Transactions
             appData.budget.transactions.forEach(t => { if(checkDate(t.date)) { if(t.type === 'in') t.method === 'Cash' ? cIn += parseFloat(t.amount) : bIn += parseFloat(t.amount); else t.method === 'Cash' ? cOut += parseFloat(t.amount) : bOut += parseFloat(t.amount); } });
             
-            // Add Paid Invoices to Cash/Benefit In
+            // Add Paid Invoices
             appData.budget.invoices.forEach(i => { if(checkDate(i.date) && i.status === 'Paid') i.method === 'Cash' ? cIn += parseFloat(i.total) : bIn += parseFloat(i.total); });
             
             document.getElementById('rep-cash-in').innerText = formatMoney(cIn); document.getElementById('rep-benefit-in').innerText = formatMoney(bIn);
@@ -455,11 +479,11 @@
             for(let k in salGroups) { salList.innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${k==='Paid'?'مدفوع':'غير مدفوع'}</span><span>${formatMoney(salGroups[k])}</span></li>`; }
         }
 
-        // --- Important: Updated Render to target BOTH dashboard and operations tables by class ---
+        // --- Render Tables for BOTH Dashboard and Ops Page ---
         function renderAllTables() {
             const chk = checkDate;
+            
             const render = (type, data, cols, actions) => {
-                 // Select all tbodies with specific class to update BOTH dashboard and ops page simultaneously
                  document.querySelectorAll(`.${type}-tbody-render`).forEach(tbody => {
                      tbody.innerHTML = '';
                      data.forEach((item, idx) => {
@@ -478,10 +502,9 @@
 
             render('transactions', appData.budget.transactions, t => `<td>${t.date}</td><td><span class="status-badge ${t.type==='in'?'status-active':'status-inactive'}">${t.type==='in'?'استلام':'استرداد'}</span></td><td>${formatMoney(t.amount)}</td><td>${t.method}</td><td>${t.notes}</td>`, idx => `<button type="button" class="btn btn-primary-modern btn-sm" onclick="openTransactionModal('${t.type}', ${idx})"><i class="bi bi-pencil"></i></button> <button type="button" class="btn btn-danger-modern btn-sm" onclick="delItem('transactions',${idx})"><i class="bi bi-trash"></i></button>`);
         }
-        
         function delItem(type, i) { if(confirm('حذف؟')) { appData.budget[type].splice(i,1); saveData(); updateBudgetUI(); } }
 
-        // --- Modals Handlers (Global Scope) ---
+        // --- Global Helpers for Dynamic Rows ---
         window.addProdIng = function() {
              const tb = document.getElementById('prod-ing-table').tBodies[0];
              let opts = '<option value="">اختر المنتج...</option>';
@@ -514,6 +537,7 @@
         }
         document.getElementById('prod-count').addEventListener('input', calcProdTotal);
 
+        // --- Modals Logic ---
         function openProductionModal(i){ 
             const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
             document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
@@ -568,10 +592,10 @@
         function calcInvTotal() { const s = document.getElementById('inv-product'); const price = s.selectedIndex>0 ? parseFloat(s.options[s.selectedIndex].dataset.price) : 0; document.getElementById('inv-total').value = (price * (parseFloat(document.getElementById('inv-qty').value)||0)).toFixed(3); }
         function toggleInvMethod() { document.getElementById('inv-method-div').style.display = document.getElementById('inv-status').value==='Paid'?'block':'none'; }
         
-        // Save Functions (Force Update UI Immediately)
+        // --- Save Functions (Now Updates UI Immediately) ---
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value };
-            // Simple inventory logic for NEW items only to avoid complexity in this file
+            // Simple inventory deduction logic for new items
             if(id === '') {
                  const ingRows = document.querySelectorAll('#prod-ing-table tbody tr');
                  ingRows.forEach(row => { const sel = row.querySelector('select'); const qty = parseFloat(row.querySelector('input').value); if(sel.value && qty) { appData.budget.purchases[sel.value].remaining -= qty; } });
@@ -593,8 +617,14 @@
              saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide(); 
         }
         function saveSalary() { 
-            const id = document.getElementById('sal-id').value; const isPaid = document.getElementById('sal-status').value === 'Paid';
-            const data = { date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, method: isPaid ? document.getElementById('sal-method').value : '-', paymentDate: isPaid ? document.getElementById('sal-pay-date').value : '-', notes: document.getElementById('sal-notes').value };
+            const id = document.getElementById('sal-id').value; 
+            const isPaid = document.getElementById('sal-status').value === 'Paid';
+            const data = { 
+                date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, 
+                method: isPaid ? document.getElementById('sal-method').value : '-', 
+                paymentDate: isPaid ? document.getElementById('sal-pay-date').value : '-', 
+                notes: document.getElementById('sal-notes').value 
+            };
             if(id !== '') appData.budget.salaries[id] = data; else appData.budget.salaries.push(data);
             saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('salaryModal')).hide(); 
         }
