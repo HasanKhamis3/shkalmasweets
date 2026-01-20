@@ -248,7 +248,10 @@
             if (d) {
                 const p = JSON.parse(d);
                 appData = { products: p.products||[], budget: { purchases: p.budget?.purchases||[], salaries: p.budget?.salaries||[], transactions: p.budget?.transactions||[], productions: p.budget?.productions||[], invoices: p.budget?.invoices||[] } };
+                // Ensure remaining count exists for legacy data
                 appData.budget.purchases.forEach(x => { if(x.remaining === undefined) x.remaining = parseFloat(x.count); });
+                // Ensure isUsedInProduction flag exists for legacy data
+                appData.budget.salaries.forEach(x => { if(x.isUsedInProduction === undefined) x.isUsedInProduction = false; });
             }
             productCounter = appData.products.length + 1;
         }
@@ -447,13 +450,23 @@
         window.addProdIng = function() {
              const tb = document.getElementById('prod-ing-table').tBodies[0];
              let opts = '<option value="">اختر المنتج...</option>';
-             appData.budget.purchases.forEach((p,i) => { if((p.category=='مواد أولية'||p.category=='تغليف') && p.remaining > 0) opts += `<option value="${i}" data-price="${p.amount}">${p.item} (متبقي: ${p.remaining})</option>`; });
+             // Filter Logic: Category AND Remaining > 0
+             appData.budget.purchases.forEach((p,i) => { 
+                 if((p.category=='مواد أولية'||p.category=='تغليف') && p.remaining > 0) {
+                     opts += `<option value="${i}" data-price="${p.amount}">${p.item} (متاح: ${p.remaining})</option>`; 
+                 }
+             });
              tb.insertAdjacentHTML('beforeend', `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`);
         };
         window.addProdOp = function() {
              const tb = document.getElementById('prod-op-table').tBodies[0];
              let opts = '<option value="">اختر...</option>';
-             appData.budget.salaries.forEach((s,i) => opts += `<option value="${i}" data-amt="${s.amount}">${s.category} - ${s.date}</option>`);
+             // Filter Logic: Only show unused operational costs
+             appData.budget.salaries.forEach((s,i) => {
+                 if(!s.isUsedInProduction) {
+                    opts += `<option value="${i}" data-amt="${s.amount}">${s.category} - ${s.date}</option>`;
+                 }
+             });
              tb.insertAdjacentHTML('beforeend', `<tr><td><select class="form-select-modern" onchange="calcOpRow(this)">${opts}</select></td><td class="amt">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`);
         };
         window.calcProdRow = function(e) {
@@ -531,20 +544,58 @@
         function toggleInvMethod() { document.getElementById('inv-method-div').style.display = document.getElementById('inv-status').value==='Paid'?'block':'none'; }
         
         function saveProduction() { 
-            const id = document.getElementById('prod-id').value; const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value };
+            const id = document.getElementById('prod-id').value; 
+            
+            // Logic to update Inventory and Ops Status based on usage
+            const ingRows = document.querySelectorAll('#prod-ing-table tbody tr');
+            ingRows.forEach(row => {
+                const select = row.querySelector('select');
+                const usedQty = parseFloat(row.querySelector('input').value) || 0;
+                const idx = select.value;
+                if(idx !== "") {
+                    if(appData.budget.purchases[idx]) {
+                         appData.budget.purchases[idx].remaining -= usedQty;
+                         if(appData.budget.purchases[idx].remaining < 0) appData.budget.purchases[idx].remaining = 0;
+                    }
+                }
+            });
+
+            const opRows = document.querySelectorAll('#prod-op-table tbody tr');
+            opRows.forEach(row => {
+                 const select = row.querySelector('select');
+                 const idx = select.value;
+                 if(idx !== "") {
+                     if(appData.budget.salaries[idx]) {
+                         appData.budget.salaries[idx].isUsedInProduction = true;
+                     }
+                 }
+            });
+
+            const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value };
             if(id) appData.budget.productions[id] = data; else appData.budget.productions.push(data);
             saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('productionModal')).hide(); 
         }
         function savePurchase() { 
              const id = document.getElementById('pur-id').value; const isPaid = document.getElementById('pur-status').value === 'Paid';
-             const data = { date: document.getElementById('pur-date').value, item: document.getElementById('pur-item').value, count: document.getElementById('pur-count').value, amount: document.getElementById('pur-amount').value, category: document.getElementById('pur-cat').value, status: document.getElementById('pur-status').value, method: isPaid ? document.getElementById('pur-method').value : '-', paymentDate: isPaid ? document.getElementById('pur-pay-date').value : '-' };
-             if(id) appData.budget.purchases[id] = data; else appData.budget.purchases.push(data);
+             const data = { date: document.getElementById('pur-date').value, item: document.getElementById('pur-item').value, count: document.getElementById('pur-count').value, amount: document.getElementById('pur-amount').value, category: document.getElementById('pur-cat').value, status: document.getElementById('pur-status').value, method: isPaid ? document.getElementById('pur-method').value : '-', paymentDate: isPaid ? document.getElementById('pur-pay-date').value : '-', remaining: document.getElementById('pur-count').value };
+             if(id) { 
+                 // Maintain remaining if updating existing (or reset if logic requires, here we preserve unless count changes significantly, but simpler to reset for editing flow simplicity in this context)
+                 data.remaining = appData.budget.purchases[id].remaining; 
+                 appData.budget.purchases[id] = data; 
+             } else {
+                 appData.budget.purchases.push(data);
+             }
              saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('purchaseModal')).hide(); 
         }
         function saveSalary() { 
             const id = document.getElementById('sal-id').value; const isPaid = document.getElementById('sal-status').value === 'Paid';
-            const data = { date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, method: isPaid ? document.getElementById('sal-method').value : '-', paymentDate: isPaid ? document.getElementById('sal-pay-date').value : '-', notes: document.getElementById('sal-notes').value };
-            if(id) appData.budget.salaries[id] = data; else appData.budget.salaries.push(data);
+            const data = { date: document.getElementById('sal-date').value, category: document.getElementById('sal-cat').value, amount: document.getElementById('sal-amount').value, status: document.getElementById('sal-status').value, method: isPaid ? document.getElementById('sal-method').value : '-', paymentDate: isPaid ? document.getElementById('sal-pay-date').value : '-', notes: document.getElementById('sal-notes').value, isUsedInProduction: false };
+            if(id) {
+                data.isUsedInProduction = appData.budget.salaries[id].isUsedInProduction;
+                appData.budget.salaries[id] = data; 
+            } else {
+                appData.budget.salaries.push(data);
+            }
             saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('salaryModal')).hide(); 
         }
         function saveInvoice() { 
