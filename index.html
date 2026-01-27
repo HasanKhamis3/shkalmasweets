@@ -543,22 +543,31 @@
             }
 
             // Inputs in Settings Page
-            document.getElementById('setting-project-ar').value = appData.settings.nameAr;
-            document.getElementById('setting-project-en').value = appData.settings.nameEn;
-            document.getElementById('setting-currency').value = appData.settings.currency;
+            if(document.getElementById('setting-project-ar')) document.getElementById('setting-project-ar').value = appData.settings.nameAr;
+            if(document.getElementById('setting-project-en')) document.getElementById('setting-project-en').value = appData.settings.nameEn;
+            if(document.getElementById('setting-currency')) document.getElementById('setting-currency').value = appData.settings.currency;
 
             // Currency
             updateCurrencySymbol();
         }
 
         function saveSettings() {
-            appData.settings.nameAr = document.getElementById('setting-project-ar').value;
-            appData.settings.nameEn = document.getElementById('setting-project-en').value;
-            // Logo is handled via handleLogoUpload directly updating appData
-            // Currency is handled via change event
+            // Safety check: ensure settings object exists
+            if (!appData.settings) appData.settings = {};
+
+            const arInput = document.getElementById('setting-project-ar');
+            const enInput = document.getElementById('setting-project-en');
+            const curInput = document.getElementById('setting-currency');
+
+            if(arInput) appData.settings.nameAr = arInput.value;
+            if(enInput) appData.settings.nameEn = enInput.value;
+            if(curInput) appData.settings.currency = curInput.value;
+
+            // Logo is already updated in appData via handleLogoUpload
             
             saveData();
             applySettings();
+            updateCurrencySymbol();
             alert('تم حفظ الإعدادات بنجاح');
         }
 
@@ -580,7 +589,8 @@
             document.getElementById('setting-logo-upload').value = '';
             document.getElementById('setting-logo-preview').style.display = 'none';
             document.getElementById('logo-placeholder').style.display = 'block';
-            saveSettings(); // Apply removal immediately
+            saveData(); 
+            applySettings();
         }
 
         function enlargeLogo() {
@@ -590,8 +600,11 @@
         }
 
         function updateCurrency() {
-            appData.settings.currency = document.getElementById('setting-currency').value;
-            updateCurrencySymbol();
+            // Just updates the symbol in view, does not save until button clicked
+            // But we can update symbol var immediately for preview
+            const tempCurrency = document.getElementById('setting-currency').value;
+            const sym = currencySymbols[tempCurrency] || 'د.ب';
+            document.documentElement.style.setProperty('--currency-symbol', `"${sym}"`);
         }
 
         function updateCurrencySymbol() {
@@ -666,7 +679,7 @@
             document.getElementById('lbl-prod-qty-salary').innerText = `الكمية المنتجة (${type})`;
             document.getElementById('lbl-prod-qty-weight').innerText = `الكمية المنتجة (لكل ${type})`;
             document.getElementById('lbl-labor-cost').innerText = `تكلفة العمال (لكل ${type})`;
-            document.getElementById('lbl-total-labor-cost-footer').innerHTML = `إجمالي تكلفة اليد العاملة لل${type} <span id="total-labor-cost-display">0.000</span> د.ب`;
+            document.getElementById('lbl-total-labor-cost-footer').innerHTML = `إجمالي تكلفة اليد العاملة لل${type} <span id="total-labor-cost-display">0.000</span> ${currencySymbols[appData.settings.currency]||'د.ب'}`;
             calcProduct();
         }
 
@@ -689,6 +702,7 @@
                 const sal = parseFloat(document.querySelector('.salary').value)||0; 
                 const hrs = parseFloat(document.querySelector('.hours').value)||0; 
                 prodQty = parseFloat(document.querySelector('.pieces').value)||1;
+                
                 const hourlyRate = sal / 240; 
                 document.querySelector('.hourly-cost').innerText = hourlyRate.toFixed(3);
                 const totalBatchLabor = hourlyRate * hrs;
@@ -700,25 +714,30 @@
             }
 
             const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
+            
+            // Depreciation Logic
             const totalDepreciation = totalMat * (depRate / 100);
             const depPerUnit = totalDepreciation / prodQty;
             
             document.getElementById('equipment-depreciation-total').innerText = totalDepreciation.toFixed(3);
             document.getElementById('equipment-depreciation-box').innerText = depPerUnit.toFixed(3);
 
+            // Totals
             const matPerUnit = totalMat / prodQty;
             const packPerUnit = totalPack / prodQty; 
 
             document.getElementById('total-materials-display').innerText = totalMat.toFixed(3);
-            document.getElementById('lbl-mat-per-unit').innerHTML = `إجمالي تكلفة المواد الأولية (لكل ${unitType}) <span id="total-materials-per-unit-display">${matPerUnit.toFixed(3)}</span> د.ب`;
+            document.getElementById('lbl-mat-per-unit').innerHTML = `إجمالي تكلفة المواد الأولية (لكل ${unitType}) <span id="total-materials-per-unit-display">${matPerUnit.toFixed(3)}</span> ${currencySymbols[appData.settings.currency]||'د.ب'}`;
             
             document.getElementById('total-packaging-display').innerText = totalPack.toFixed(3);
-            document.getElementById('lbl-pack-per-unit').innerHTML = `إجمالي تكلفة التغليف (لكل ${unitType}) <span id="total-packaging-per-unit-display">${packPerUnit.toFixed(3)}</span> د.ب`;
+            document.getElementById('lbl-pack-per-unit').innerHTML = `إجمالي تكلفة التغليف (لكل ${unitType}) <span id="total-packaging-per-unit-display">${packPerUnit.toFixed(3)}</span> ${currencySymbols[appData.settings.currency]||'د.ب'}`;
             
             document.getElementById('total-labor-cost-display').innerText = laborTotalPerUnit.toFixed(3);
 
+            // Grand Total (Per Unit)
             const grandTotalUnit = matPerUnit + packPerUnit + laborTotalPerUnit + depPerUnit;
 
+            // Update Summary Grid (All Per Unit)
             document.getElementById('summary-materials').innerText = formatMoney(matPerUnit); 
             document.getElementById('summary-packaging').innerText = formatMoney(packPerUnit); 
             document.getElementById('summary-labor').innerText = formatMoney(laborTotalPerUnit); 
@@ -985,6 +1004,8 @@
         
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; 
+            
+            // If editing, first revert old usage
             if (id && appData.budget.productions[id]) {
                 const oldProd = appData.budget.productions[id];
                 if (oldProd.usedIngredients) {
@@ -1003,6 +1024,7 @@
                 }
             }
 
+            // Capture new usage
             let usedIngredients = [];
             let usedOps = [];
 
