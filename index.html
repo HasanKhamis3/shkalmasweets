@@ -54,15 +54,18 @@
 
         /* Cards */
         .card-modern { background: var(--surface); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; height: 100%; margin-bottom: 0; }
-        #calculate-product .card-modern, #product-main .card-modern, #invoices-main .card-modern { margin-bottom: var(--gap-size); }
+        /* Uniform Spacing for all cards in calculation section */
+        #view-product-calc .card-modern, #view-product-calc .row { margin-bottom: var(--gap-size); }
+        
         .card-header-modern { background: #fff; padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
         .card-body-modern { padding: 1.5rem; flex-grow: 1; }
 
         .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; background: #fff; box-shadow: var(--shadow-sm); }
         .card-header-dark { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
 
-        .card-theme-container { border: 2px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; background: #F3E5F5; box-shadow: var(--shadow-sm); }
-        .card-header-theme { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        /* Modified theme container to match modern card style */
+        .card-theme-container { border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: var(--gap-size); background: var(--surface); box-shadow: var(--shadow-sm); }
+        .card-header-theme { background: #fff; color: var(--primary-color); padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
         .card-theme-container .form-control-modern { background: #ffffff; }
 
         .form-control-modern, .form-select-modern { border: 1px solid #CE93D8; border-radius: 10px; padding: 0.7rem 1rem; width: 100%; }
@@ -188,7 +191,7 @@
                 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="card-modern">
+                        <div class="card-modern" style="margin-bottom: var(--gap-size);">
                             <div class="card-header-modern">
                                 <span>اليد العاملة</span>
                             </div>
@@ -246,33 +249,35 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="depreciation-note text-danger bg-transparent border-0 mt-3 p-0" style="font-weight: bold; font-size: 0.85rem;">* يرجى إدخال التفاصيل في خانات تكاليف اليد العاملة لضمان ظهور النتيجة بشكل صحيح.</div>
+                                <div class="text-danger text-center mt-3 fw-bold" style="font-size: 0.9rem;">* يرجى إدخال التفاصيل في خانات تكاليف اليد العاملة لضمان ظهور النتيجة بشكل صحيح.</div>
                                 <div class="total-footer mt-3">
-                                    إجمالي تكلفة اليد العاملة للعلبة <span id="total-labor-cost-display">0.000</span> د.ب
+                                    <div id="lbl-total-labor-cost-footer">إجمالي تكلفة اليد العاملة للعلبة <span id="total-labor-cost-display">0.000</span> د.ب</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-6">
-                        <div class="card-modern">
+                        <div class="card-modern h-100">
                             <div class="card-header-modern">المواد الأولية</div>
-                            <div class="card-body-modern">
-                                <table class="table-modern" id="materials-table">
-                                    <thead><tr><th width="35%">المادة</th><th>السعر</th><th>الحجم</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead>
-                                    <tbody id="materials-tbody">
-                                        <tr>
-                                            <td><input class="form-control-modern material-name" placeholder="طحين"></td>
-                                            <td><input type="number" class="form-control-modern material-price" step="0.001" placeholder="السعر"></td>
-                                            <td><input type="number" class="form-control-modern material-count" value="1000" placeholder="جم"></td>
-                                            <td><input type="number" class="form-control-modern material-used" placeholder="جم"></td>
-                                            <td class="material-cost fw-bold">0.000</td>
-                                            <td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <button class="btn btn-success-modern w-100 mt-2" id="add-material"><i class="bi bi-plus"></i> إضافة مادة</button>
-                                <div class="total-footer">
+                            <div class="card-body-modern d-flex flex-column">
+                                <div class="flex-grow-1">
+                                    <table class="table-modern" id="materials-table">
+                                        <thead><tr><th width="35%">المادة</th><th>السعر</th><th>الحجم</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead>
+                                        <tbody id="materials-tbody">
+                                            <tr>
+                                                <td><input class="form-control-modern material-name" placeholder="طحين"></td>
+                                                <td><input type="number" class="form-control-modern material-price" step="0.001" placeholder="السعر"></td>
+                                                <td><input type="number" class="form-control-modern material-count" value="1000" placeholder="جم"></td>
+                                                <td><input type="number" class="form-control-modern material-used" placeholder="جم"></td>
+                                                <td class="material-cost fw-bold">0.000</td>
+                                                <td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button class="btn btn-success-modern w-100 mt-2" id="add-material"><i class="bi bi-plus"></i> إضافة مادة</button>
+                                </div>
+                                <div class="total-footer mt-3">
                                     <div>إجمالي تكلفة المواد الأولية <span id="total-materials-display">0.000</span> د.ب</div>
                                     <small id="lbl-mat-per-unit">إجمالي تكلفة المواد الأولية (لكل علبة) <span id="total-materials-per-unit-display">0.000</span> د.ب</small>
                                 </div>
@@ -280,24 +285,26 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card-modern">
+                        <div class="card-modern h-100">
                             <div class="card-header-modern">التغليف</div>
-                            <div class="card-body-modern">
-                                <table class="table-modern" id="packaging-table">
-                                    <thead><tr><th width="35%">المادة</th><th>السعر</th><th>العدد</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead>
-                                    <tbody id="packaging-tbody">
-                                        <tr>
-                                            <td><input class="form-control-modern packaging-name" placeholder="علبة"></td>
-                                            <td><input type="number" class="form-control-modern packaging-price" step="0.001" placeholder="السعر"></td>
-                                            <td><input type="number" class="form-control-modern packaging-count" value="1" placeholder="العدد"></td>
-                                            <td><input type="number" class="form-control-modern packaging-used" placeholder="المستخدم"></td>
-                                            <td class="packaging-cost fw-bold">0.000</td>
-                                            <td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <button class="btn btn-success-modern w-100 mt-2" id="add-packaging"><i class="bi bi-plus"></i> إضافة تغليف</button>
-                                <div class="total-footer">
+                            <div class="card-body-modern d-flex flex-column">
+                                <div class="flex-grow-1">
+                                    <table class="table-modern" id="packaging-table">
+                                        <thead><tr><th width="35%">المادة</th><th>السعر</th><th>العدد</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead>
+                                        <tbody id="packaging-tbody">
+                                            <tr>
+                                                <td><input class="form-control-modern packaging-name" placeholder="علبة"></td>
+                                                <td><input type="number" class="form-control-modern packaging-price" step="0.001" placeholder="السعر"></td>
+                                                <td><input type="number" class="form-control-modern packaging-count" value="1" placeholder="العدد"></td>
+                                                <td><input type="number" class="form-control-modern packaging-used" placeholder="المستخدم"></td>
+                                                <td class="packaging-cost fw-bold">0.000</td>
+                                                <td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button class="btn btn-success-modern w-100 mt-2" id="add-packaging"><i class="bi bi-plus"></i> إضافة تغليف</button>
+                                </div>
+                                <div class="total-footer mt-3">
                                     <div>إجمالي تكلفة التغليف <span id="total-packaging-display">0.000</span> د.ب</div>
                                     <small id="lbl-pack-per-unit">إجمالي تكلفة التغليف (لكل علبة) <span id="total-packaging-per-unit-display">0.000</span> د.ب</small>
                                 </div>
@@ -494,6 +501,7 @@
             document.getElementById('lbl-prod-qty-salary').innerText = `الكمية المنتجة (${type})`;
             document.getElementById('lbl-prod-qty-weight').innerText = `الكمية المنتجة (لكل ${type})`;
             document.getElementById('lbl-labor-cost').innerText = `تكلفة العمال (لكل ${type})`;
+            document.getElementById('lbl-total-labor-cost-footer').innerHTML = `إجمالي تكلفة اليد العاملة لل${type} <span id="total-labor-cost-display">0.000</span> د.ب`;
             
             // Re-render footer labels
             calcProduct();
@@ -525,7 +533,8 @@
                 laborTotalPerUnit = totalBatchLabor / prodQty;
             } else {
                 prodQty = parseFloat(document.getElementById('labor-weight-qty').value)||1;
-                laborTotalPerUnit = parseFloat(document.getElementById('labor-direct-cost').value) || 0;
+                const directCost = parseFloat(document.getElementById('labor-direct-cost').value) || 0;
+                laborTotalPerUnit = directCost / prodQty;
             }
 
             const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
