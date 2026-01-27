@@ -181,17 +181,117 @@
                     <div class="cost-card profit"><div class="cost-card-title">ربح</div><div class="cost-card-value" id="summary-profit-margin">0.000</div></div>
                 </div>
                 <div class="card-modern"><div class="card-header-modern">البيانات الأساسية</div><div class="card-body-modern"><div class="row g-3"><div class="col-md-4"><label class="form-label">اسم المنتج</label><input type="text" class="form-control-modern" id="product-name"></div><div class="col-md-3"><label class="form-label">القطع في العلبة</label><input type="number" class="form-control-modern" id="sale-quantity"></div><div class="col-md-2"><label class="form-label">نسبة الربح (%)</label><input type="number" class="form-control-modern" id="profit-rate"></div><div class="col-md-3"><label class="form-label">الرمز</label><input type="text" class="form-control-modern" id="product-code" readonly style="background:#f9f9f9"></div></div></div></div>
+                
                 <div class="row">
-                    <div class="col-md-12"><div class="card-modern"><div class="card-header-modern">اليد العاملة</div><div class="card-body-modern"><div class="d-flex justify-content-center gap-4 mb-3"><div class="form-check"><input class="form-check-input" type="radio" name="laborMethod" id="laborMethodSalary" value="salary" checked onchange="toggleLaborMethod()"><label class="form-check-label fw-bold" for="laborMethodSalary">راتب شهري</label></div><div class="form-check"><input class="form-check-input" type="radio" name="laborMethod" id="laborMethodWeight" value="weight" onchange="toggleLaborMethod()"><label class="form-check-label fw-bold" for="laborMethodWeight">بالوزن/القطعة</label></div></div><div id="labor-salary-container"><div class="row"><div class="col-md-6"><table class="table-modern"><thead><tr><th>الراتب</th><th>ساعات العمل</th><th>تكلفة الساعة</th></tr></thead><tbody><tr><td><input type="number" class="form-control-modern salary"></td><td><input type="number" class="form-control-modern hours"></td><td class="hourly-cost fw-bold">0.000</td></tr></tbody></table></div><div class="col-md-6"><table class="table-modern"><thead><tr><th>إنتاج (قطع)</th><th>قطع/ساعة</th><th>تكلفة القطعة</th></tr></thead><tbody><tr><td><input type="number" class="form-control-modern pieces"></td><td class="pieces-per-hour fw-bold">0</td><td class="piece-cost fw-bold">0.000</td></tr></tbody></table></div></div></div><div id="labor-weight-container" style="display: none;"><div class="row g-3 justify-content-center"><div class="col-md-4"><label>قيمة الكيلو</label><input type="number" class="form-control-modern" id="labor-weight-price"></div><div class="col-md-4"><label>وزن العلبة (كجم)</label><input type="number" class="form-control-modern" id="labor-weight-box-weight"></div><div class="col-md-4"><label>أخرى</label><input type="number" class="form-control-modern" id="labor-weight-other"></div></div></div></div></div></div>
-                    <div class="col-md-6"><div class="card-modern"><div class="card-header-modern">المواد الأولية</div><div class="card-body-modern"><table class="table-modern" id="materials-table"><thead><tr><th width="35%">المادة</th><th>السعر</th><th>العدد/الوزن</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead><tbody id="materials-tbody"><tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count" value="1"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td></tr></tbody></table><button class="btn btn-success-modern w-100 mt-2" id="add-material"><i class="bi bi-plus"></i> إضافة مادة</button></div></div></div>
-                    <div class="col-md-6"><div class="card-modern"><div class="card-header-modern">التغليف</div><div class="card-body-modern"><table class="table-modern" id="packaging-table"><thead><tr><th width="35%">المادة</th><th>السعر</th><th>العدد</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead><tbody id="packaging-tbody"><tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count" value="1"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td></tr></tbody></table><button class="btn btn-success-modern w-100 mt-2" id="add-packaging"><i class="bi bi-plus"></i> إضافة تغليف</button></div></div></div>
+                    <div class="col-md-12">
+                        <div class="card-modern">
+                            <div class="card-header-modern">اليد العاملة</div>
+                            <div class="card-body-modern">
+                                <div class="d-flex justify-content-center gap-4 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="laborMethod" id="laborMethodSalary" value="salary" checked onchange="toggleLaborMethod()">
+                                        <label class="form-check-label fw-bold" for="laborMethodSalary">راتب شهري</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="laborMethod" id="laborMethodWeight" value="weight" onchange="toggleLaborMethod()">
+                                        <label class="form-check-label fw-bold" for="laborMethodWeight">بالوزن/القطعة</label>
+                                    </div>
+                                </div>
+                                
+                                <div id="labor-salary-container">
+                                    <div class="row g-3">
+                                        <div class="col-md-3">
+                                            <label class="form-label">الراتب الشهري</label>
+                                            <input type="number" class="form-control-modern salary" placeholder="مثال: 150">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">مدة العمل (ساعات)</label>
+                                            <input type="number" class="form-control-modern hours" placeholder="مثال: 2">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">الكمية المنتجة (قطع)</label>
+                                            <input type="number" class="form-control-modern pieces" placeholder="مثال: 50">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">تكلفة الساعة</label>
+                                            <div class="form-control-modern bg-light hourly-cost fw-bold">0.000</div>
+                                        </div>
+                                        <div class="col-md-12 text-center mt-2">
+                                            <small class="text-muted">* يتم احتساب الساعة بناءً على 30 يوم عمل و 8 ساعات يومياً (240 ساعة/شهر).</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="labor-weight-container" style="display: none;">
+                                    <div class="row g-3 justify-content-center">
+                                        <div class="col-md-4">
+                                            <label>التكلفة المباشرة (لكل علبة/قطعة)</label>
+                                            <input type="number" class="form-control-modern" id="labor-direct-cost" placeholder="0.000">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card-modern">
+                            <div class="card-header-modern">المواد الأولية</div>
+                            <div class="card-body-modern">
+                                <table class="table-modern" id="materials-table">
+                                    <thead><tr><th width="35%">المادة</th><th>السعر</th><th>الحجم</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead>
+                                    <tbody id="materials-tbody">
+                                        <tr>
+                                            <td><input class="form-control-modern material-name" placeholder="طحين"></td>
+                                            <td><input type="number" class="form-control-modern material-price" step="0.001" placeholder="السعر"></td>
+                                            <td><input type="number" class="form-control-modern material-count" value="1000" placeholder="جم"></td>
+                                            <td><input type="number" class="form-control-modern material-used" placeholder="جم"></td>
+                                            <td class="material-cost fw-bold">0.000</td>
+                                            <td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-success-modern w-100 mt-2" id="add-material"><i class="bi bi-plus"></i> إضافة مادة</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-modern">
+                            <div class="card-header-modern">التغليف</div>
+                            <div class="card-body-modern">
+                                <table class="table-modern" id="packaging-table">
+                                    <thead><tr><th width="35%">المادة</th><th>السعر</th><th>العدد</th><th>المستخدم</th><th>التكلفة</th><th></th></tr></thead>
+                                    <tbody id="packaging-tbody">
+                                        <tr>
+                                            <td><input class="form-control-modern packaging-name" placeholder="علبة"></td>
+                                            <td><input type="number" class="form-control-modern packaging-price" step="0.001" placeholder="السعر"></td>
+                                            <td><input type="number" class="form-control-modern packaging-count" value="1" placeholder="العدد"></td>
+                                            <td><input type="number" class="form-control-modern packaging-used" placeholder="المستخدم"></td>
+                                            <td class="packaging-cost fw-bold">0.000</td>
+                                            <td><button class="btn btn-danger-modern btn-sm remove-row"><i class="bi bi-trash"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="btn btn-success-modern w-100 mt-2" id="add-packaging"><i class="bi bi-plus"></i> إضافة تغليف</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="card-theme-container">
-                    <div class="card-header-theme"><i class="bi bi-tools"></i> إهلاك المعدات</div>
+                    <div class="card-header-theme"><i class="bi bi-tools"></i> مصاريف تشغيلية وإهلاك</div>
                     <div class="p-3">
-                        <div class="row g-3"><div class="col-md-4 order-md-1"><label class="summary-label">النسبة المئوية (%)</label><input type="number" class="form-control-modern text-center" id="depreciation-rate" placeholder="أدخل النسبة"></div><div class="col-md-4 order-md-2"><label class="summary-label">إهلاك المعدات (د.ب)</label><input type="text" class="form-control-modern text-center" id="equipment-depreciation" readonly value="0.000"></div><div class="col-md-4 order-md-3"><label class="summary-label">إهلاك المعدات للعلبة (د.ب)</label><input type="text" class="form-control-modern text-center" id="equipment-depreciation-box" readonly value="0.000"></div></div>
-                        <div class="depreciation-note">* نسبة الإهلاك هي تقدير لتكلفة استهلاك المعدات والأجهزة المستخدمة في إنتاج المنتج ونقترح أن تكون 10%</div>
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-6">
+                                <label class="summary-label text-start">نسبة الإهلاك والكهرباء (%)</label>
+                                <input type="number" class="form-control-modern" id="depreciation-rate" placeholder="مثال: 10" value="10">
+                                <small class="text-muted d-block mt-1">نسبة مئوية من تكلفة المواد الأولية والتغليف.</small>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <label class="summary-label">قيمة الإهلاك للعلبة</label>
+                                <div class="form-control-modern fs-5 fw-bold text-danger" id="equipment-depreciation-box">0.000</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -249,9 +349,7 @@
             if (d) {
                 const p = JSON.parse(d);
                 appData = { products: p.products||[], budget: { purchases: p.budget?.purchases||[], salaries: p.budget?.salaries||[], transactions: p.budget?.transactions||[], productions: p.budget?.productions||[], invoices: p.budget?.invoices||[] } };
-                // Ensure remaining count exists for legacy data
                 appData.budget.purchases.forEach(x => { if(x.remaining === undefined) x.remaining = parseFloat(x.count); });
-                // Ensure isUsedInProduction flag exists for legacy data
                 appData.budget.salaries.forEach(x => { if(x.isUsedInProduction === undefined) x.isUsedInProduction = false; });
             }
             productCounter = appData.products.length + 1;
@@ -290,7 +388,6 @@
             window.scrollTo(0, 0);
         }
 
-        // Fix Navigation Click
         document.addEventListener('click', e => { 
             const l = e.target.closest('[data-page]'); 
             if(l) { 
@@ -301,7 +398,6 @@
             } 
         });
 
-        // Sidebar Toggle for Mobile
         document.getElementById('sidebarToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('show');
         });
@@ -366,33 +462,58 @@
             let mat = 0, pack = 0;
             document.querySelectorAll('#materials-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.material-cost').innerText = cost.toFixed(3); mat += cost; });
             document.querySelectorAll('#packaging-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.packaging-cost').innerText = cost.toFixed(3); pack += cost; });
+            
             let labor = 0;
             const isSal = document.getElementById('laborMethodSalary').checked;
-            let piecesPerBox = parseFloat(document.getElementById('sale-quantity').value)||1;
-            let piecesProd = 1;
+            const saleQty = parseFloat(document.getElementById('sale-quantity').value) || 1;
+
             if(isSal) {
-                const sal = parseFloat(document.querySelector('.salary').value)||0; const hrs = parseFloat(document.querySelector('.hours').value)||1; piecesProd = parseFloat(document.querySelector('.pieces').value)||1;
-                const hourly = (sal/30/8);
-                document.querySelector('.hourly-cost').innerText = (hourly*hrs).toFixed(3); document.querySelector('.pieces-per-hour').innerText = (piecesProd/hrs).toFixed(1);
-                const pieceCost = (hourly*hrs)/piecesProd; document.querySelector('.piece-cost').innerText = pieceCost.toFixed(3);
-                labor = pieceCost * piecesPerBox;
+                const sal = parseFloat(document.querySelector('.salary').value)||0; 
+                const hrs = parseFloat(document.querySelector('.hours').value)||0; 
+                const pieces = parseFloat(document.querySelector('.pieces').value)||1;
+                
+                // Assuming 30 days, 8 hours a day = 240 working hours/month
+                const hourlyRate = sal / 240; 
+                document.querySelector('.hourly-cost').innerText = hourlyRate.toFixed(3);
+                
+                // Total labor cost for this batch
+                const batchLaborCost = hourlyRate * hrs;
+                
+                // Cost per piece in this batch
+                const costPerPiece = batchLaborCost / pieces;
+                
+                // Labor cost per "Box" (Sale Unit)
+                labor = costPerPiece * saleQty;
             } else {
-                const priceKg = parseFloat(document.getElementById('labor-weight-price').value)||0; const weightBox = parseFloat(document.getElementById('labor-weight-box-weight').value)||0; const other = parseFloat(document.getElementById('labor-weight-other').value)||0;
-                labor = (priceKg * weightBox) + other;
+                labor = parseFloat(document.getElementById('labor-direct-cost').value) || 0;
             }
+
             const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
-            let matPerBox = isSal ? (mat/piecesProd)*piecesPerBox : mat;
-            let depCost = matPerBox * (depRate/100);
-            const total = matPerBox + pack + labor + depCost;
-            document.getElementById('summary-materials').innerText = formatMoney(matPerBox); document.getElementById('summary-packaging').innerText = formatMoney(pack); document.getElementById('summary-labor').innerText = formatMoney(labor); document.getElementById('summary-depreciation').innerText = formatMoney(depCost); document.getElementById('grand-total-cost').innerText = formatMoney(total);
-            const profitRate = parseFloat(document.getElementById('profit-rate').value)||0; const suggested = total * (1 + profitRate/100); document.getElementById('suggested-price').innerText = formatMoney(suggested);
-            const finalP = parseFloat(document.getElementById('final-price-input').value)||suggested; document.getElementById('summary-sale-price').innerText = formatMoney(finalP);
+            const baseCost = mat + pack; // Cost of materials per Box
+            let depCost = baseCost * (depRate/100);
+            
+            const total = mat + pack + labor + depCost;
+            
+            document.getElementById('summary-materials').innerText = formatMoney(mat); 
+            document.getElementById('summary-packaging').innerText = formatMoney(pack); 
+            document.getElementById('summary-labor').innerText = formatMoney(labor); 
+            document.getElementById('summary-depreciation').innerText = formatMoney(depCost); 
+            document.getElementById('grand-total-cost').innerText = formatMoney(total);
+            
+            document.getElementById('equipment-depreciation-box').innerText = depCost.toFixed(3);
+
+            const profitRate = parseFloat(document.getElementById('profit-rate').value)||0; 
+            const suggested = total * (1 + profitRate/100); 
+            document.getElementById('suggested-price').innerText = formatMoney(suggested);
+            
+            const finalP = parseFloat(document.getElementById('final-price-input').value)||suggested; 
+            document.getElementById('summary-sale-price').innerText = formatMoney(finalP);
+            
             const profit = finalP - total;
             const profitTxt = `هامش الربح: ${formatMoney(profit)} (${total>0?(profit/total*100).toFixed(1):0}%)`;
-            document.getElementById('final-profit').innerText = profitTxt; document.getElementById('suggested-profit').innerText = `هامش الربح: ${formatMoney(suggested-total)} (${profitRate}%)`;
+            document.getElementById('final-profit').innerText = profitTxt; 
+            document.getElementById('suggested-profit').innerText = `هامش الربح: ${formatMoney(suggested-total)} (${profitRate}%)`;
             document.getElementById('summary-profit-margin').innerText = formatMoney(profit);
-            document.getElementById('equipment-depreciation').value = (mat * (depRate/100)).toFixed(3);
-            document.getElementById('equipment-depreciation-box').value = depCost.toFixed(3);
         }
 
         let editingIdx = -1;
@@ -406,8 +527,13 @@
             };
             document.querySelectorAll('#materials-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); p.materialsData.push({name:i[0].value, count:i[2].value, price:i[1].value, used:i[3].value}); });
             document.querySelectorAll('#packaging-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); p.packagingData.push({name:i[0].value, count:i[2].value, price:i[1].value, used:i[3].value}); });
-            if(p.laborMethod === 'salary') { p.laborData = { salary: document.querySelector('.salary').value, hours: document.querySelector('.hours').value, pieces: document.querySelector('.pieces').value }; } 
-            else { p.laborData = { pricePerKilo: document.getElementById('labor-weight-price').value, weightPerBox: document.getElementById('labor-weight-box-weight').value, other: document.getElementById('labor-weight-other').value }; }
+            
+            if(p.laborMethod === 'salary') { 
+                p.laborData = { salary: document.querySelector('.salary').value, hours: document.querySelector('.hours').value, pieces: document.querySelector('.pieces').value }; 
+            } else { 
+                p.laborData = { directCost: document.getElementById('labor-direct-cost').value }; 
+            }
+            
             if(editingIdx >= 0) appData.products[editingIdx] = p; else appData.products.push(p);
             saveData(); switchProductView('list');
         }
@@ -421,16 +547,15 @@
         function updateBudgetUI() { renderReport(); renderAllTables(); }
 
         function renderReport() {
-            let cIn=0, bIn=0; // Income
-            let cRef=0, bRef=0; // Refunds (Transactions Out)
-            let cExp=0, bExp=0; // Expenses (Purchases + Salaries)
+            let cIn=0, bIn=0; 
+            let cRef=0, bRef=0; 
+            let cExp=0, bExp=0; 
 
             appData.budget.transactions.forEach(t => { 
                 if(checkDate(t.date)) { 
                     if(t.type === 'in') {
                          t.method === 'Cash' ? cIn += parseFloat(t.amount) : bIn += parseFloat(t.amount);
                     } else {
-                         // Strictly "Refunds" (Treasury Out)
                          t.method === 'Cash' ? cRef += parseFloat(t.amount) : bRef += parseFloat(t.amount); 
                     }
                 } 
@@ -444,14 +569,12 @@
 
             appData.budget.salaries.forEach(s => { 
                 if(checkDate(s.date) && s.status === 'Paid') {
-                    // Accumulate expenses separately
                     s.method === 'Cash' ? cExp += parseFloat(s.amount) : bExp += parseFloat(s.amount); 
                 }
             });
 
             appData.budget.purchases.forEach(p => { 
                 if(checkDate(p.date) && p.status === 'Paid') {
-                    // Accumulate expenses separately
                     const amt = (parseFloat(p.count)*parseFloat(p.amount));
                     p.method === 'Cash' ? cExp += amt : bExp += amt; 
                 }
@@ -459,16 +582,12 @@
 
             document.getElementById('rep-cash-in').innerText = formatMoney(cIn); 
             document.getElementById('rep-benefit-in').innerText = formatMoney(bIn);
-            
-            // Only show Refunds in the "Refund" fields
             document.getElementById('rep-cash-out').innerText = formatMoney(cRef); 
             document.getElementById('rep-benefit-out').innerText = formatMoney(bRef);
             
-            // Net Flow (In - Refunds)
             const treasuryNet = (cIn + bIn) - (cRef + bRef);
             document.getElementById('rep-net').innerText = formatMoney(treasuryNet);
             
-            // Remaining (In - Refunds - Expenses)
             const remCash = cIn - cRef - cExp;
             const remBenefit = bIn - bRef - bExp;
 
@@ -478,7 +597,6 @@
             const purTotal = appData.budget.purchases.filter(p => checkDate(p.date)).reduce((a,b)=>a+(parseFloat(b.count)*parseFloat(b.amount)),0);
             const salTotal = appData.budget.salaries.filter(s => checkDate(s.date)).reduce((a,b)=>a+parseFloat(b.amount),0);
             const totalExpenses = purTotal + salTotal;
-            const finalRemainder = (treasuryNet) - totalExpenses; 
             
             const remEl = document.getElementById('rep-final-remainder');
             remEl.innerText = formatMoney(remCash + remBenefit);
@@ -523,7 +641,6 @@
         
         function delItem(type, i) { 
             if(confirm('حذف؟')) { 
-                // Restore Inventory and Ops status if deleting Production
                 if (type === 'productions') {
                     const prod = appData.budget.productions[i];
                     if (prod.usedIngredients) {
@@ -541,7 +658,6 @@
                         });
                     }
                 }
-                
                 appData.budget[type].splice(i,1); 
                 saveData(); 
                 updateBudgetUI(); 
@@ -552,7 +668,6 @@
         window.addProdIng = function() {
              const tb = document.getElementById('prod-ing-table').tBodies[0];
              let opts = '<option value="">اختر المنتج...</option>';
-             // Filter Logic: Category AND Remaining > 0
              appData.budget.purchases.forEach((p,i) => { 
                  if((p.category=='مواد أولية'||p.category=='تغليف') && p.remaining > 0) {
                      opts += `<option value="${i}" data-price="${p.amount}">${p.item} (متاح: ${p.remaining})</option>`; 
@@ -563,7 +678,6 @@
         window.addProdOp = function() {
              const tb = document.getElementById('prod-op-table').tBodies[0];
              let opts = '<option value="">اختر...</option>';
-             // Filter Logic: Only show unused operational costs
              appData.budget.salaries.forEach((s,i) => {
                  if(!s.isUsedInProduction) {
                     opts += `<option value="${i}" data-amt="${s.amount}">${s.category} - ${s.date}</option>`;
@@ -647,8 +761,6 @@
         
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; 
-            
-            // If editing, first revert old usage
             if (id && appData.budget.productions[id]) {
                 const oldProd = appData.budget.productions[id];
                 if (oldProd.usedIngredients) {
@@ -667,7 +779,6 @@
                 }
             }
 
-            // Capture new usage
             let usedIngredients = [];
             let usedOps = [];
 
