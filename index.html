@@ -26,6 +26,9 @@
             --blue-cost: #1565c0;
             --shadow-sm: 0 4px 12px rgba(106, 27, 154, 0.08);
             --gap-size: 1.5rem;
+            
+            /* Dynamic Currency Variable */
+            --currency-symbol: "د.ب";
         }
         * { box-sizing: border-box; }
         body { font-family: 'IBM Plex Sans Arabic', sans-serif; background-color: var(--background); color: var(--text-primary); line-height: 1.6; margin: 0; padding: 0; }
@@ -40,7 +43,8 @@
         .sidebar .nav-link { color: rgba(255,255,255,0.85); padding: 0.9rem 1.2rem; margin: 0.4rem 0.8rem; border-radius: 12px; display: flex; align-items: center; gap: 0.8rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-5px); backdrop-filter: blur(5px); }
         .sidebar-footer-logo { padding: 30px 20px; text-align: center; margin-top: auto; }
-        .sidebar-footer-logo img { max-width: 100px; opacity: 0.95; filter: brightness(0) invert(1); }
+        .sidebar-footer-logo img { max-width: 100px; opacity: 0.95; filter: brightness(0) invert(1); cursor: pointer; transition: transform 0.2s; }
+        .sidebar-footer-logo img:hover { transform: scale(1.05); }
 
         /* Main Content */
         .main-content { margin-right: 260px; padding: 2rem; min-height: 100vh; }
@@ -101,7 +105,7 @@
         .nav-tabs-modern .nav-link.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
 
         .price-input-container { position: relative; }
-        .price-input-container::after { content: "د.ب"; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #999; font-size: 0.8rem; }
+        .price-input-container::after { content: var(--currency-symbol); position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #999; font-size: 0.8rem; }
         .price-input-container input { padding-left: 35px; }
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
         .status-active { background: #e8f5e9; color: #2e7d32; } .status-inactive { background: #ffebee; color: #c62828; }
@@ -122,6 +126,18 @@
         .total-footer { background: #f8f9fa; border-top: 2px solid #eee; padding: 10px; border-radius: 0 0 10px 10px; margin-top: 15px; text-align: center; font-weight: 700; color: var(--primary-color); }
         .total-footer small { display: block; font-weight: 500; color: #666; margin-top: 5px; }
 
+        /* Settings Page Styles */
+        .logo-preview-container {
+            width: 150px; height: 150px; border: 2px dashed var(--border-color); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 10px;
+            position: relative; background: #fafafa;
+        }
+        .logo-preview-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .logo-actions { display: flex; gap: 10px; margin-top: 10px; }
+
+        /* Modal for Logo */
+        .modal-logo-img { width: 100%; height: auto; }
+
         @media (max-width: 992px) {
             .budget-grid-layout { grid-template-columns: 1fr; }
             .area-treasury, .area-expenses, .area-chart, .area-salaries, .area-prod { grid-column: auto; grid-row: auto; }
@@ -135,9 +151,9 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/image_f84c5f.png" alt="Shkalma" class="sidebar-logo-img" onerror="this.style.display='none'">
-            <div class="sidebar-title">شكلمة</div>
-            <div class="sidebar-subtitle">Shkalma Sweets</div>
+            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo" class="sidebar-logo-img" id="sidebar-main-logo">
+            <div class="sidebar-title" id="sidebar-project-name-ar">شكلمة</div>
+            <div class="sidebar-subtitle" id="sidebar-project-name-en">Shkalma Sweets</div>
         </div>
         <nav class="sidebar-nav">
             <ul class="nav flex-column">
@@ -145,10 +161,11 @@
                 <li class="nav-item"><a class="nav-link" href="#product-main" data-page="product-main"><i class="bi bi-box-seam-fill"></i> المنتجات</a></li>
                 <li class="nav-item"><a class="nav-link" href="#invoices-main" data-page="invoices-main"><i class="bi bi-receipt"></i> الفواتير</a></li>
                 <li class="nav-item"><a class="nav-link" href="#budget-ops" data-page="budget-ops"><i class="bi bi-wallet2"></i> العمليات المالية</a></li>
+                <li class="nav-item"><a class="nav-link" href="#settings-page" data-page="settings-page"><i class="bi bi-gear-fill"></i> الإعدادات</a></li>
             </ul>
         </nav>
         <div class="sidebar-footer-logo">
-            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo">
+            <img src="https://i.imgur.com/image_f84c5f.png" alt="Footer Logo" id="sidebar-footer-img" onclick="enlargeLogo()">
         </div>
     </div>
 
@@ -159,8 +176,8 @@
             </div>
             <div class="filter-wrapper"><div class="row align-items-center g-2"><div class="col-auto"><i class="bi bi-filter text-primary fs-5"></i></div><div class="col-md-4"><select id="budget-month-filter" class="form-select-modern" onchange="toggleFilterInputs('budget')"></select></div><div class="col-md-7" id="budget-filter-custom-div" style="display:none;"><div class="d-flex gap-2 align-items-center"><input type="date" id="budget-filter-from" class="form-control-modern" placeholder="من"><input type="date" id="budget-filter-to" class="form-control-modern" placeholder="إلى"><button class="btn btn-primary-modern btn-sm" onclick="updateBudgetUI()">تطبيق</button></div></div></div></div>
             <div class="row mb-4 g-3">
-                <div class="col-md-6"><div class="profit-highlight h-100 d-flex flex-column justify-content-center"><h5 class="mb-2">صافي الربح من المبيعات</h5><h2 class="fw-bold m-0" id="report-net-benefit">0.000 د.ب</h2><small>المبيعات - تكلفة البضاعة المباعة</small></div></div>
-                <div class="col-md-6"><div class="profit-highlight h-100 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, var(--secondary-color), var(--primary-light));"><h5 class="mb-2">صافي الربح بناءً على الميزانية</h5><h2 class="fw-bold m-0" id="report-net-budget">0.000 د.ب</h2><small>إجمالي المبيعات - إجمالي المصروفات</small></div></div>
+                <div class="col-md-6"><div class="profit-highlight h-100 d-flex flex-column justify-content-center"><h5 class="mb-2">صافي الربح من المبيعات</h5><h2 class="fw-bold m-0" id="report-net-benefit">0.000</h2><small>المبيعات - تكلفة البضاعة المباعة</small></div></div>
+                <div class="col-md-6"><div class="profit-highlight h-100 d-flex flex-column justify-content-center" style="background: linear-gradient(135deg, var(--secondary-color), var(--primary-light));"><h5 class="mb-2">صافي الربح بناءً على الميزانية</h5><h2 class="fw-bold m-0" id="report-net-budget">0.000</h2><small>إجمالي المبيعات - إجمالي المصروفات</small></div></div>
             </div>
             <div class="budget-grid-layout">
                 <div class="card-modern area-treasury" style="border-top: 4px solid var(--success);"><div class="card-header-modern text-success"><i class="bi bi-bank"></i> الخزينة</div><div class="card-body-modern"><div class="report-row"><span>استلام (كاش)</span><span class="report-val text-success" id="rep-cash-in">0.000</span></div><div class="report-row"><span>استلام (بنفت)</span><span class="report-val text-success" id="rep-benefit-in">0.000</span></div><hr class="my-2"><div class="report-row"><span>استرداد (كاش)</span><span class="report-val text-danger" id="rep-cash-out">0.000</span></div><div class="report-row"><span>استرداد (بنفت)</span><span class="report-val text-danger" id="rep-benefit-out">0.000</span></div><hr class="my-2"><div class="report-row fw-bold text-primary"><span>المجموع</span><span class="report-val" id="rep-net">0.000</span></div><div class="report-row fw-bold mt-2 pt-2 border-top"><span>المتبقي</span><div class="text-end"><div class="small">كاش: <span id="rem-cash">0.000</span></div><div class="small">بنفت: <span id="rem-benefit">0.000</span></div><div class="text-success" id="rep-final-remainder">الإجمالي: 0.000</div></div></div></div></div>
@@ -368,6 +385,59 @@
                 <div class="tab-pane fade" id="financials-tab"><div class="row mb-3"><div class="col-md-6"><button class="btn btn-success-modern w-100" onclick="openTransactionModal('in')">استلام مبلغ</button></div><div class="col-md-6"><button class="btn btn-danger-modern w-100" onclick="openTransactionModal('out')">استرداد مبلغ</button></div></div><div class="card-modern"><div class="card-body-modern p-0"><table class="table-modern" id="transactions-table"><thead><tr><th>التاريخ</th><th>النوع</th><th>المبلغ</th><th>الطريقة</th><th>ملاحظات</th><th>الإجراءات</th></tr></thead><tbody id="transactions-tbody"></tbody></table></div></div></div>
             </div>
         </div>
+
+        <div id="settings-page" class="page">
+            <h3 class="mb-4 fw-bold text-primary">الإعدادات</h3>
+            <div class="card-modern">
+                <div class="card-header-modern">الإعدادات العامة</div>
+                <div class="card-body-modern">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">اسم المشروع (عربي)</label>
+                            <input type="text" class="form-control-modern" id="setting-project-ar" placeholder="مثال: شكلمة">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">اسم المشروع (إنجليزي)</label>
+                            <input type="text" class="form-control-modern" id="setting-project-en" placeholder="Example: Shkalma">
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">شعار المشروع</label>
+                            <div class="d-flex align-items-start gap-3">
+                                <div>
+                                    <input type="file" id="setting-logo-upload" class="form-control-modern" accept="image/*" onchange="handleLogoUpload(this)">
+                                    <div class="logo-actions">
+                                        <button class="btn btn-danger-modern btn-sm" onclick="removeLogo()"><i class="bi bi-trash"></i> إزالة</button>
+                                    </div>
+                                </div>
+                                <div class="logo-preview-container">
+                                    <img id="setting-logo-preview" src="" alt="Preview" style="display:none;" onclick="enlargeLogo()">
+                                    <span id="logo-placeholder" class="text-muted small">معاينة</span>
+                                </div>
+                            </div>
+                            <small class="text-muted mt-2 d-block">سيظهر الشعار في أسفل القائمة الجانبية (المربع الأحمر).</small>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">العملة</label>
+                            <select class="form-select-modern" id="setting-currency" onchange="updateCurrency()">
+                                <option value="BHD">دينار بحريني (د.ب)</option>
+                                <option value="SAR">ريال سعودي (ر.س)</option>
+                                <option value="AED">درهم إماراتي (د.إ)</option>
+                                <option value="QAR">ريال قطري (ر.ق)</option>
+                                <option value="KWD">دينار كويتي (د.ك)</option>
+                                <option value="OMR">ريال عماني (ر.ع)</option>
+                                <option value="USD">دولار أمريكي ($)</option>
+                                <option value="EUR">يورو (€)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="save-btn-container mt-4">
+                        <button class="save-btn-custom" onclick="saveSettings()"><i class="bi bi-save"></i> حفظ الإعدادات</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="modal fade" id="invoiceModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header bg-success text-white"><h5 class="modal-title">فاتورة جديدة</h5><button class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="inv-id"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="inv-date"></div><div class="mb-2"><label>العميل</label><input type="text" class="form-control-modern" id="inv-customer"></div><div class="mb-2"><label>الهاتف</label><input type="tel" class="form-control-modern" id="inv-phone"></div><div class="mb-2"><label>المنتج</label><select class="form-select-modern" id="inv-product" onchange="calcInvTotal()"></select></div><div class="row mb-2"><div class="col-6"><label>العدد</label><input type="number" class="form-control-modern" id="inv-qty" value="1" oninput="calcInvTotal()"></div><div class="col-6"><label>الإجمالي</label><input type="number" class="form-control-modern bg-light" id="inv-total" readonly></div></div><div class="mb-2"><label>الحالة</label><select class="form-select-modern" id="inv-status" onchange="toggleInvMethod()"><option value="Paid">مدفوع</option><option value="Unpaid">غير مدفوع</option></select></div><div class="mb-2" id="inv-method-div"><label>طريقة الدفع</label><select class="form-select-modern" id="inv-method"><option value="Cash">كاش</option><option value="Benefit">بنفت</option></select></div></div><div class="modal-footer"><button class="btn btn-success-modern" onclick="saveInvoice()">حفظ</button></div></div></div></div>
@@ -375,11 +445,18 @@
     <div class="modal fade" id="purchaseModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">مشتريات</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="pur-id"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="pur-date"></div><div class="mb-2"><label>الصنف</label><input type="text" class="form-control-modern" id="pur-item"></div><div class="row mb-2"><div class="col-6"><label>العدد</label><input type="number" class="form-control-modern" id="pur-count"></div><div class="col-6"><label>السعر</label><input type="number" class="form-control-modern" id="pur-amount"></div></div><div class="mb-2"><label>التصنيف</label><select class="form-select-modern" id="pur-cat"></select></div><div class="mb-2"><label>الحالة</label><select class="form-select-modern" id="pur-status" onchange="togglePurMethod()"><option value="Paid">مدفوع</option><option value="Unpaid">غير مدفوع</option></select></div><div id="pur-method-div" style="display:none"><div class="mb-2"><label>الطريقة</label><select class="form-select-modern" id="pur-method"><option value="Cash">كاش</option><option value="Benefit">بنفت</option></select></div><div class="mb-2"><label>تاريخ الدفع</label><input type="date" class="form-control-modern" id="pur-pay-date"></div></div></div><div class="modal-footer"><button class="btn btn-primary-modern" onclick="savePurchase()">حفظ</button></div></div></div></div>
     <div class="modal fade" id="salaryModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">راتب</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="sal-id"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="sal-date"></div><div class="mb-2"><label>التصنيف</label><select class="form-select-modern" id="sal-cat"><option>عمال</option><option>وجبات</option><option>سيارة</option></select></div><div class="mb-2"><label>المبلغ</label><input type="number" class="form-control-modern" id="sal-amount"></div><div class="mb-2"><label>الحالة</label><select class="form-select-modern" id="sal-status" onchange="toggleSalMethod()"><option value="Unpaid">غير مدفوع</option><option value="Paid">مدفوع</option></select></div><div id="sal-pay-div" class="d-none"><div class="mb-2"><label>الطريقة</label><select class="form-select-modern" id="sal-method"><option>Cash</option><option>Benefit</option></select></div><div class="mb-2"><label>تاريخ الدفع</label><input type="date" class="form-control-modern" id="sal-pay-date"></div></div><div class="mb-2"><textarea class="form-control-modern" id="sal-notes" placeholder="ملاحظات"></textarea></div></div><div class="modal-footer"><button class="btn btn-warning-modern" onclick="saveSalary()">حفظ</button></div></div></div></div>
     <div class="modal fade" id="transModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="trans-title"></h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="trans-id"><input type="hidden" id="trans-type"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="trans-date"></div><div class="mb-2"><label>المبلغ</label><input type="number" class="form-control-modern" id="trans-amount"></div><div class="mb-2"><label>الطريقة</label><select class="form-select-modern" id="trans-method"><option>Cash</option><option>Benefit</option></select></div><div class="mb-2"><textarea class="form-control-modern" id="trans-notes" placeholder="ملاحظات"></textarea></div></div><div class="modal-footer"><button class="btn btn-success-modern" onclick="saveTransaction()">حفظ</button></div></div></div></div>
+    
+    <div class="modal fade" id="imageModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content bg-transparent border-0"><div class="modal-body text-center"><img src="" id="modal-img-full" class="modal-logo-img"><button type="button" class="btn btn-light mt-3" data-bs-dismiss="modal">إغلاق</button></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        let appData = { products: [], budget: { purchases: [], salaries: [], transactions: [], productions: [], invoices: [] } };
+        let appData = { 
+            products: [], 
+            budget: { purchases: [], salaries: [], transactions: [], productions: [], invoices: [] },
+            settings: { nameAr: 'شكلمة', nameEn: 'Shkalma Sweets', logo: '', currency: 'BHD' }
+        };
         const categoriesList = ["مواد أولية", "تغليف", "أدوات ومعدات", "تسويق", "صيانة", "أخرى"];
+        const currencySymbols = { 'BHD': 'د.ب', 'SAR': 'ر.س', 'AED': 'د.إ', 'QAR': 'ر.ق', 'KWD': 'د.ك', 'OMR': 'ر.ع', 'USD': '$', 'EUR': '€' };
         let productCounter = 1;
         let chartInstance = null;
 
@@ -387,14 +464,23 @@
             const d = localStorage.getItem('baizaAppData');
             if (d) {
                 const p = JSON.parse(d);
-                appData = { products: p.products||[], budget: { purchases: p.budget?.purchases||[], salaries: p.budget?.salaries||[], transactions: p.budget?.transactions||[], productions: p.budget?.productions||[], invoices: p.budget?.invoices||[] } };
+                appData = { 
+                    products: p.products||[], 
+                    budget: { purchases: p.budget?.purchases||[], salaries: p.budget?.salaries||[], transactions: p.budget?.transactions||[], productions: p.budget?.productions||[], invoices: p.budget?.invoices||[] },
+                    settings: p.settings || { nameAr: 'شكلمة', nameEn: 'Shkalma Sweets', logo: '', currency: 'BHD' }
+                };
                 appData.budget.purchases.forEach(x => { if(x.remaining === undefined) x.remaining = parseFloat(x.count); });
                 appData.budget.salaries.forEach(x => { if(x.isUsedInProduction === undefined) x.isUsedInProduction = false; });
             }
             productCounter = appData.products.length + 1;
+            applySettings();
         }
         function saveData() { localStorage.setItem('baizaAppData', JSON.stringify(appData)); }
-        function formatMoney(n) { return parseFloat(n||0).toFixed(3) + ' د.ب'; }
+        
+        function formatMoney(n) { 
+            const symbol = currencySymbols[appData.settings.currency] || 'د.ب';
+            return parseFloat(n||0).toFixed(3) + ' ' + symbol; 
+        }
         function formatCount(n) { return parseFloat(n||0).toFixed(2); }
 
         function initRouting() { 
@@ -422,7 +508,6 @@
             if(id === 'invoices-main') renderAllTables();
             if(id === 'budget-ops') { populateFilter('ops-month-filter'); renderAllTables(); }
             
-            // Close sidebar on mobile
             document.getElementById('sidebar').classList.remove('show');
             window.scrollTo(0, 0);
         }
@@ -440,6 +525,86 @@
         document.getElementById('sidebarToggle').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('show');
         });
+
+        // --- Settings Functions ---
+        function applySettings() {
+            document.getElementById('sidebar-project-name-ar').innerText = appData.settings.nameAr;
+            document.getElementById('sidebar-project-name-en').innerText = appData.settings.nameEn;
+            document.title = appData.settings.nameAr + ' - ' + appData.settings.nameEn;
+            
+            // Logo
+            const logoUrl = appData.settings.logo || 'https://i.imgur.com/image_f84c5f.png'; // Default
+            document.getElementById('sidebar-main-logo').src = logoUrl;
+            document.getElementById('sidebar-footer-img').src = logoUrl;
+            document.getElementById('setting-logo-preview').src = logoUrl;
+            if(appData.settings.logo) {
+                document.getElementById('setting-logo-preview').style.display = 'block';
+                document.getElementById('logo-placeholder').style.display = 'none';
+            }
+
+            // Inputs in Settings Page
+            document.getElementById('setting-project-ar').value = appData.settings.nameAr;
+            document.getElementById('setting-project-en').value = appData.settings.nameEn;
+            document.getElementById('setting-currency').value = appData.settings.currency;
+
+            // Currency
+            updateCurrencySymbol();
+        }
+
+        function saveSettings() {
+            appData.settings.nameAr = document.getElementById('setting-project-ar').value;
+            appData.settings.nameEn = document.getElementById('setting-project-en').value;
+            // Logo is handled via handleLogoUpload directly updating appData
+            // Currency is handled via change event
+            
+            saveData();
+            applySettings();
+            alert('تم حفظ الإعدادات بنجاح');
+        }
+
+        function handleLogoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    appData.settings.logo = e.target.result; // Save Base64
+                    document.getElementById('setting-logo-preview').src = e.target.result;
+                    document.getElementById('setting-logo-preview').style.display = 'block';
+                    document.getElementById('logo-placeholder').style.display = 'none';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeLogo() {
+            appData.settings.logo = '';
+            document.getElementById('setting-logo-upload').value = '';
+            document.getElementById('setting-logo-preview').style.display = 'none';
+            document.getElementById('logo-placeholder').style.display = 'block';
+            saveSettings(); // Apply removal immediately
+        }
+
+        function enlargeLogo() {
+            const src = document.getElementById('sidebar-footer-img').src;
+            document.getElementById('modal-img-full').src = src;
+            new bootstrap.Modal(document.getElementById('imageModal')).show();
+        }
+
+        function updateCurrency() {
+            appData.settings.currency = document.getElementById('setting-currency').value;
+            updateCurrencySymbol();
+        }
+
+        function updateCurrencySymbol() {
+            const sym = currencySymbols[appData.settings.currency] || 'د.ب';
+            document.documentElement.style.setProperty('--currency-symbol', `"${sym}"`);
+            // Refresh views to show new currency
+            if(document.getElementById('dashboard').classList.contains('active')) updateBudgetUI();
+            if(document.getElementById('product-main').classList.contains('active')) {
+                calcProduct(); // Update calc view
+                renderProducts(); // Update list view
+            }
+            renderAllTables(); // Update ops tables
+        }
 
         function populateFilter(elementId) {
             const filter = document.getElementById(elementId);
@@ -502,8 +667,6 @@
             document.getElementById('lbl-prod-qty-weight').innerText = `الكمية المنتجة (لكل ${type})`;
             document.getElementById('lbl-labor-cost').innerText = `تكلفة العمال (لكل ${type})`;
             document.getElementById('lbl-total-labor-cost-footer').innerHTML = `إجمالي تكلفة اليد العاملة لل${type} <span id="total-labor-cost-display">0.000</span> د.ب`;
-            
-            // Re-render footer labels
             calcProduct();
         }
 
@@ -526,7 +689,6 @@
                 const sal = parseFloat(document.querySelector('.salary').value)||0; 
                 const hrs = parseFloat(document.querySelector('.hours').value)||0; 
                 prodQty = parseFloat(document.querySelector('.pieces').value)||1;
-                
                 const hourlyRate = sal / 240; 
                 document.querySelector('.hourly-cost').innerText = hourlyRate.toFixed(3);
                 const totalBatchLabor = hourlyRate * hrs;
@@ -538,15 +700,12 @@
             }
 
             const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
-            
-            // Depreciation Logic
             const totalDepreciation = totalMat * (depRate / 100);
             const depPerUnit = totalDepreciation / prodQty;
             
             document.getElementById('equipment-depreciation-total').innerText = totalDepreciation.toFixed(3);
             document.getElementById('equipment-depreciation-box').innerText = depPerUnit.toFixed(3);
 
-            // Totals
             const matPerUnit = totalMat / prodQty;
             const packPerUnit = totalPack / prodQty; 
 
@@ -558,10 +717,8 @@
             
             document.getElementById('total-labor-cost-display').innerText = laborTotalPerUnit.toFixed(3);
 
-            // Grand Total (Per Unit)
             const grandTotalUnit = matPerUnit + packPerUnit + laborTotalPerUnit + depPerUnit;
 
-            // Update Summary Grid (All Per Unit)
             document.getElementById('summary-materials').innerText = formatMoney(matPerUnit); 
             document.getElementById('summary-packaging').innerText = formatMoney(packPerUnit); 
             document.getElementById('summary-labor').innerText = formatMoney(laborTotalPerUnit); 
