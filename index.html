@@ -114,6 +114,10 @@
         .save-btn-container { text-align: center; margin-top: 20px; }
         .save-btn-custom { background: #00c853; color: white; font-size: 1.1rem; padding: 10px 40px; border-radius: 8px; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .save-btn-custom:hover { background: #009624; color: white; }
+        
+        /* Custom Styling for Totals */
+        .total-footer { background: #f8f9fa; border-top: 2px solid #eee; padding: 10px; border-radius: 0 0 10px 10px; margin-top: 15px; text-align: center; font-weight: 700; color: var(--primary-color); }
+        .total-footer small { display: block; font-weight: 500; color: #666; margin-top: 5px; }
 
         @media (max-width: 992px) {
             .budget-grid-layout { grid-template-columns: 1fr; }
@@ -185,7 +189,15 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card-modern">
-                            <div class="card-header-modern">اليد العاملة</div>
+                            <div class="card-header-modern">
+                                <span>اليد العاملة</span>
+                                <div class="col-auto">
+                                    <select id="calc-unit-type" class="form-select-modern form-select-sm" onchange="updateCalcLabels()">
+                                        <option value="علبة">علبة</option>
+                                        <option value="كيلو">كيلو</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="card-body-modern">
                                 <div class="d-flex justify-content-center gap-4 mb-3">
                                     <div class="form-check">
@@ -209,7 +221,7 @@
                                             <input type="number" class="form-control-modern hours" placeholder="مثال: 2">
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">الكمية المنتجة (قطع)</label>
+                                            <label class="form-label" id="lbl-prod-qty">الكمية المنتجة (علبة)</label>
                                             <input type="number" class="form-control-modern pieces" placeholder="مثال: 50">
                                         </div>
                                         <div class="col-md-3">
@@ -225,10 +237,13 @@
                                 <div id="labor-weight-container" style="display: none;">
                                     <div class="row g-3 justify-content-center">
                                         <div class="col-md-4">
-                                            <label>التكلفة المباشرة (لكل علبة/قطعة)</label>
+                                            <label id="lbl-labor-cost">تكلفة العمال (لكل علبة)</label>
                                             <input type="number" class="form-control-modern" id="labor-direct-cost" placeholder="0.000">
                                         </div>
                                     </div>
+                                </div>
+                                <div class="total-footer">
+                                    إجمالي تكلفة اليد العاملة للعلبة <span id="total-labor-cost-display">0.000</span> د.ب
                                 </div>
                             </div>
                         </div>
@@ -252,6 +267,10 @@
                                     </tbody>
                                 </table>
                                 <button class="btn btn-success-modern w-100 mt-2" id="add-material"><i class="bi bi-plus"></i> إضافة مادة</button>
+                                <div class="total-footer">
+                                    <div>إجمالي تكلفة المواد الأولية <span id="total-materials-display">0.000</span> د.ب</div>
+                                    <small id="lbl-mat-per-unit">إجمالي تكلفة المواد الأولية (لكل علبة) <span id="total-materials-per-unit-display">0.000</span> د.ب</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,25 +292,32 @@
                                     </tbody>
                                 </table>
                                 <button class="btn btn-success-modern w-100 mt-2" id="add-packaging"><i class="bi bi-plus"></i> إضافة تغليف</button>
+                                <div class="total-footer">
+                                    إجمالي تكلفة التغليف <span id="total-packaging-display">0.000</span> د.ب
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="card-theme-container">
-                    <div class="card-header-theme"><i class="bi bi-tools"></i> مصاريف تشغيلية وإهلاك</div>
+                    <div class="card-header-theme"><i class="bi bi-tools"></i> إهلاك المعدات</div>
                     <div class="p-3">
                         <div class="row g-3 align-items-center">
-                            <div class="col-md-6">
-                                <label class="summary-label text-start">نسبة الإهلاك والكهرباء (%)</label>
-                                <input type="number" class="form-control-modern" id="depreciation-rate" placeholder="مثال: 10" value="10">
-                                <small class="text-muted d-block mt-1">نسبة مئوية من تكلفة المواد الأولية والتغليف.</small>
+                            <div class="col-md-4">
+                                <label class="summary-label text-start">النسبة المئوية (%)</label>
+                                <input type="number" class="form-control-modern text-center" id="depreciation-rate" placeholder="مثال: 10" value="10">
                             </div>
-                            <div class="col-md-6 text-center">
-                                <label class="summary-label">قيمة الإهلاك للعلبة</label>
+                            <div class="col-md-4 text-center">
+                                <label class="summary-label">إهلاك المعدات (د.ب)</label>
+                                <div class="form-control-modern fs-5" id="equipment-depreciation-total">0.000</div>
+                            </div>
+                            <div class="col-md-4 text-center">
+                                <label class="summary-label">إهلاك المعدات للعلبة (د.ب)</label>
                                 <div class="form-control-modern fs-5 fw-bold text-danger" id="equipment-depreciation-box">0.000</div>
                             </div>
                         </div>
+                        <div class="depreciation-note">* إهلاك المعدات هو نسبة من إجمالي تكلفة المواد الأولية.</div>
                     </div>
                 </div>
                 
@@ -456,63 +482,79 @@
             });
         }
         function toggleStatus(i) { appData.products[i].active = !appData.products[i].active; saveData(); renderProducts(); }
+        
+        function updateCalcLabels() {
+            const type = document.getElementById('calc-unit-type').value;
+            document.getElementById('lbl-prod-qty').innerText = `الكمية المنتجة (${type})`;
+            document.getElementById('lbl-labor-cost').innerText = `تكلفة العمال (لكل ${type})`;
+            document.getElementById('lbl-mat-per-unit').innerHTML = `إجمالي تكلفة المواد الأولية (لكل ${type}) <span id="total-materials-per-unit-display">0.000</span> د.ب`;
+            calcProduct();
+        }
+
         function toggleLaborMethod() { const isSal = document.getElementById('laborMethodSalary').checked; document.getElementById('labor-salary-container').style.display = isSal ? 'block':'none'; document.getElementById('labor-weight-container').style.display = isSal ? 'none':'block'; calcProduct(); }
         
         function calcProduct() {
-            let mat = 0, pack = 0;
-            document.querySelectorAll('#materials-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.material-cost').innerText = cost.toFixed(3); mat += cost; });
-            document.querySelectorAll('#packaging-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.packaging-cost').innerText = cost.toFixed(3); pack += cost; });
+            let totalMat = 0;
+            document.querySelectorAll('#materials-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.material-cost').innerText = cost.toFixed(3); totalMat += cost; });
             
-            let labor = 0;
-            const isSal = document.getElementById('laborMethodSalary').checked;
-            const saleQty = parseFloat(document.getElementById('sale-quantity').value) || 1;
+            let totalPack = 0;
+            document.querySelectorAll('#packaging-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.packaging-cost').innerText = cost.toFixed(3); totalPack += cost; });
+            
+            const prodQty = parseFloat(document.querySelector('.pieces').value)||1;
+            const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
+            
+            // Depreciation Logic
+            const totalDepreciation = totalMat * (depRate / 100);
+            const depPerUnit = totalDepreciation / prodQty;
+            
+            document.getElementById('equipment-depreciation-total').innerText = totalDepreciation.toFixed(3);
+            document.getElementById('equipment-depreciation-box').innerText = depPerUnit.toFixed(3);
 
+            // Labor Logic
+            let laborTotalPerUnit = 0;
+            const isSal = document.getElementById('laborMethodSalary').checked;
             if(isSal) {
                 const sal = parseFloat(document.querySelector('.salary').value)||0; 
                 const hrs = parseFloat(document.querySelector('.hours').value)||0; 
-                const pieces = parseFloat(document.querySelector('.pieces').value)||1;
-                
-                // Assuming 30 days, 8 hours a day = 240 working hours/month
                 const hourlyRate = sal / 240; 
                 document.querySelector('.hourly-cost').innerText = hourlyRate.toFixed(3);
-                
-                // Total labor cost for this batch
-                const batchLaborCost = hourlyRate * hrs;
-                
-                // Cost per piece in this batch
-                const costPerPiece = batchLaborCost / pieces;
-                
-                // Labor cost per "Box" (Sale Unit)
-                labor = costPerPiece * saleQty;
+                const totalBatchLabor = hourlyRate * hrs;
+                laborTotalPerUnit = totalBatchLabor / prodQty;
             } else {
-                labor = parseFloat(document.getElementById('labor-direct-cost').value) || 0;
+                laborTotalPerUnit = parseFloat(document.getElementById('labor-direct-cost').value) || 0;
             }
 
-            const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
-            const baseCost = mat + pack; // Cost of materials per Box
-            let depCost = baseCost * (depRate/100);
-            
-            const total = mat + pack + labor + depCost;
-            
-            document.getElementById('summary-materials').innerText = formatMoney(mat); 
-            document.getElementById('summary-packaging').innerText = formatMoney(pack); 
-            document.getElementById('summary-labor').innerText = formatMoney(labor); 
-            document.getElementById('summary-depreciation').innerText = formatMoney(depCost); 
-            document.getElementById('grand-total-cost').innerText = formatMoney(total);
-            
-            document.getElementById('equipment-depreciation-box').innerText = depCost.toFixed(3);
+            // Totals
+            const matPerUnit = totalMat / prodQty;
+            const packTotal = totalPack; // Display Total
+            const packPerUnit = totalPack / prodQty; // Assuming packaging entered for batch
 
+            document.getElementById('total-materials-display').innerText = totalMat.toFixed(3);
+            document.getElementById('total-materials-per-unit-display').innerText = matPerUnit.toFixed(3);
+            document.getElementById('total-packaging-display').innerText = totalPack.toFixed(3);
+            document.getElementById('total-labor-cost-display').innerText = laborTotalPerUnit.toFixed(3);
+
+            // Grand Total (Per Unit)
+            const grandTotalUnit = matPerUnit + packPerUnit + laborTotalPerUnit + depPerUnit;
+
+            // Update Summary Grid (All Per Unit)
+            document.getElementById('summary-materials').innerText = formatMoney(matPerUnit); 
+            document.getElementById('summary-packaging').innerText = formatMoney(packPerUnit); 
+            document.getElementById('summary-labor').innerText = formatMoney(laborTotalPerUnit); 
+            document.getElementById('summary-depreciation').innerText = formatMoney(depPerUnit); 
+            document.getElementById('grand-total-cost').innerText = formatMoney(grandTotalUnit);
+            
             const profitRate = parseFloat(document.getElementById('profit-rate').value)||0; 
-            const suggested = total * (1 + profitRate/100); 
+            const suggested = grandTotalUnit * (1 + profitRate/100); 
             document.getElementById('suggested-price').innerText = formatMoney(suggested);
             
             const finalP = parseFloat(document.getElementById('final-price-input').value)||suggested; 
             document.getElementById('summary-sale-price').innerText = formatMoney(finalP);
             
-            const profit = finalP - total;
-            const profitTxt = `هامش الربح: ${formatMoney(profit)} (${total>0?(profit/total*100).toFixed(1):0}%)`;
+            const profit = finalP - grandTotalUnit;
+            const profitTxt = `هامش الربح: ${formatMoney(profit)} (${grandTotalUnit>0?(profit/grandTotalUnit*100).toFixed(1):0}%)`;
             document.getElementById('final-profit').innerText = profitTxt; 
-            document.getElementById('suggested-profit').innerText = `هامش الربح: ${formatMoney(suggested-total)} (${profitRate}%)`;
+            document.getElementById('suggested-profit').innerText = `هامش الربح: ${formatMoney(suggested-grandTotalUnit)} (${profitRate}%)`;
             document.getElementById('summary-profit-margin').innerText = formatMoney(profit);
         }
 
@@ -523,7 +565,8 @@
                 finalPrice: formatMoney(parseFloat(document.getElementById('final-price-input').value)),
                 totalCost: document.getElementById('grand-total-cost').innerText, profitMargin: document.getElementById('final-profit').innerText,
                 materialsData: [], packagingData: [], laborData: {}, depreciationRate: document.getElementById('depreciation-rate').value,
-                laborMethod: document.getElementById('laborMethodSalary').checked ? 'salary' : 'weight'
+                laborMethod: document.getElementById('laborMethodSalary').checked ? 'salary' : 'weight',
+                unitType: document.getElementById('calc-unit-type').value
             };
             document.querySelectorAll('#materials-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); p.materialsData.push({name:i[0].value, count:i[2].value, price:i[1].value, used:i[3].value}); });
             document.querySelectorAll('#packaging-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); p.packagingData.push({name:i[0].value, count:i[2].value, price:i[1].value, used:i[3].value}); });
