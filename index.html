@@ -35,15 +35,18 @@
         
         /* Sidebar */
         .sidebar { background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-light) 100%); min-height: 100vh; color: white; position: fixed; top: 0; right: 0; width: 260px; z-index: 1000; overflow-y: auto; transition: transform 0.3s ease; box-shadow: -4px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .sidebar-header { padding: 3rem 1rem 2rem; text-align: center; background: rgba(0,0,0,0.1); }
-        .sidebar-title { font-size: 1.6rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 5px; }
-        .sidebar-subtitle { font-size: 0.95rem; font-weight: 300; opacity: 0.9; letter-spacing: 1px; }
-        .sidebar-nav { flex-grow: 1; margin-top: 1rem; }
+        .sidebar-header { padding: 2rem 1rem; text-align: center; background: rgba(0,0,0,0.1); }
+        .sidebar-logo-img { max-width: 130px; margin-bottom: 10px; filter: brightness(0) invert(1); }
+        .sidebar-title { font-size: 1.4rem; font-weight: 700; color: #fff; line-height: 1.2; }
+        .sidebar-subtitle { font-size: 0.9rem; font-weight: 300; opacity: 0.9; letter-spacing: 1px; margin-top: 5px; }
+        .sidebar-nav { flex-grow: 1; }
         .sidebar .nav-link { color: rgba(255,255,255,0.85); padding: 0.9rem 1.2rem; margin: 0.4rem 0.8rem; border-radius: 12px; display: flex; align-items: center; gap: 0.8rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-5px); backdrop-filter: blur(5px); }
+        
         .sidebar-footer-logo { padding: 30px 20px; text-align: center; margin-top: auto; }
-        .sidebar-footer-logo img { max-width: 120px; max-height: 120px; opacity: 0.95; filter: brightness(0) invert(1); cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .sidebar-footer-logo img:hover { transform: scale(1.15); }
+        /* Footer logo showing original colors (no filter) */
+        .sidebar-footer-logo img { max-width: 100px; cursor: pointer; transition: transform 0.2s; }
+        .sidebar-footer-logo img:hover { transform: scale(1.05); }
 
         /* Main Content */
         .main-content { margin-right: 260px; padding: 2rem; min-height: 100vh; }
@@ -63,6 +66,9 @@
         .card-header-modern { background: #fff; padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
         .card-body-modern { padding: 1.5rem; flex-grow: 1; }
 
+        .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; background: #fff; box-shadow: var(--shadow-sm); }
+        .card-header-dark { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+
         /* Modified theme container to match modern card style */
         .card-theme-container { border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: var(--gap-size); background: var(--surface); box-shadow: var(--shadow-sm); }
         .card-header-theme { background: #fff; color: var(--primary-color); padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
@@ -70,7 +76,7 @@
 
         .form-control-modern, .form-select-modern { border: 1px solid #CE93D8; border-radius: 10px; padding: 0.7rem 1rem; width: 100%; }
         .form-control-modern:focus, .form-select-modern:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1); }
-        .btn-modern { border: none; border-radius: 10px; padding: 0.5rem 1rem; font-weight: 500; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; font-size: 0.9rem; }
+        .btn-modern { border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-weight: 500; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
         .btn-primary-modern { background: var(--primary-color); color: white; }
         .btn-success-modern { background: var(--success); color: white; }
         .btn-danger-modern { background: var(--error); color: white; }
@@ -119,20 +125,43 @@
         .save-btn-custom { background: #00c853; color: white; font-size: 1.1rem; padding: 10px 40px; border-radius: 8px; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .save-btn-custom:hover { background: #009624; color: white; }
         
+        /* Custom Styling for Totals */
         .total-footer { background: #f8f9fa; border-top: 2px solid #eee; padding: 10px; border-radius: 0 0 10px 10px; margin-top: 15px; text-align: center; font-weight: 700; color: var(--primary-color); }
         .total-footer small { display: block; font-weight: 500; color: #666; margin-top: 5px; }
 
-        /* Settings Professional Design */
+        /* Settings Page Styles */
         .settings-card-body { padding: 2.5rem; }
-        .settings-section-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1.2rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 0.5rem; }
-        .settings-input-group { margin-bottom: 1.5rem; }
         .settings-label { display: block; margin-bottom: 0.6rem; font-weight: 600; color: #444; }
-        .logo-upload-wrapper { display: flex; align-items: flex-start; gap: 20px; background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed var(--border-color); }
-        .logo-preview-box { width: 120px; height: 120px; border-radius: 12px; background: white; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        
+        /* Updated Logo Upload Section */
+        .logo-upload-wrapper { 
+            display: flex; 
+            flex-direction: column; /* Changed to column to put preview below */
+            gap: 20px; 
+            background: #f9f9f9; 
+            padding: 20px; 
+            border-radius: 12px; 
+            border: 1px dashed var(--border-color); 
+        }
+        
+        .logo-preview-box { 
+            width: 150px; 
+            height: 150px; 
+            border-radius: 12px; 
+            background: white; 
+            border: 1px solid #ddd; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            overflow: hidden; 
+            cursor: pointer; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+            transition: transform 0.2s;
+            margin-top: 10px; 
+        }
         .logo-preview-box:hover { transform: scale(1.02); }
         .logo-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .logo-placeholder-text { font-size: 0.8rem; color: #999; text-align: center; }
-        .logo-controls { flex-grow: 1; }
 
         /* Modal for Logo */
         .modal-logo-img { width: 100%; height: auto; }
@@ -150,6 +179,7 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
+            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo" class="sidebar-logo-img" id="sidebar-main-logo">
             <div class="sidebar-title" id="sidebar-project-name-ar">شكلمة</div>
             <div class="sidebar-subtitle" id="sidebar-project-name-en">Shkalma Sweets</div>
         </div>
@@ -445,7 +475,7 @@
     
     <div class="modal fade" id="imageModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content bg-transparent border-0"><div class="modal-body text-center"><img src="" id="modal-img-full" class="modal-logo-img"><button type="button" class="btn btn-light mt-3" data-bs-dismiss="modal">إغلاق</button></div></div></div></div>
 
-    <div class="modal fade" id="previewModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">معاينة</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="preview-modal-body"></div></div></div></div>
+    <div class="modal fade" id="previewModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered modal-lg"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">معاينة</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="preview-modal-body"></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -717,8 +747,10 @@
         
         function calcProduct() {
             const unitType = document.getElementById('calc-unit-type').value;
+            
             let totalMat = 0;
             document.querySelectorAll('#materials-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.material-cost').innerText = cost.toFixed(3); totalMat += cost; });
+            
             let totalPack = 0;
             document.querySelectorAll('#packaging-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.packaging-cost').innerText = cost.toFixed(3); totalPack += cost; });
             
@@ -730,6 +762,7 @@
                 const sal = parseFloat(document.querySelector('.salary').value)||0; 
                 const hrs = parseFloat(document.querySelector('.hours').value)||0; 
                 prodQty = parseFloat(document.querySelector('.pieces').value)||1;
+                
                 const hourlyRate = sal / 240; 
                 document.querySelector('.hourly-cost').innerText = hourlyRate.toFixed(3);
                 const totalBatchLabor = hourlyRate * hrs;
@@ -806,20 +839,14 @@
             switchProductView('calc');
             const p = appData.products[i];
             
-            // Basic Info
             document.getElementById('product-name').value = p.name;
             document.getElementById('product-code').value = p.code;
-            // Extract numbers from formatted string if needed, or better, store raw values in object. For now parsing:
             document.getElementById('final-price-input').value = parseFloat(p.finalPrice);
-            // Depreciation rate needs to be stored in product object, added default fallback
             document.getElementById('depreciation-rate').value = p.depreciationRate || 10;
-            document.getElementById('profit-rate').value = 0; // Needs logic to reverse calc profit rate or store it. Setting 0 default.
-            
-            // Unit Type
+            document.getElementById('profit-rate').value = 0; 
             document.getElementById('calc-unit-type').value = p.unitType || 'علبة';
             updateCalcLabels();
 
-            // Labor
             if (p.laborMethod === 'salary') {
                 document.getElementById('laborMethodSalary').checked = true;
                 if(p.laborData) {
@@ -836,7 +863,6 @@
             }
             toggleLaborMethod();
 
-            // Materials
             const matBody = document.getElementById('materials-tbody');
             matBody.innerHTML = '';
             if (p.materialsData) {
@@ -845,7 +871,6 @@
                 });
             }
 
-            // Packaging
             const packBody = document.getElementById('packaging-tbody');
             packBody.innerHTML = '';
             if (p.packagingData) {
@@ -860,14 +885,28 @@
 
         function viewProduct(i) {
             const p = appData.products[i];
+            
+            let matRows = p.materialsData.map(m => `<tr><td>${m.name}</td><td>${m.price}</td><td>${m.count}</td><td>${m.used}</td></tr>`).join('');
+            let packRows = p.packagingData.map(m => `<tr><td>${m.name}</td><td>${m.price}</td><td>${m.count}</td><td>${m.used}</td></tr>`).join('');
+
             const content = `
                 <h5 class="text-primary text-center mb-3">${p.name} (${p.code})</h5>
-                <table class="table table-bordered">
-                    <tr><th>التكلفة الإجمالية</th><td>${p.totalCost}</td></tr>
-                    <tr><th>سعر البيع</th><td>${p.finalPrice}</td></tr>
-                    <tr><th>هامش الربح</th><td>${p.profitMargin}</td></tr>
+                <div class="row">
+                    <div class="col-6"><p><strong>التكلفة الإجمالية:</strong> ${p.totalCost}</p></div>
+                    <div class="col-6"><p><strong>سعر البيع:</strong> ${p.finalPrice}</p></div>
+                    <div class="col-12"><p><strong>هامش الربح:</strong> ${p.profitMargin}</p></div>
+                </div>
+                <hr>
+                <h6>المواد الأولية</h6>
+                <table class="table table-sm table-bordered">
+                    <thead><tr><th>المادة</th><th>السعر</th><th>العدد</th><th>المستخدم</th></tr></thead>
+                    <tbody>${matRows || '<tr><td colspan="4" class="text-center">لا يوجد</td></tr>'}</tbody>
                 </table>
-                <div class="text-center mt-3"><small class="text-muted">للتعديل، اضغط على زر التعديل في القائمة</small></div>
+                <h6>التغليف</h6>
+                <table class="table table-sm table-bordered">
+                    <thead><tr><th>المادة</th><th>السعر</th><th>العدد</th><th>المستخدم</th></tr></thead>
+                    <tbody>${packRows || '<tr><td colspan="4" class="text-center">لا يوجد</td></tr>'}</tbody>
+                </table>
             `;
             document.getElementById('preview-modal-body').innerHTML = content;
             new bootstrap.Modal(document.getElementById('previewModal')).show();
@@ -882,24 +921,78 @@
             } else if (type === 'purchase') {
                 item = appData.budget.purchases[i];
                 title = "تفاصيل المشتريات";
-                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>الصنف:</strong> ${item.item}</p><p><strong>العدد:</strong> ${item.count}</p><p><strong>السعر:</strong> ${formatMoney(item.amount)}</p><p><strong>المجموع:</strong> ${formatMoney(item.count*item.amount)}</p>`;
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>الصنف:</strong> ${item.item}</p><p><strong>العدد:</strong> ${item.count}</p><p><strong>السعر:</strong> ${formatMoney(item.amount)}</p><p><strong>المجموع:</strong> ${formatMoney(item.count*item.amount)}</p><p><strong>طريقة الدفع:</strong> ${item.method}</p><p><strong>تاريخ الدفع:</strong> ${item.paymentDate}</p>`;
             } else if (type === 'salary') {
                 item = appData.budget.salaries[i];
                 title = "تفاصيل الراتب";
-                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>التصنيف:</strong> ${item.category}</p><p><strong>المبلغ:</strong> ${formatMoney(item.amount)}</p><p><strong>الحالة:</strong> ${item.status}</p>`;
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>التصنيف:</strong> ${item.category}</p><p><strong>المبلغ:</strong> ${formatMoney(item.amount)}</p><p><strong>الحالة:</strong> ${item.status}</p><p><strong>طريقة الدفع:</strong> ${item.method}</p><p><strong>ملاحظات:</strong> ${item.notes}</p>`;
             } else if (type === 'transaction') {
                 item = appData.budget.transactions[i];
                 title = "تفاصيل العملية";
-                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>النوع:</strong> ${item.type}</p><p><strong>المبلغ:</strong> ${formatMoney(item.amount)}</p><p><strong>ملاحظات:</strong> ${item.notes}</p>`;
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>النوع:</strong> ${item.type}</p><p><strong>المبلغ:</strong> ${formatMoney(item.amount)}</p><p><strong>الطريقة:</strong> ${item.method}</p><p><strong>ملاحظات:</strong> ${item.notes}</p>`;
             } else if (type === 'invoice') {
                 item = appData.budget.invoices[i];
                 title = "تفاصيل الفاتورة";
-                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>العميل:</strong> ${item.customer}</p><p><strong>المنتج:</strong> ${item.productName}</p><p><strong>الإجمالي:</strong> ${formatMoney(item.total)}</p>`;
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>العميل:</strong> ${item.customer}</p><p><strong>المنتج:</strong> ${item.productName}</p><p><strong>الإجمالي:</strong> ${formatMoney(item.total)}</p><p><strong>طريقة الدفع:</strong> ${item.method}</p>`;
             }
             
             document.querySelector('#previewModal .modal-title').innerText = title;
             document.getElementById('preview-modal-body').innerHTML = content;
             new bootstrap.Modal(document.getElementById('previewModal')).show();
+        }
+
+        // Expanded logic to refill Production Modal for editing
+        function openProductionModal(i){ 
+            const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
+            document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
+            
+            if(i!==undefined){ 
+                const p = appData.budget.productions[i]; 
+                document.getElementById('prod-id').value=i; 
+                document.getElementById('prod-date').value=p.date; 
+                document.getElementById('prod-name').value=p.name; 
+                document.getElementById('prod-count').value=p.boxCount; 
+                document.getElementById('prod-weight').value=p.weight||'';
+                
+                // Refill Ingredients Table
+                if(p.usedIngredients) {
+                    const ingTb = document.getElementById('prod-ing-table').tBodies[0];
+                    p.usedIngredients.forEach(u => {
+                        let opts = '<option value="">اختر...</option>';
+                        appData.budget.purchases.forEach((pur, idx) => {
+                            if((pur.category=='مواد أولية'||pur.category=='تغليف')) {
+                                // Keep option selected even if 0 remaining if it was the one used
+                                let selected = (idx == u.id) ? 'selected' : '';
+                                opts += `<option value="${idx}" data-price="${pur.amount}" ${selected}>${pur.item}</option>`;
+                            }
+                        });
+                        const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" value="${u.qty}" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                        ingTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                    // Trigger calc for rows
+                    document.querySelectorAll('#prod-ing-table tbody tr').forEach(r => calcProdRow(r.querySelector('select')));
+                }
+
+                // Refill Ops Table
+                if(p.usedOps) {
+                    const opTb = document.getElementById('prod-op-table').tBodies[0];
+                    p.usedOps.forEach(u => {
+                         let opts = '<option value="">اختر...</option>';
+                         appData.budget.salaries.forEach((s, idx) => {
+                             let selected = (idx == u.id) ? 'selected' : '';
+                             opts += `<option value="${idx}" data-amt="${s.amount}" ${selected}>${s.category} - ${s.date}</option>`;
+                         });
+                         const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcOpRow(this)">${opts}</select></td><td class="amt">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                         opTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                     document.querySelectorAll('#prod-op-table tbody tr').forEach(r => calcOpRow(r.querySelector('select')));
+                }
+                calcProdTotal();
+
+            } else { 
+                document.getElementById('prod-id').value=''; document.getElementById('prod-date').valueAsDate=new Date(); document.getElementById('prod-count').value=''; 
+            }
+            new bootstrap.Modal(document.getElementById('productionModal')).show(); 
         }
 
         function delProduct(i) { if(confirm('حذف؟')) { appData.products.splice(i,1); saveData(); renderProducts(); } }
@@ -1125,6 +1218,8 @@
         
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; 
+            
+            // If editing, first revert old usage
             if (id && appData.budget.productions[id]) {
                 const oldProd = appData.budget.productions[id];
                 if (oldProd.usedIngredients) {
@@ -1143,6 +1238,7 @@
                 }
             }
 
+            // Capture new usage
             let usedIngredients = [];
             let usedOps = [];
 
