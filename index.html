@@ -35,16 +35,15 @@
         
         /* Sidebar */
         .sidebar { background: linear-gradient(180deg, var(--primary-color) 0%, var(--primary-light) 100%); min-height: 100vh; color: white; position: fixed; top: 0; right: 0; width: 260px; z-index: 1000; overflow-y: auto; transition: transform 0.3s ease; box-shadow: -4px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .sidebar-header { padding: 2rem 1rem; text-align: center; background: rgba(0,0,0,0.1); }
-        .sidebar-logo-img { max-width: 130px; margin-bottom: 10px; filter: brightness(0) invert(1); }
-        .sidebar-title { font-size: 1.4rem; font-weight: 700; color: #fff; line-height: 1.2; }
-        .sidebar-subtitle { font-size: 0.9rem; font-weight: 300; opacity: 0.9; letter-spacing: 1px; margin-top: 5px; }
-        .sidebar-nav { flex-grow: 1; }
+        .sidebar-header { padding: 3rem 1rem 2rem; text-align: center; background: rgba(0,0,0,0.1); }
+        .sidebar-title { font-size: 1.6rem; font-weight: 700; color: #fff; line-height: 1.2; margin-bottom: 5px; }
+        .sidebar-subtitle { font-size: 0.95rem; font-weight: 300; opacity: 0.9; letter-spacing: 1px; }
+        .sidebar-nav { flex-grow: 1; margin-top: 1rem; }
         .sidebar .nav-link { color: rgba(255,255,255,0.85); padding: 0.9rem 1.2rem; margin: 0.4rem 0.8rem; border-radius: 12px; display: flex; align-items: center; gap: 0.8rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-5px); backdrop-filter: blur(5px); }
         .sidebar-footer-logo { padding: 30px 20px; text-align: center; margin-top: auto; }
-        .sidebar-footer-logo img { max-width: 100px; opacity: 0.95; filter: brightness(0) invert(1); cursor: pointer; transition: transform 0.2s; }
-        .sidebar-footer-logo img:hover { transform: scale(1.05); }
+        .sidebar-footer-logo img { max-width: 120px; max-height: 120px; opacity: 0.95; filter: brightness(0) invert(1); cursor: pointer; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .sidebar-footer-logo img:hover { transform: scale(1.15); }
 
         /* Main Content */
         .main-content { margin-right: 260px; padding: 2rem; min-height: 100vh; }
@@ -64,9 +63,6 @@
         .card-header-modern { background: #fff; padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
         .card-body-modern { padding: 1.5rem; flex-grow: 1; }
 
-        .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; background: #fff; box-shadow: var(--shadow-sm); }
-        .card-header-dark { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
-
         /* Modified theme container to match modern card style */
         .card-theme-container { border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: var(--gap-size); background: var(--surface); box-shadow: var(--shadow-sm); }
         .card-header-theme { background: #fff; color: var(--primary-color); padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
@@ -74,12 +70,13 @@
 
         .form-control-modern, .form-select-modern { border: 1px solid #CE93D8; border-radius: 10px; padding: 0.7rem 1rem; width: 100%; }
         .form-control-modern:focus, .form-select-modern:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 3px rgba(106, 27, 154, 0.1); }
-        .btn-modern { border: none; border-radius: 10px; padding: 0.6rem 1.2rem; font-weight: 500; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; }
+        .btn-modern { border: none; border-radius: 10px; padding: 0.5rem 1rem; font-weight: 500; cursor: pointer; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; font-size: 0.9rem; }
         .btn-primary-modern { background: var(--primary-color); color: white; }
         .btn-success-modern { background: var(--success); color: white; }
         .btn-danger-modern { background: var(--error); color: white; }
         .btn-warning-modern { background: var(--warning); color: #fff; }
         .btn-info-modern { background: #0288d1; color: white; }
+        .btn-secondary-modern { background: #757575; color: white; }
 
         .table-modern { width: 100%; border-collapse: separate; border-spacing: 0; }
         .table-modern th { background: #F3E5F5; padding: 1rem; text-align: center; font-weight: 600; color: var(--primary-color); border-bottom: 2px solid var(--border-color); }
@@ -122,18 +119,20 @@
         .save-btn-custom { background: #00c853; color: white; font-size: 1.1rem; padding: 10px 40px; border-radius: 8px; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .save-btn-custom:hover { background: #009624; color: white; }
         
-        /* Custom Styling for Totals */
         .total-footer { background: #f8f9fa; border-top: 2px solid #eee; padding: 10px; border-radius: 0 0 10px 10px; margin-top: 15px; text-align: center; font-weight: 700; color: var(--primary-color); }
         .total-footer small { display: block; font-weight: 500; color: #666; margin-top: 5px; }
 
-        /* Settings Page Styles */
-        .logo-preview-container {
-            width: 150px; height: 150px; border: 2px dashed var(--border-color); border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; overflow: hidden; margin-top: 10px;
-            position: relative; background: #fafafa;
-        }
-        .logo-preview-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
-        .logo-actions { display: flex; gap: 10px; margin-top: 10px; }
+        /* Settings Professional Design */
+        .settings-card-body { padding: 2.5rem; }
+        .settings-section-title { font-size: 1.1rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1.2rem; border-bottom: 2px solid #f0f0f0; padding-bottom: 0.5rem; }
+        .settings-input-group { margin-bottom: 1.5rem; }
+        .settings-label { display: block; margin-bottom: 0.6rem; font-weight: 600; color: #444; }
+        .logo-upload-wrapper { display: flex; align-items: flex-start; gap: 20px; background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed var(--border-color); }
+        .logo-preview-box { width: 120px; height: 120px; border-radius: 12px; background: white; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .logo-preview-box:hover { transform: scale(1.02); }
+        .logo-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .logo-placeholder-text { font-size: 0.8rem; color: #999; text-align: center; }
+        .logo-controls { flex-grow: 1; }
 
         /* Modal for Logo */
         .modal-logo-img { width: 100%; height: auto; }
@@ -151,7 +150,6 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo" class="sidebar-logo-img" id="sidebar-main-logo">
             <div class="sidebar-title" id="sidebar-project-name-ar">شكلمة</div>
             <div class="sidebar-subtitle" id="sidebar-project-name-en">Shkalma Sweets</div>
         </div>
@@ -392,36 +390,33 @@
             <h3 class="mb-4 fw-bold text-primary">الإعدادات</h3>
             <div class="card-modern">
                 <div class="card-header-modern">الإعدادات العامة</div>
-                <div class="card-body-modern">
+                <div class="card-body-modern settings-card-body">
                     <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">اسم المشروع (عربي)</label>
+                        <div class="col-md-6 settings-input-group">
+                            <label class="settings-label">اسم المشروع (عربي)</label>
                             <input type="text" class="form-control-modern" id="setting-project-ar" placeholder="مثال: شكلمة">
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">اسم المشروع (إنجليزي)</label>
+                        <div class="col-md-6 settings-input-group">
+                            <label class="settings-label">اسم المشروع (إنجليزي)</label>
                             <input type="text" class="form-control-modern" id="setting-project-en" placeholder="Example: Shkalma">
                         </div>
                         
-                        <div class="col-md-12">
-                            <label class="form-label fw-bold">شعار المشروع</label>
-                            <div class="d-flex align-items-start gap-3">
-                                <div>
-                                    <input type="file" id="setting-logo-upload" class="form-control-modern" accept="image/*" onchange="handleLogoUpload(this)">
-                                    <div class="logo-actions">
-                                        <button class="btn btn-danger-modern btn-sm" onclick="removeLogo()"><i class="bi bi-trash"></i> إزالة</button>
-                                    </div>
+                        <div class="col-md-12 settings-input-group">
+                            <label class="settings-label">شعار المشروع</label>
+                            <div class="logo-upload-wrapper">
+                                <div class="logo-controls">
+                                    <input type="file" id="setting-logo-upload" class="form-control-modern mb-2" accept="image/*" onchange="handleLogoUpload(this)">
+                                    <button class="btn btn-danger-modern btn-sm" onclick="removeLogo()"><i class="bi bi-trash"></i> إزالة الشعار الحالي</button>
                                 </div>
-                                <div class="logo-preview-container">
-                                    <img id="setting-logo-preview" src="" alt="Preview" style="display:none;" onclick="enlargeLogo()">
-                                    <span id="logo-placeholder" class="text-muted small">معاينة</span>
+                                <div class="logo-preview-box" onclick="enlargeLogo()">
+                                    <img id="setting-logo-preview" src="" alt="Preview" style="display:none;">
+                                    <div id="logo-placeholder" class="logo-placeholder-text">معاينة الشعار<br><small>(اضغط للتكبير)</small></div>
                                 </div>
                             </div>
-                            <small class="text-muted mt-2 d-block">سيظهر الشعار في أسفل القائمة الجانبية (المربع الأحمر).</small>
                         </div>
 
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">العملة</label>
+                        <div class="col-md-6 settings-input-group">
+                            <label class="settings-label">العملة</label>
                             <select class="form-select-modern" id="setting-currency" onchange="updateCurrency()">
                                 <option value="BHD">دينار بحريني (د.ب)</option>
                                 <option value="SAR">ريال سعودي (ر.س)</option>
@@ -449,6 +444,8 @@
     <div class="modal fade" id="transModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="trans-title"></h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><input type="hidden" id="trans-id"><input type="hidden" id="trans-type"><div class="mb-2"><label>التاريخ</label><input type="date" class="form-control-modern" id="trans-date"></div><div class="mb-2"><label>المبلغ</label><input type="number" class="form-control-modern" id="trans-amount"></div><div class="mb-2"><label>الطريقة</label><select class="form-select-modern" id="trans-method"><option>Cash</option><option>Benefit</option></select></div><div class="mb-2"><textarea class="form-control-modern" id="trans-notes" placeholder="ملاحظات"></textarea></div></div><div class="modal-footer"><button class="btn btn-success-modern" onclick="saveTransaction()">حفظ</button></div></div></div></div>
     
     <div class="modal fade" id="imageModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content bg-transparent border-0"><div class="modal-body text-center"><img src="" id="modal-img-full" class="modal-logo-img"><button type="button" class="btn btn-light mt-3" data-bs-dismiss="modal">إغلاق</button></div></div></div></div>
+
+    <div class="modal fade" id="previewModal" tabindex="-1"><div class="modal-dialog modal-dialog-centered"><div class="modal-content"><div class="modal-header"><h5 class="modal-title">معاينة</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body" id="preview-modal-body"></div></div></div></div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -488,8 +485,10 @@
         }
         
         function formatMoney(n) { 
-            const symbol = currencySymbols[appData.settings.currency] || 'د.ب';
-            return parseFloat(n||0).toFixed(3) + ' ' + symbol; 
+            const cur = appData.settings.currency;
+            const sym = currencySymbols[cur] || 'د.ب';
+            const decimals = (cur === 'BHD' || cur === 'KWD' || cur === 'OMR') ? 3 : 2;
+            return parseFloat(n||0).toFixed(decimals) + ' ' + sym; 
         }
         function formatCount(n) { return parseFloat(n||0).toFixed(2); }
 
@@ -542,9 +541,8 @@
             document.getElementById('sidebar-project-name-en').innerText = appData.settings.nameEn;
             document.title = appData.settings.nameAr + ' - ' + appData.settings.nameEn;
             
-            // Logo
-            const logoUrl = appData.settings.logo || 'https://i.imgur.com/image_f84c5f.png'; // Default
-            document.getElementById('sidebar-main-logo').src = logoUrl;
+            // Logo Logic
+            const logoUrl = appData.settings.logo || 'https://i.imgur.com/image_f84c5f.png'; 
             document.getElementById('sidebar-footer-img').src = logoUrl;
             document.getElementById('setting-logo-preview').src = logoUrl;
             if(appData.settings.logo) {
@@ -557,7 +555,6 @@
             if(document.getElementById('setting-project-en')) document.getElementById('setting-project-en').value = appData.settings.nameEn;
             if(document.getElementById('setting-currency')) document.getElementById('setting-currency').value = appData.settings.currency;
 
-            // Currency
             updateCurrencySymbol();
         }
 
@@ -572,8 +569,6 @@
             if(enInput) appData.settings.nameEn = enInput.value;
             if(curInput) appData.settings.currency = curInput.value;
 
-            // Logo updated via handleLogoUpload
-            
             saveData();
             applySettings();
             updateCurrencySymbol();
@@ -585,14 +580,11 @@
                 const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Auto-resize logic to prevent LocalStorage quota exceeded
                     const img = new Image();
                     img.src = e.target.result;
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
-                        
-                        // Max dimension 300px is enough for logo display
                         const MAX_SIZE = 300;
                         let width = img.width;
                         let height = img.height;
@@ -612,9 +604,8 @@
                         canvas.width = width;
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
-                        
-                        // Get resized data URL (JPEG 0.7 quality to save space)
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        // Save as PNG to keep transparency and colors
+                        const dataUrl = canvas.toDataURL('image/png');
                         appData.settings.logo = dataUrl;
                         
                         document.getElementById('setting-logo-preview').src = dataUrl;
@@ -708,7 +699,7 @@
         function renderProducts() {
             const tb = document.getElementById('products-list'); tb.innerHTML = '';
             appData.products.forEach((p, i) => {
-                tb.innerHTML += `<tr><td>${p.code}</td><td>${p.name}</td><td>${p.totalCost}</td><td>${p.finalPrice}</td><td>${p.profitMargin}</td><td><span class="status-badge ${p.active?'status-active':'status-inactive'}">${p.active?'مفعل':'معطل'}</span></td><td><button class="btn btn-warning-modern btn-sm" onclick="toggleStatus(${i})"><i class="bi bi-power"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="editProduct(${i})"><i class="bi bi-pencil"></i></button> <button class="btn btn-info-modern btn-sm" onclick="viewProduct(${i})"><i class="bi bi-eye"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delProduct(${i})"><i class="bi bi-trash"></i></button></td></tr>`;
+                tb.innerHTML += `<tr><td>${p.code}</td><td>${p.name}</td><td>${p.totalCost}</td><td>${p.finalPrice}</td><td>${p.profitMargin}</td><td><span class="status-badge ${p.active?'status-active':'status-inactive'}">${p.active?'مفعل':'معطل'}</span></td><td><button class="btn btn-warning-modern btn-sm" onclick="toggleStatus(${i})"><i class="bi bi-power"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="editProduct(${i})"><i class="bi bi-pencil"></i></button> <button class="btn btn-secondary-modern btn-sm" onclick="viewProduct(${i})"><i class="bi bi-eye"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delProduct(${i})"><i class="bi bi-trash"></i></button></td></tr>`;
             });
         }
         function toggleStatus(i) { appData.products[i].active = !appData.products[i].active; saveData(); renderProducts(); }
@@ -726,10 +717,8 @@
         
         function calcProduct() {
             const unitType = document.getElementById('calc-unit-type').value;
-            
             let totalMat = 0;
             document.querySelectorAll('#materials-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.material-cost').innerText = cost.toFixed(3); totalMat += cost; });
-            
             let totalPack = 0;
             document.querySelectorAll('#packaging-tbody tr').forEach(r => { const i = r.querySelectorAll('input'); const cost = (parseFloat(i[1].value)/parseFloat(i[2].value)) * parseFloat(i[3].value) || 0; r.querySelector('.packaging-cost').innerText = cost.toFixed(3); totalPack += cost; });
             
@@ -741,7 +730,6 @@
                 const sal = parseFloat(document.querySelector('.salary').value)||0; 
                 const hrs = parseFloat(document.querySelector('.hours').value)||0; 
                 prodQty = parseFloat(document.querySelector('.pieces').value)||1;
-                
                 const hourlyRate = sal / 240; 
                 document.querySelector('.hourly-cost').innerText = hourlyRate.toFixed(3);
                 const totalBatchLabor = hourlyRate * hrs;
@@ -749,34 +737,27 @@
             } else {
                 prodQty = parseFloat(document.getElementById('labor-weight-qty').value)||1;
                 const directCost = parseFloat(document.getElementById('labor-direct-cost').value) || 0;
-                laborTotalPerUnit = directCost; // As per specific logic requirement
+                laborTotalPerUnit = directCost;
             }
 
             const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
-            
-            // Depreciation Logic
             const totalDepreciation = totalMat * (depRate / 100);
             const depPerUnit = totalDepreciation / prodQty;
             
             document.getElementById('equipment-depreciation-total').innerText = totalDepreciation.toFixed(3);
             document.getElementById('equipment-depreciation-box').innerText = depPerUnit.toFixed(3);
 
-            // Totals
             const matPerUnit = totalMat / prodQty;
             const packPerUnit = totalPack / prodQty; 
 
             document.getElementById('total-materials-display').innerText = totalMat.toFixed(3);
             document.getElementById('lbl-mat-per-unit').innerHTML = `إجمالي تكلفة المواد الأولية (لكل ${unitType}) <span id="total-materials-per-unit-display">${matPerUnit.toFixed(3)}</span> ${currencySymbols[appData.settings.currency]||'د.ب'}`;
-            
             document.getElementById('total-packaging-display').innerText = totalPack.toFixed(3);
             document.getElementById('lbl-pack-per-unit').innerHTML = `إجمالي تكلفة التغليف (لكل ${unitType}) <span id="total-packaging-per-unit-display">${packPerUnit.toFixed(3)}</span> ${currencySymbols[appData.settings.currency]||'د.ب'}`;
-            
             document.getElementById('total-labor-cost-display').innerText = laborTotalPerUnit.toFixed(3);
 
-            // Grand Total (Per Unit)
             const grandTotalUnit = matPerUnit + packPerUnit + laborTotalPerUnit + depPerUnit;
 
-            // Update Summary Grid (All Per Unit)
             document.getElementById('summary-materials').innerText = formatMoney(matPerUnit); 
             document.getElementById('summary-packaging').innerText = formatMoney(packPerUnit); 
             document.getElementById('summary-labor').innerText = formatMoney(laborTotalPerUnit); 
@@ -819,9 +800,110 @@
             if(editingIdx >= 0) appData.products[editingIdx] = p; else appData.products.push(p);
             saveData(); switchProductView('list');
         }
-        function editProduct(i) { editingIdx=i; switchProductView('calc'); /* logic assumed */ }
+
+        function editProduct(i) { 
+            editingIdx = i; 
+            switchProductView('calc');
+            const p = appData.products[i];
+            
+            // Basic Info
+            document.getElementById('product-name').value = p.name;
+            document.getElementById('product-code').value = p.code;
+            // Extract numbers from formatted string if needed, or better, store raw values in object. For now parsing:
+            document.getElementById('final-price-input').value = parseFloat(p.finalPrice);
+            // Depreciation rate needs to be stored in product object, added default fallback
+            document.getElementById('depreciation-rate').value = p.depreciationRate || 10;
+            document.getElementById('profit-rate').value = 0; // Needs logic to reverse calc profit rate or store it. Setting 0 default.
+            
+            // Unit Type
+            document.getElementById('calc-unit-type').value = p.unitType || 'علبة';
+            updateCalcLabels();
+
+            // Labor
+            if (p.laborMethod === 'salary') {
+                document.getElementById('laborMethodSalary').checked = true;
+                if(p.laborData) {
+                    document.querySelector('.salary').value = p.laborData.salary;
+                    document.querySelector('.hours').value = p.laborData.hours;
+                    document.querySelector('.pieces').value = p.laborData.pieces;
+                }
+            } else {
+                document.getElementById('laborMethodWeight').checked = true;
+                if(p.laborData) {
+                    document.getElementById('labor-direct-cost').value = p.laborData.directCost;
+                    document.getElementById('labor-weight-qty').value = p.laborData.qty;
+                }
+            }
+            toggleLaborMethod();
+
+            // Materials
+            const matBody = document.getElementById('materials-tbody');
+            matBody.innerHTML = '';
+            if (p.materialsData) {
+                p.materialsData.forEach(m => {
+                    matBody.insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern material-name" value="${m.name}"></td><td><input type="number" class="form-control-modern material-price" step="0.001" value="${m.price}"></td><td><input type="number" class="form-control-modern material-count" value="${m.count}"></td><td><input type="number" class="form-control-modern material-used" value="${m.used}"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`);
+                });
+            }
+
+            // Packaging
+            const packBody = document.getElementById('packaging-tbody');
+            packBody.innerHTML = '';
+            if (p.packagingData) {
+                p.packagingData.forEach(pk => {
+                    packBody.insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern packaging-name" value="${pk.name}"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001" value="${pk.price}"></td><td><input type="number" class="form-control-modern packaging-count" value="${pk.count}"></td><td><input type="number" class="form-control-modern packaging-used" value="${pk.used}"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`);
+                });
+            }
+            
+            attachEvents();
+            calcProduct();
+        }
+
+        function viewProduct(i) {
+            const p = appData.products[i];
+            const content = `
+                <h5 class="text-primary text-center mb-3">${p.name} (${p.code})</h5>
+                <table class="table table-bordered">
+                    <tr><th>التكلفة الإجمالية</th><td>${p.totalCost}</td></tr>
+                    <tr><th>سعر البيع</th><td>${p.finalPrice}</td></tr>
+                    <tr><th>هامش الربح</th><td>${p.profitMargin}</td></tr>
+                </table>
+                <div class="text-center mt-3"><small class="text-muted">للتعديل، اضغط على زر التعديل في القائمة</small></div>
+            `;
+            document.getElementById('preview-modal-body').innerHTML = content;
+            new bootstrap.Modal(document.getElementById('previewModal')).show();
+        }
+
+        function previewItem(type, i) {
+            let item, title = "", content = "";
+            if (type === 'production') {
+                item = appData.budget.productions[i];
+                title = "تفاصيل الإنتاج";
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>الصنف:</strong> ${item.name}</p><p><strong>العلب:</strong> ${item.boxCount}</p><p><strong>التكلفة الكلية:</strong> ${formatMoney(item.totalCost)}</p>`;
+            } else if (type === 'purchase') {
+                item = appData.budget.purchases[i];
+                title = "تفاصيل المشتريات";
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>الصنف:</strong> ${item.item}</p><p><strong>العدد:</strong> ${item.count}</p><p><strong>السعر:</strong> ${formatMoney(item.amount)}</p><p><strong>المجموع:</strong> ${formatMoney(item.count*item.amount)}</p>`;
+            } else if (type === 'salary') {
+                item = appData.budget.salaries[i];
+                title = "تفاصيل الراتب";
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>التصنيف:</strong> ${item.category}</p><p><strong>المبلغ:</strong> ${formatMoney(item.amount)}</p><p><strong>الحالة:</strong> ${item.status}</p>`;
+            } else if (type === 'transaction') {
+                item = appData.budget.transactions[i];
+                title = "تفاصيل العملية";
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>النوع:</strong> ${item.type}</p><p><strong>المبلغ:</strong> ${formatMoney(item.amount)}</p><p><strong>ملاحظات:</strong> ${item.notes}</p>`;
+            } else if (type === 'invoice') {
+                item = appData.budget.invoices[i];
+                title = "تفاصيل الفاتورة";
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>العميل:</strong> ${item.customer}</p><p><strong>المنتج:</strong> ${item.productName}</p><p><strong>الإجمالي:</strong> ${formatMoney(item.total)}</p>`;
+            }
+            
+            document.querySelector('#previewModal .modal-title').innerText = title;
+            document.getElementById('preview-modal-body').innerHTML = content;
+            new bootstrap.Modal(document.getElementById('previewModal')).show();
+        }
+
         function delProduct(i) { if(confirm('حذف؟')) { appData.products.splice(i,1); saveData(); renderProducts(); } }
-        function clearForm() { editingIdx=-1; document.querySelectorAll('#view-product-calc input').forEach(i=>i.value=''); document.getElementById('product-code').value="PRD-"+String(productCounter++).padStart(4,'0'); }
+        function clearForm() { editingIdx=-1; document.querySelectorAll('#view-product-calc input').forEach(i=>i.value=''); document.getElementById('product-code').value="PRD-"+String(productCounter++).padStart(4,'0'); document.getElementById('materials-tbody').innerHTML = `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count" value="1"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`; document.getElementById('packaging-tbody').innerHTML = `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count" value="1"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`; attachEvents(); }
         document.getElementById('add-material').onclick = () => { document.getElementById('materials-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         document.getElementById('add-packaging').onclick = () => { document.getElementById('packaging-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
         function attachEvents() { document.querySelectorAll('input').forEach(i => i.oninput = calcProduct); } attachEvents();
@@ -914,11 +996,11 @@
 
         function renderAllTables() {
             const chk = checkDate;
-            const itb = document.getElementById('invoices-tbody'); itb.innerHTML = ''; appData.budget.invoices.forEach((i, idx) => { if(chk(i.date)) itb.innerHTML += `<tr><td>${i.date}</td><td>${i.customer}</td><td>${i.productName}</td><td>${formatMoney(i.total)}</td><td><span class="status-badge ${i.status==='Paid'?'status-active':'status-inactive'}">${i.status==='Paid'?'مدفوع':'غير مدفوع'}</span></td><td><button class="btn btn-primary-modern btn-sm" onclick="openInvoiceModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('invoices',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
-            const ptb = document.getElementById('production-tbody'); ptb.innerHTML = ''; appData.budget.productions.forEach((p, idx) => { if(chk(p.date)) { const rowKiloCost = parseFloat(p.boxValue) * 2; ptb.innerHTML += `<tr><td>${p.date}</td><td>${p.name}</td><td>${formatCount(p.boxCount)}</td><td>${formatMoney(p.totalCost)}</td><td>${formatMoney(rowKiloCost)}</td><td><button class="btn btn-primary-modern btn-sm" onclick="openProductionModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('productions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; } });
-            const putb = document.getElementById('purchases-tbody'); putb.innerHTML = ''; appData.budget.purchases.forEach((p, idx) => { if(chk(p.date)) putb.innerHTML += `<tr><td>${p.date}</td><td>${p.item}</td><td>${formatCount(p.count)}</td><td>${formatMoney(p.amount)}</td><td>${formatMoney(p.count*p.amount)}</td><td>${p.category}</td><td><button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('purchases',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
-            const stb = document.getElementById('salaries-tbody'); stb.innerHTML = ''; appData.budget.salaries.forEach((s, idx) => { if(chk(s.date)) stb.innerHTML += `<tr><td>${s.date}</td><td>${s.category}</td><td>${formatMoney(s.amount)}</td><td>${s.status==='Paid'?'مدفوع':'غير مدفوع'}</td><td>${s.paymentDate||'-'}</td><td><button class="btn btn-primary-modern btn-sm" onclick="openSalaryModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('salaries',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
-            const ttb = document.getElementById('transactions-tbody'); ttb.innerHTML = ''; appData.budget.transactions.forEach((t, idx) => { if(chk(t.date)) ttb.innerHTML += `<tr><td>${t.date}</td><td><span class="status-badge ${t.type==='in'?'status-active':'status-inactive'}">${t.type==='in'?'استلام':'استرداد'}</span></td><td>${formatMoney(t.amount)}</td><td>${t.method}</td><td>${t.notes}</td><td><button class="btn btn-primary-modern btn-sm" onclick="openTransactionModal('${t.type}', ${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('transactions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const itb = document.getElementById('invoices-tbody'); itb.innerHTML = ''; appData.budget.invoices.forEach((i, idx) => { if(chk(i.date)) itb.innerHTML += `<tr><td>${i.date}</td><td>${i.customer}</td><td>${i.productName}</td><td>${formatMoney(i.total)}</td><td><span class="status-badge ${i.status==='Paid'?'status-active':'status-inactive'}">${i.status==='Paid'?'مدفوع':'غير مدفوع'}</span></td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('invoice', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openInvoiceModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('invoices',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const ptb = document.getElementById('production-tbody'); ptb.innerHTML = ''; appData.budget.productions.forEach((p, idx) => { if(chk(p.date)) { const rowKiloCost = parseFloat(p.boxValue) * 2; ptb.innerHTML += `<tr><td>${p.date}</td><td>${p.name}</td><td>${formatCount(p.boxCount)}</td><td>${formatMoney(p.totalCost)}</td><td>${formatMoney(rowKiloCost)}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('production', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openProductionModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('productions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; } });
+            const putb = document.getElementById('purchases-tbody'); putb.innerHTML = ''; appData.budget.purchases.forEach((p, idx) => { if(chk(p.date)) putb.innerHTML += `<tr><td>${p.date}</td><td>${p.item}</td><td>${formatCount(p.count)}</td><td>${formatMoney(p.amount)}</td><td>${formatMoney(p.count*p.amount)}</td><td>${p.category}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('purchase', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('purchases',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const stb = document.getElementById('salaries-tbody'); stb.innerHTML = ''; appData.budget.salaries.forEach((s, idx) => { if(chk(s.date)) stb.innerHTML += `<tr><td>${s.date}</td><td>${s.category}</td><td>${formatMoney(s.amount)}</td><td>${s.status==='Paid'?'مدفوع':'غير مدفوع'}</td><td>${s.paymentDate||'-'}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('salary', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openSalaryModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('salaries',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const ttb = document.getElementById('transactions-tbody'); ttb.innerHTML = ''; appData.budget.transactions.forEach((t, idx) => { if(chk(t.date)) ttb.innerHTML += `<tr><td>${t.date}</td><td><span class="status-badge ${t.type==='in'?'status-active':'status-inactive'}">${t.type==='in'?'استلام':'استرداد'}</span></td><td>${formatMoney(t.amount)}</td><td>${t.method}</td><td>${t.notes}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('transaction', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openTransactionModal('${t.type}', ${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('transactions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
         }
         
         function delItem(type, i) { 
