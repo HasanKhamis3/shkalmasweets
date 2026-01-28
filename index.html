@@ -266,7 +266,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="text-danger text-center mt-3 fw-bold" style="font-size: 0.9rem;">* يرجى إدخال التفاصيل في خانات تكاليف اليد العاملة لضمان ظهور النتيجة بشكل صحيح.</div>
+                                <div class="depreciation-note mt-3 p-2 text-center" style="color: var(--error); border-color: var(--error); background: #ffebee;">
+                                    * يرجى إدخال التفاصيل في خانات تكاليف اليد العاملة لضمان ظهور النتيجة بشكل صحيح.
+                                </div>
                                 <div class="total-footer mt-3">
                                     <div id="lbl-total-labor-cost-footer">إجمالي تكلفة اليد العاملة للعلبة <span id="total-labor-cost-display">0.000</span> د.ب</div>
                                 </div>
@@ -583,14 +585,14 @@
                 const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Create an off-screen image to resize
+                    // Auto-resize logic to prevent LocalStorage quota exceeded
                     const img = new Image();
                     img.src = e.target.result;
                     img.onload = function() {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         
-                        // Resize to max 300px width/height to save space
+                        // Max dimension 300px is enough for logo display
                         const MAX_SIZE = 300;
                         let width = img.width;
                         let height = img.height;
@@ -611,8 +613,8 @@
                         canvas.height = height;
                         ctx.drawImage(img, 0, 0, width, height);
                         
-                        // Get resized data URL
-                        const dataUrl = canvas.toDataURL('image/png');
+                        // Get resized data URL (JPEG 0.7 quality to save space)
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
                         appData.settings.logo = dataUrl;
                         
                         document.getElementById('setting-logo-preview').src = dataUrl;
@@ -747,7 +749,7 @@
             } else {
                 prodQty = parseFloat(document.getElementById('labor-weight-qty').value)||1;
                 const directCost = parseFloat(document.getElementById('labor-direct-cost').value) || 0;
-                laborTotalPerUnit = directCost / prodQty;
+                laborTotalPerUnit = directCost; // As per specific logic requirement
             }
 
             const depRate = parseFloat(document.getElementById('depreciation-rate').value)||0;
@@ -1041,8 +1043,6 @@
         
         function saveProduction() { 
             const id = document.getElementById('prod-id').value; 
-            
-            // If editing, first revert old usage
             if (id && appData.budget.productions[id]) {
                 const oldProd = appData.budget.productions[id];
                 if (oldProd.usedIngredients) {
@@ -1061,7 +1061,6 @@
                 }
             }
 
-            // Capture new usage
             let usedIngredients = [];
             let usedOps = [];
 
