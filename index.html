@@ -42,10 +42,8 @@
         .sidebar-nav { flex-grow: 1; }
         .sidebar .nav-link { color: rgba(255,255,255,0.85); padding: 0.9rem 1.2rem; margin: 0.4rem 0.8rem; border-radius: 12px; display: flex; align-items: center; gap: 0.8rem; font-weight: 500; text-decoration: none; cursor: pointer; transition: 0.2s; }
         .sidebar .nav-link:hover, .sidebar .nav-link.active { background: rgba(255,255,255,0.15); color: #fff; transform: translateX(-5px); backdrop-filter: blur(5px); }
-        
         .sidebar-footer-logo { padding: 30px 20px; text-align: center; margin-top: auto; }
-        /* Footer logo showing original colors (no filter) */
-        .sidebar-footer-logo img { max-width: 100px; cursor: pointer; transition: transform 0.2s; }
+        .sidebar-footer-logo img { max-width: 100px; opacity: 0.95; filter: brightness(0) invert(1); cursor: pointer; transition: transform 0.2s; }
         .sidebar-footer-logo img:hover { transform: scale(1.05); }
 
         /* Main Content */
@@ -60,7 +58,6 @@
 
         /* Cards */
         .card-modern { background: var(--surface); border: 1px solid var(--border-color); border-radius: 16px; box-shadow: var(--shadow-sm); overflow: hidden; display: flex; flex-direction: column; height: 100%; margin-bottom: 0; }
-        /* Uniform Spacing for all cards in calculation section */
         #view-product-calc .card-modern, #view-product-calc .row { margin-bottom: var(--gap-size); }
         
         .card-header-modern { background: #fff; padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; color: var(--primary-color); }
@@ -69,7 +66,6 @@
         .card-dark-container { border: 1px solid #ddd; border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; background: #fff; box-shadow: var(--shadow-sm); }
         .card-header-dark { background: #2c2c2c; color: #fff; padding: 1rem 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
 
-        /* Modified theme container to match modern card style */
         .card-theme-container { border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; margin-bottom: var(--gap-size); background: var(--surface); box-shadow: var(--shadow-sm); }
         .card-header-theme { background: #fff; color: var(--primary-color); padding: 1.2rem 1.5rem; font-weight: 700; font-size: 1.05rem; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
         .card-theme-container .form-control-modern { background: #ffffff; }
@@ -125,45 +121,18 @@
         .save-btn-custom { background: #00c853; color: white; font-size: 1.1rem; padding: 10px 40px; border-radius: 8px; border: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; }
         .save-btn-custom:hover { background: #009624; color: white; }
         
-        /* Custom Styling for Totals */
         .total-footer { background: #f8f9fa; border-top: 2px solid #eee; padding: 10px; border-radius: 0 0 10px 10px; margin-top: 15px; text-align: center; font-weight: 700; color: var(--primary-color); }
         .total-footer small { display: block; font-weight: 500; color: #666; margin-top: 5px; }
 
         /* Settings Page Styles */
         .settings-card-body { padding: 2.5rem; }
         .settings-label { display: block; margin-bottom: 0.6rem; font-weight: 600; color: #444; }
-        
-        /* Updated Logo Upload Section */
-        .logo-upload-wrapper { 
-            display: flex; 
-            flex-direction: column; /* Changed to column to put preview below */
-            gap: 20px; 
-            background: #f9f9f9; 
-            padding: 20px; 
-            border-radius: 12px; 
-            border: 1px dashed var(--border-color); 
-        }
-        
-        .logo-preview-box { 
-            width: 150px; 
-            height: 150px; 
-            border-radius: 12px; 
-            background: white; 
-            border: 1px solid #ddd; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            overflow: hidden; 
-            cursor: pointer; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
-            transition: transform 0.2s;
-            margin-top: 10px; 
-        }
+        .logo-upload-wrapper { display: flex; flex-direction: column; gap: 20px; background: #f9f9f9; padding: 20px; border-radius: 12px; border: 1px dashed var(--border-color); }
+        .logo-preview-box { width: 150px; height: 150px; border-radius: 12px; background: white; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s; margin-top: 10px; }
         .logo-preview-box:hover { transform: scale(1.02); }
         .logo-preview-box img { max-width: 100%; max-height: 100%; object-fit: contain; }
         .logo-placeholder-text { font-size: 0.8rem; color: #999; text-align: center; }
 
-        /* Modal for Logo */
         .modal-logo-img { width: 100%; height: auto; }
 
         @media (max-width: 992px) {
@@ -179,7 +148,6 @@
 
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <img src="https://i.imgur.com/image_f84c5f.png" alt="Logo" class="sidebar-logo-img" id="sidebar-main-logo">
             <div class="sidebar-title" id="sidebar-project-name-ar">شكلمة</div>
             <div class="sidebar-subtitle" id="sidebar-project-name-en">Shkalma Sweets</div>
         </div>
@@ -917,7 +885,15 @@
             if (type === 'production') {
                 item = appData.budget.productions[i];
                 title = "تفاصيل الإنتاج";
-                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>الصنف:</strong> ${item.name}</p><p><strong>العلب:</strong> ${item.boxCount}</p><p><strong>التكلفة الكلية:</strong> ${formatMoney(item.totalCost)}</p>`;
+                let ingRows = "";
+                if(item.usedIngredients) {
+                    item.usedIngredients.forEach(u => {
+                       let pName = appData.budget.purchases[u.id] ? appData.budget.purchases[u.id].item : 'غير معروف';
+                       ingRows += `<tr><td>${pName}</td><td>${u.qty}</td></tr>`;
+                    });
+                }
+                content = `<p><strong>التاريخ:</strong> ${item.date}</p><p><strong>الصنف:</strong> ${item.name}</p><p><strong>العلب:</strong> ${item.boxCount}</p><p><strong>التكلفة الكلية:</strong> ${formatMoney(item.totalCost)}</p>
+                <hr><h6>المواد المستخدمة</h6><table class="table table-sm table-bordered"><thead><tr><th>المادة</th><th>الكمية</th></tr></thead><tbody>${ingRows || '<tr><td colspan="2">لا يوجد</td></tr>'}</tbody></table>`;
             } else if (type === 'purchase') {
                 item = appData.budget.purchases[i];
                 title = "تفاصيل المشتريات";
@@ -961,7 +937,6 @@
                         let opts = '<option value="">اختر...</option>';
                         appData.budget.purchases.forEach((pur, idx) => {
                             if((pur.category=='مواد أولية'||pur.category=='تغليف')) {
-                                // Keep option selected even if 0 remaining if it was the one used
                                 let selected = (idx == u.id) ? 'selected' : '';
                                 opts += `<option value="${idx}" data-price="${pur.amount}" ${selected}>${pur.item}</option>`;
                             }
@@ -969,11 +944,9 @@
                         const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" value="${u.qty}" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
                         ingTb.insertAdjacentHTML('beforeend', rowHtml);
                     });
-                    // Trigger calc for rows
                     document.querySelectorAll('#prod-ing-table tbody tr').forEach(r => calcProdRow(r.querySelector('select')));
                 }
 
-                // Refill Ops Table
                 if(p.usedOps) {
                     const opTb = document.getElementById('prod-op-table').tBodies[0];
                     p.usedOps.forEach(u => {
@@ -1165,114 +1138,487 @@
         function openProductionModal(i){ 
             const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
             document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
+            
             if(i!==undefined){ 
-                const p = appData.budget.productions[i]; document.getElementById('prod-id').value=i; document.getElementById('prod-date').value=p.date; document.getElementById('prod-name').value=p.name; document.getElementById('prod-count').value=p.boxCount; document.getElementById('prod-weight').value=p.weight||'';
-            } else { document.getElementById('prod-id').value=''; document.getElementById('prod-date').valueAsDate=new Date(); document.getElementById('prod-count').value=''; }
+                const p = appData.budget.productions[i]; 
+                document.getElementById('prod-id').value=i; 
+                document.getElementById('prod-date').value=p.date; 
+                document.getElementById('prod-name').value=p.name; 
+                document.getElementById('prod-count').value=p.boxCount; 
+                document.getElementById('prod-weight').value=p.weight||'';
+                
+                // Refill Ingredients Table
+                if(p.usedIngredients) {
+                    const ingTb = document.getElementById('prod-ing-table').tBodies[0];
+                    p.usedIngredients.forEach(u => {
+                        let opts = '<option value="">اختر...</option>';
+                        appData.budget.purchases.forEach((pur, idx) => {
+                            if((pur.category=='مواد أولية'||pur.category=='تغليف')) {
+                                let selected = (idx == u.id) ? 'selected' : '';
+                                opts += `<option value="${idx}" data-price="${pur.amount}" ${selected}>${pur.item}</option>`;
+                            }
+                        });
+                        const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" value="${u.qty}" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                        ingTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                    document.querySelectorAll('#prod-ing-table tbody tr').forEach(r => calcProdRow(r.querySelector('select')));
+                }
+
+                if(p.usedOps) {
+                    const opTb = document.getElementById('prod-op-table').tBodies[0];
+                    p.usedOps.forEach(u => {
+                         let opts = '<option value="">اختر...</option>';
+                         appData.budget.salaries.forEach((s, idx) => {
+                             let selected = (idx == u.id) ? 'selected' : '';
+                             opts += `<option value="${idx}" data-amt="${s.amount}" ${selected}>${s.category} - ${s.date}</option>`;
+                         });
+                         const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcOpRow(this)">${opts}</select></td><td class="amt">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                         opTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                     document.querySelectorAll('#prod-op-table tbody tr').forEach(r => calcOpRow(r.querySelector('select')));
+                }
+                calcProdTotal();
+
+            } else { 
+                document.getElementById('prod-id').value=''; document.getElementById('prod-date').valueAsDate=new Date(); document.getElementById('prod-count').value=''; 
+            }
             new bootstrap.Modal(document.getElementById('productionModal')).show(); 
         }
 
-        function openPurchaseModal(i){ 
-            const sel=document.getElementById('pur-cat'); sel.innerHTML=''; categoriesList.forEach(c=>sel.innerHTML+=`<option>${c}</option>`);
-            if(i!==undefined){
-                const p = appData.budget.purchases[i]; document.getElementById('pur-id').value=i; document.getElementById('pur-date').value=p.date; document.getElementById('pur-item').value=p.item; document.getElementById('pur-count').value=p.count; document.getElementById('pur-amount').value=p.amount; document.getElementById('pur-cat').value=p.category;
-                document.getElementById('pur-status').value=p.status||'Unpaid'; document.getElementById('pur-method').value=p.method||'Cash'; document.getElementById('pur-pay-date').value=p.paymentDate||'';
-            } else { 
-                document.getElementById('pur-id').value=''; document.getElementById('pur-date').valueAsDate=new Date(); 
-                document.getElementById('pur-item').value=''; document.getElementById('pur-count').value=''; document.getElementById('pur-amount').value='';
-                document.getElementById('pur-status').value='Unpaid'; document.getElementById('pur-pay-date').value='';
-            }
-            togglePurMethod();
-            new bootstrap.Modal(document.getElementById('purchaseModal')).show(); 
-        }
-        function togglePurMethod() { const isPaid = document.getElementById('pur-status').value === 'Paid'; document.getElementById('pur-method-div').style.display = isPaid ? 'block' : 'none'; }
+        function delProduct(i) { if(confirm('حذف؟')) { appData.products.splice(i,1); saveData(); renderProducts(); } }
+        function clearForm() { editingIdx=-1; document.querySelectorAll('#view-product-calc input').forEach(i=>i.value=''); document.getElementById('product-code').value="PRD-"+String(productCounter++).padStart(4,'0'); document.getElementById('materials-tbody').innerHTML = `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count" value="1"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`; document.getElementById('packaging-tbody').innerHTML = `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count" value="1"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`; attachEvents(); }
+        document.getElementById('add-material').onclick = () => { document.getElementById('materials-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
+        document.getElementById('add-packaging').onclick = () => { document.getElementById('packaging-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
+        function attachEvents() { document.querySelectorAll('input').forEach(i => i.oninput = calcProduct); } attachEvents();
 
-        function openSalaryModal(i){ 
-            if(i!==undefined){
-                const s = appData.budget.salaries[i]; document.getElementById('sal-id').value=i; document.getElementById('sal-date').value=s.date; document.getElementById('sal-cat').value=s.category; document.getElementById('sal-amount').value=s.amount; document.getElementById('sal-status').value=s.status; document.getElementById('sal-method').value=s.method||'Cash'; document.getElementById('sal-pay-date').value=s.paymentDate||''; document.getElementById('sal-notes').value=s.notes||''; 
-            } else { 
-                document.getElementById('sal-id').value=''; document.getElementById('sal-date').valueAsDate=new Date(); 
-                document.getElementById('sal-amount').value=''; document.getElementById('sal-status').value='Unpaid'; document.getElementById('sal-notes').value=''; document.getElementById('sal-pay-date').value='';
-            }
-            toggleSalMethod();
-            new bootstrap.Modal(document.getElementById('salaryModal')).show(); 
-        }
-        function toggleSalMethod() { const isPaid = document.getElementById('sal-status').value === 'Paid'; document.getElementById('sal-pay-div').classList.toggle('d-none', !isPaid); }
+        function updateBudgetUI() { renderReport(); renderAllTables(); }
 
-        function openInvoiceModal(i){ 
-            const sel=document.getElementById('inv-product'); sel.innerHTML='<option value="">اختر المنتج</option>'; appData.products.filter(p=>p.active).forEach((p,idx)=>sel.innerHTML+=`<option value="${idx}" data-price="${parseFloat(p.finalPrice)}">${p.name}</option>`); 
-            if(i!==undefined){
-                 const inv = appData.budget.invoices[i]; document.getElementById('inv-id').value=i; document.getElementById('inv-date').value=inv.date; document.getElementById('inv-customer').value=inv.customer; document.getElementById('inv-phone').value=inv.phone; document.getElementById('inv-qty').value=inv.qty; document.getElementById('inv-total').value=inv.total; document.getElementById('inv-status').value=inv.status; toggleInvMethod();
-            } else { document.getElementById('inv-id').value=''; document.getElementById('inv-date').valueAsDate=new Date(); }
-            new bootstrap.Modal(document.getElementById('invoiceModal')).show(); 
-        }
-        function openTransactionModal(t, i){ 
-            document.getElementById('trans-type').value=t; 
-            if(i!==undefined){
-                 const tr = appData.budget.transactions[i]; document.getElementById('trans-id').value=i; document.getElementById('trans-date').value=tr.date; document.getElementById('trans-amount').value=tr.amount; document.getElementById('trans-method').value=tr.method; document.getElementById('trans-notes').value=tr.notes;
-            } else { document.getElementById('trans-id').value=''; document.getElementById('trans-date').valueAsDate=new Date(); document.getElementById('trans-amount').value=''; }
-            new bootstrap.Modal(document.getElementById('transModal')).show(); 
-        }
-        
-        function calcInvTotal() { const s = document.getElementById('inv-product'); const price = s.selectedIndex>0 ? parseFloat(s.options[s.selectedIndex].dataset.price) : 0; document.getElementById('inv-total').value = (price * (parseFloat(document.getElementById('inv-qty').value)||0)).toFixed(3); }
-        function toggleInvMethod() { document.getElementById('inv-method-div').style.display = document.getElementById('inv-status').value==='Paid'?'block':'none'; }
-        
-        function saveProduction() { 
-            const id = document.getElementById('prod-id').value; 
+        function renderReport() {
+            let cIn=0, bIn=0; 
+            let cRef=0, bRef=0; 
+            let cExp=0, bExp=0; 
+
+            appData.budget.transactions.forEach(t => { 
+                if(checkDate(t.date)) { 
+                    if(t.type === 'in') {
+                         t.method === 'Cash' ? cIn += parseFloat(t.amount) : bIn += parseFloat(t.amount);
+                    } else {
+                         t.method === 'Cash' ? cRef += parseFloat(t.amount) : bRef += parseFloat(t.amount); 
+                    }
+                } 
+            });
+
+            appData.budget.invoices.forEach(i => { 
+                if(checkDate(i.date) && i.status === 'Paid') {
+                    i.method === 'Cash' ? cIn += parseFloat(i.total) : bIn += parseFloat(i.total); 
+                }
+            });
+
+            appData.budget.salaries.forEach(s => { 
+                if(checkDate(s.date) && s.status === 'Paid') {
+                    s.method === 'Cash' ? cExp += parseFloat(s.amount) : bExp += parseFloat(s.amount); 
+                }
+            });
+
+            appData.budget.purchases.forEach(p => { 
+                if(checkDate(p.date) && p.status === 'Paid') {
+                    const amt = (parseFloat(p.count)*parseFloat(p.amount));
+                    p.method === 'Cash' ? cExp += amt : bExp += amt; 
+                }
+            });
+
+            document.getElementById('rep-cash-in').innerText = formatMoney(cIn); 
+            document.getElementById('rep-benefit-in').innerText = formatMoney(bIn);
+            document.getElementById('rep-cash-out').innerText = formatMoney(cRef); 
+            document.getElementById('rep-benefit-out').innerText = formatMoney(bRef);
             
-            // If editing, first revert old usage
-            if (id && appData.budget.productions[id]) {
-                const oldProd = appData.budget.productions[id];
-                if (oldProd.usedIngredients) {
-                    oldProd.usedIngredients.forEach(item => {
-                        if (appData.budget.purchases[item.id]) {
-                            appData.budget.purchases[item.id].remaining += parseFloat(item.qty);
-                        }
-                    });
-                }
-                if (oldProd.usedOps) {
-                    oldProd.usedOps.forEach(item => {
-                        if (appData.budget.salaries[item.id]) {
-                            appData.budget.salaries[item.id].isUsedInProduction = false;
-                        }
-                    });
-                }
-            }
+            const treasuryNet = (cIn + bIn) - (cRef + bRef);
+            document.getElementById('rep-net').innerText = formatMoney(treasuryNet);
+            
+            const remCash = cIn - cRef - cExp;
+            const remBenefit = bIn - bRef - bExp;
 
-            // Capture new usage
-            let usedIngredients = [];
-            let usedOps = [];
+            document.getElementById('rem-cash').innerText = formatMoney(remCash);
+            document.getElementById('rem-benefit').innerText = formatMoney(remBenefit);
 
-            const ingRows = document.querySelectorAll('#prod-ing-table tbody tr');
-            ingRows.forEach(row => {
-                const select = row.querySelector('select');
-                const usedQty = parseFloat(row.querySelector('input').value) || 0;
-                const idx = select.value;
-                if(idx !== "") {
-                    if(appData.budget.purchases[idx]) {
-                         appData.budget.purchases[idx].remaining -= usedQty;
-                         if(appData.budget.purchases[idx].remaining < 0) appData.budget.purchases[idx].remaining = 0;
-                         usedIngredients.push({ id: idx, qty: usedQty });
+            const purTotal = appData.budget.purchases.filter(p => checkDate(p.date)).reduce((a,b)=>a+(parseFloat(b.count)*parseFloat(b.amount)),0);
+            const salTotal = appData.budget.salaries.filter(s => checkDate(s.date)).reduce((a,b)=>a+parseFloat(b.amount),0);
+            const totalExpenses = purTotal + salTotal;
+            
+            const remEl = document.getElementById('rep-final-remainder');
+            remEl.innerText = formatMoney(remCash + remBenefit);
+            remEl.className = (remCash + remBenefit) >= 0 ? "report-val text-success" : "report-val text-danger";
+
+            document.getElementById('rep-purchases-total').innerText = formatMoney(purTotal);
+            document.getElementById('rep-salaries-total').innerText = formatMoney(salTotal);
+            document.getElementById('rep-expenses-total').innerText = formatMoney(totalExpenses);
+
+            const prods = appData.budget.productions.filter(p => checkDate(p.date));
+            const prodListContainer = document.getElementById('production-list-container');
+            prodListContainer.innerHTML = '';
+            let prodGroups = {};
+            prods.forEach(p => { if(!prodGroups[p.name]) prodGroups[p.name] = { boxes: 0, totalCost: 0 }; prodGroups[p.name].boxes += parseFloat(p.boxCount); prodGroups[p.name].totalCost += parseFloat(p.totalCost); });
+            if(Object.keys(prodGroups).length === 0) prodListContainer.innerHTML = '<div class="text-muted text-center py-4">لا يوجد إنتاج</div>'; 
+            else for (const [name, data] of Object.entries(prodGroups)) { const avgKilo = (data.totalCost / data.boxes) * 2; prodListContainer.innerHTML += `<div class="prod-item"><span class="prod-item-name">${name}</span><div class="prod-item-stat"><span>عدد العلب المنتجة</span><span class="prod-item-val">${formatCount(data.boxes)}</span></div><div class="prod-item-stat"><span>متوسط تكلفة الكيلو</span><span class="prod-item-val text-primary">${formatMoney(avgKilo)}</span></div></div>`; }
+
+            const invs = appData.budget.invoices.filter(i => checkDate(i.date));
+            const paid = invs.filter(i => i.status === 'Paid');
+            let productCosts = {}; appData.budget.productions.forEach(p => { if(!productCosts[p.name]) productCosts[p.name] = []; productCosts[p.name].push(parseFloat(p.boxValue)); });
+            let totalSales = paid.reduce((a,b)=>a+parseFloat(b.total),0);
+            let totalCOGS = 0; paid.forEach(inv => { const costs = productCosts[inv.productName]; const avg = costs ? costs.reduce((a,b)=>a+b,0)/costs.length : 0; totalCOGS += parseFloat(inv.qty) * avg; });
+            document.getElementById('report-net-benefit').innerText = formatMoney(totalSales - totalCOGS);
+            document.getElementById('report-net-budget').innerText = formatMoney(totalSales - totalExpenses);
+
+            const cats = {}; appData.budget.purchases.filter(p=>checkDate(p.date)).forEach(p => { cats[p.category] = (cats[p.category]||0) + (parseFloat(p.count)*parseFloat(p.amount)); });
+            if(chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(document.getElementById('expensesChart'), { type: 'bar', data: { labels: Object.keys(cats), datasets: [{ label: 'المصروفات', data: Object.values(cats), backgroundColor: '#6A1B9A' }] }, options: { maintainAspectRatio: false } });
+            const salList = document.getElementById('rep-salary-list'); salList.innerHTML = '';
+            const salGroups = {}; appData.budget.salaries.filter(s=>checkDate(s.date)).forEach(s => salGroups[s.status] = (salGroups[s.status]||0) + parseFloat(s.amount));
+            for(let k in salGroups) { salList.innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${k==='Paid'?'مدفوع':'غير مدفوع'}</span><span>${formatMoney(salGroups[k])}</span></li>`; }
+        }
+
+        function renderAllTables() {
+            const chk = checkDate;
+            const itb = document.getElementById('invoices-tbody'); itb.innerHTML = ''; appData.budget.invoices.forEach((i, idx) => { if(chk(i.date)) itb.innerHTML += `<tr><td>${i.date}</td><td>${i.customer}</td><td>${i.productName}</td><td>${formatMoney(i.total)}</td><td><span class="status-badge ${i.status==='Paid'?'status-active':'status-inactive'}">${i.status==='Paid'?'مدفوع':'غير مدفوع'}</span></td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('invoice', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openInvoiceModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('invoices',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const ptb = document.getElementById('production-tbody'); ptb.innerHTML = ''; appData.budget.productions.forEach((p, idx) => { if(chk(p.date)) { const rowKiloCost = parseFloat(p.boxValue) * 2; ptb.innerHTML += `<tr><td>${p.date}</td><td>${p.name}</td><td>${formatCount(p.boxCount)}</td><td>${formatMoney(p.totalCost)}</td><td>${formatMoney(rowKiloCost)}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('production', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openProductionModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('productions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; } });
+            const putb = document.getElementById('purchases-tbody'); putb.innerHTML = ''; appData.budget.purchases.forEach((p, idx) => { if(chk(p.date)) putb.innerHTML += `<tr><td>${p.date}</td><td>${p.item}</td><td>${formatCount(p.count)}</td><td>${formatMoney(p.amount)}</td><td>${formatMoney(p.count*p.amount)}</td><td>${p.category}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('purchase', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('purchases',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const stb = document.getElementById('salaries-tbody'); stb.innerHTML = ''; appData.budget.salaries.forEach((s, idx) => { if(chk(s.date)) stb.innerHTML += `<tr><td>${s.date}</td><td>${s.category}</td><td>${formatMoney(s.amount)}</td><td>${s.status==='Paid'?'مدفوع':'غير مدفوع'}</td><td>${s.paymentDate||'-'}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('salary', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openSalaryModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('salaries',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const ttb = document.getElementById('transactions-tbody'); ttb.innerHTML = ''; appData.budget.transactions.forEach((t, idx) => { if(chk(t.date)) ttb.innerHTML += `<tr><td>${t.date}</td><td><span class="status-badge ${t.type==='in'?'status-active':'status-inactive'}">${t.type==='in'?'استلام':'استرداد'}</span></td><td>${formatMoney(t.amount)}</td><td>${t.method}</td><td>${t.notes}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('transaction', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openTransactionModal('${t.type}', ${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('transactions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+        }
+        
+        function delItem(type, i) { 
+            if(confirm('حذف؟')) { 
+                if (type === 'productions') {
+                    const prod = appData.budget.productions[i];
+                    if (prod.usedIngredients) {
+                        prod.usedIngredients.forEach(item => {
+                            if (appData.budget.purchases[item.id]) {
+                                appData.budget.purchases[item.id].remaining = (parseFloat(appData.budget.purchases[item.id].remaining) || 0) + parseFloat(item.qty);
+                            }
+                        });
+                    }
+                    if (prod.usedOps) {
+                        prod.usedOps.forEach(item => {
+                            if (appData.budget.salaries[item.id]) {
+                                appData.budget.salaries[item.id].isUsedInProduction = false;
+                            }
+                        });
                     }
                 }
-            });
-
-            const opRows = document.querySelectorAll('#prod-op-table tbody tr');
-            opRows.forEach(row => {
-                 const select = row.querySelector('select');
-                 const idx = select.value;
-                 if(idx !== "") {
-                     if(appData.budget.salaries[idx]) {
-                         appData.budget.salaries[idx].isUsedInProduction = true;
-                         usedOps.push({ id: idx });
-                     }
-                 }
-            });
-
-            const data = { date: document.getElementById('prod-date').value, name: document.getElementById('prod-name').value, boxCount: document.getElementById('prod-count').value, totalCost: document.getElementById('prod-total').value, boxValue: document.getElementById('prod-unit').value, weight: document.getElementById('prod-weight').value, usedIngredients: usedIngredients, usedOps: usedOps };
-            
-            if(id) appData.budget.productions[id] = data; else appData.budget.productions.push(data);
-            saveData(); updateBudgetUI(); bootstrap.Modal.getInstance(document.getElementById('productionModal')).hide(); 
+                appData.budget[type].splice(i,1); 
+                saveData(); 
+                updateBudgetUI(); 
+            } 
         }
+
+        // --- Modals Handlers ---
+        window.addProdIng = function() {
+             const tb = document.getElementById('prod-ing-table').tBodies[0];
+             let opts = '<option value="">اختر المنتج...</option>';
+             appData.budget.purchases.forEach((p,i) => { 
+                 if((p.category=='مواد أولية'||p.category=='تغليف') && p.remaining > 0) {
+                     opts += `<option value="${i}" data-price="${p.amount}">${p.item} (متاح: ${p.remaining})</option>`; 
+                 }
+             });
+             tb.insertAdjacentHTML('beforeend', `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`);
+        };
+        window.addProdOp = function() {
+             const tb = document.getElementById('prod-op-table').tBodies[0];
+             let opts = '<option value="">اختر...</option>';
+             appData.budget.salaries.forEach((s,i) => {
+                 if(!s.isUsedInProduction) {
+                    opts += `<option value="${i}" data-amt="${s.amount}">${s.category} - ${s.date}</option>`;
+                 }
+             });
+             tb.insertAdjacentHTML('beforeend', `<tr><td><select class="form-select-modern" onchange="calcOpRow(this)">${opts}</select></td><td class="amt">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`);
+        };
+        window.calcProdRow = function(e) {
+            const r = e.closest('tr'); const s = r.querySelector('select');
+            const price = parseFloat(s.options[s.selectedIndex].dataset.price||0);
+            const qty = parseFloat(r.querySelector('input').value)||0;
+            r.querySelector('.cost').innerText = (price*qty).toFixed(3); calcProdTotal();
+        };
+        window.calcOpRow = function(e) {
+            const r = e.closest('tr'); const s = r.querySelector('select');
+            r.querySelector('.amt').innerText = parseFloat(s.options[s.selectedIndex].dataset.amt||0).toFixed(3); calcProdTotal();
+        };
+        window.calcProdTotal = function() {
+            let total = 0;
+            document.querySelectorAll('#prod-ing-table .cost').forEach(c => total += parseFloat(c.innerText));
+            document.querySelectorAll('#prod-op-table .amt').forEach(c => total += parseFloat(c.innerText));
+            const count = parseFloat(document.getElementById('prod-count').value)||1;
+            document.getElementById('prod-total').value = total.toFixed(3);
+            document.getElementById('prod-unit').value = (total/count).toFixed(3);
+        }
+        document.getElementById('prod-count').addEventListener('input', calcProdTotal);
+
+        function openProductionModal(i){ 
+            const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
+            document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
+            
+            if(i!==undefined){ 
+                const p = appData.budget.productions[i]; 
+                document.getElementById('prod-id').value=i; 
+                document.getElementById('prod-date').value=p.date; 
+                document.getElementById('prod-name').value=p.name; 
+                document.getElementById('prod-count').value=p.boxCount; 
+                document.getElementById('prod-weight').value=p.weight||'';
+                
+                // Refill Ingredients Table
+                if(p.usedIngredients) {
+                    const ingTb = document.getElementById('prod-ing-table').tBodies[0];
+                    p.usedIngredients.forEach(u => {
+                        let opts = '<option value="">اختر...</option>';
+                        appData.budget.purchases.forEach((pur, idx) => {
+                            if((pur.category=='مواد أولية'||pur.category=='تغليف')) {
+                                let selected = (idx == u.id) ? 'selected' : '';
+                                opts += `<option value="${idx}" data-price="${pur.amount}" ${selected}>${pur.item}</option>`;
+                            }
+                        });
+                        const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" value="${u.qty}" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                        ingTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                    document.querySelectorAll('#prod-ing-table tbody tr').forEach(r => calcProdRow(r.querySelector('select')));
+                }
+
+                if(p.usedOps) {
+                    const opTb = document.getElementById('prod-op-table').tBodies[0];
+                    p.usedOps.forEach(u => {
+                         let opts = '<option value="">اختر...</option>';
+                         appData.budget.salaries.forEach((s, idx) => {
+                             let selected = (idx == u.id) ? 'selected' : '';
+                             opts += `<option value="${idx}" data-amt="${s.amount}" ${selected}>${s.category} - ${s.date}</option>`;
+                         });
+                         const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcOpRow(this)">${opts}</select></td><td class="amt">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                         opTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                     document.querySelectorAll('#prod-op-table tbody tr').forEach(r => calcOpRow(r.querySelector('select')));
+                }
+                calcProdTotal();
+
+            } else { 
+                document.getElementById('prod-id').value=''; document.getElementById('prod-date').valueAsDate=new Date(); document.getElementById('prod-count').value=''; 
+            }
+            new bootstrap.Modal(document.getElementById('productionModal')).show(); 
+        }
+
+        function delProduct(i) { if(confirm('حذف؟')) { appData.products.splice(i,1); saveData(); renderProducts(); } }
+        function clearForm() { editingIdx=-1; document.querySelectorAll('#view-product-calc input').forEach(i=>i.value=''); document.getElementById('product-code').value="PRD-"+String(productCounter++).padStart(4,'0'); document.getElementById('materials-tbody').innerHTML = `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count" value="1"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`; document.getElementById('packaging-tbody').innerHTML = `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count" value="1"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`; attachEvents(); }
+        document.getElementById('add-material').onclick = () => { document.getElementById('materials-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern material-name"></td><td><input type="number" class="form-control-modern material-price" step="0.001"></td><td><input type="number" class="form-control-modern material-count"></td><td><input type="number" class="form-control-modern material-used"></td><td class="material-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
+        document.getElementById('add-packaging').onclick = () => { document.getElementById('packaging-tbody').insertAdjacentHTML('beforeend', `<tr><td><input class="form-control-modern packaging-name"></td><td><input type="number" class="form-control-modern packaging-price" step="0.001"></td><td><input type="number" class="form-control-modern packaging-count"></td><td><input type="number" class="form-control-modern packaging-used"></td><td class="packaging-cost fw-bold">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProduct()">x</button></td></tr>`); attachEvents(); };
+        function attachEvents() { document.querySelectorAll('input').forEach(i => i.oninput = calcProduct); } attachEvents();
+
+        function updateBudgetUI() { renderReport(); renderAllTables(); }
+
+        function renderReport() {
+            let cIn=0, bIn=0; 
+            let cRef=0, bRef=0; 
+            let cExp=0, bExp=0; 
+
+            appData.budget.transactions.forEach(t => { 
+                if(checkDate(t.date)) { 
+                    if(t.type === 'in') {
+                         t.method === 'Cash' ? cIn += parseFloat(t.amount) : bIn += parseFloat(t.amount);
+                    } else {
+                         t.method === 'Cash' ? cRef += parseFloat(t.amount) : bRef += parseFloat(t.amount); 
+                    }
+                } 
+            });
+
+            appData.budget.invoices.forEach(i => { 
+                if(checkDate(i.date) && i.status === 'Paid') {
+                    i.method === 'Cash' ? cIn += parseFloat(i.total) : bIn += parseFloat(i.total); 
+                }
+            });
+
+            appData.budget.salaries.forEach(s => { 
+                if(checkDate(s.date) && s.status === 'Paid') {
+                    s.method === 'Cash' ? cExp += parseFloat(s.amount) : bExp += parseFloat(s.amount); 
+                }
+            });
+
+            appData.budget.purchases.forEach(p => { 
+                if(checkDate(p.date) && p.status === 'Paid') {
+                    const amt = (parseFloat(p.count)*parseFloat(p.amount));
+                    p.method === 'Cash' ? cExp += amt : bExp += amt; 
+                }
+            });
+
+            document.getElementById('rep-cash-in').innerText = formatMoney(cIn); 
+            document.getElementById('rep-benefit-in').innerText = formatMoney(bIn);
+            document.getElementById('rep-cash-out').innerText = formatMoney(cRef); 
+            document.getElementById('rep-benefit-out').innerText = formatMoney(bRef);
+            
+            const treasuryNet = (cIn + bIn) - (cRef + bRef);
+            document.getElementById('rep-net').innerText = formatMoney(treasuryNet);
+            
+            const remCash = cIn - cRef - cExp;
+            const remBenefit = bIn - bRef - bExp;
+
+            document.getElementById('rem-cash').innerText = formatMoney(remCash);
+            document.getElementById('rem-benefit').innerText = formatMoney(remBenefit);
+
+            const purTotal = appData.budget.purchases.filter(p => checkDate(p.date)).reduce((a,b)=>a+(parseFloat(b.count)*parseFloat(b.amount)),0);
+            const salTotal = appData.budget.salaries.filter(s => checkDate(s.date)).reduce((a,b)=>a+parseFloat(b.amount),0);
+            const totalExpenses = purTotal + salTotal;
+            
+            const remEl = document.getElementById('rep-final-remainder');
+            remEl.innerText = formatMoney(remCash + remBenefit);
+            remEl.className = (remCash + remBenefit) >= 0 ? "report-val text-success" : "report-val text-danger";
+
+            document.getElementById('rep-purchases-total').innerText = formatMoney(purTotal);
+            document.getElementById('rep-salaries-total').innerText = formatMoney(salTotal);
+            document.getElementById('rep-expenses-total').innerText = formatMoney(totalExpenses);
+
+            const prods = appData.budget.productions.filter(p => checkDate(p.date));
+            const prodListContainer = document.getElementById('production-list-container');
+            prodListContainer.innerHTML = '';
+            let prodGroups = {};
+            prods.forEach(p => { if(!prodGroups[p.name]) prodGroups[p.name] = { boxes: 0, totalCost: 0 }; prodGroups[p.name].boxes += parseFloat(p.boxCount); prodGroups[p.name].totalCost += parseFloat(p.totalCost); });
+            if(Object.keys(prodGroups).length === 0) prodListContainer.innerHTML = '<div class="text-muted text-center py-4">لا يوجد إنتاج</div>'; 
+            else for (const [name, data] of Object.entries(prodGroups)) { const avgKilo = (data.totalCost / data.boxes) * 2; prodListContainer.innerHTML += `<div class="prod-item"><span class="prod-item-name">${name}</span><div class="prod-item-stat"><span>عدد العلب المنتجة</span><span class="prod-item-val">${formatCount(data.boxes)}</span></div><div class="prod-item-stat"><span>متوسط تكلفة الكيلو</span><span class="prod-item-val text-primary">${formatMoney(avgKilo)}</span></div></div>`; }
+
+            const invs = appData.budget.invoices.filter(i => checkDate(i.date));
+            const paid = invs.filter(i => i.status === 'Paid');
+            let productCosts = {}; appData.budget.productions.forEach(p => { if(!productCosts[p.name]) productCosts[p.name] = []; productCosts[p.name].push(parseFloat(p.boxValue)); });
+            let totalSales = paid.reduce((a,b)=>a+parseFloat(b.total),0);
+            let totalCOGS = 0; paid.forEach(inv => { const costs = productCosts[inv.productName]; const avg = costs ? costs.reduce((a,b)=>a+b,0)/costs.length : 0; totalCOGS += parseFloat(inv.qty) * avg; });
+            document.getElementById('report-net-benefit').innerText = formatMoney(totalSales - totalCOGS);
+            document.getElementById('report-net-budget').innerText = formatMoney(totalSales - totalExpenses);
+
+            const cats = {}; appData.budget.purchases.filter(p=>checkDate(p.date)).forEach(p => { cats[p.category] = (cats[p.category]||0) + (parseFloat(p.count)*parseFloat(p.amount)); });
+            if(chartInstance) chartInstance.destroy();
+            chartInstance = new Chart(document.getElementById('expensesChart'), { type: 'bar', data: { labels: Object.keys(cats), datasets: [{ label: 'المصروفات', data: Object.values(cats), backgroundColor: '#6A1B9A' }] }, options: { maintainAspectRatio: false } });
+            const salList = document.getElementById('rep-salary-list'); salList.innerHTML = '';
+            const salGroups = {}; appData.budget.salaries.filter(s=>checkDate(s.date)).forEach(s => salGroups[s.status] = (salGroups[s.status]||0) + parseFloat(s.amount));
+            for(let k in salGroups) { salList.innerHTML += `<li class="list-group-item d-flex justify-content-between"><span>${k==='Paid'?'مدفوع':'غير مدفوع'}</span><span>${formatMoney(salGroups[k])}</span></li>`; }
+        }
+
+        function renderAllTables() {
+            const chk = checkDate;
+            const itb = document.getElementById('invoices-tbody'); itb.innerHTML = ''; appData.budget.invoices.forEach((i, idx) => { if(chk(i.date)) itb.innerHTML += `<tr><td>${i.date}</td><td>${i.customer}</td><td>${i.productName}</td><td>${formatMoney(i.total)}</td><td><span class="status-badge ${i.status==='Paid'?'status-active':'status-inactive'}">${i.status==='Paid'?'مدفوع':'غير مدفوع'}</span></td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('invoice', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openInvoiceModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('invoices',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const ptb = document.getElementById('production-tbody'); ptb.innerHTML = ''; appData.budget.productions.forEach((p, idx) => { if(chk(p.date)) { const rowKiloCost = parseFloat(p.boxValue) * 2; ptb.innerHTML += `<tr><td>${p.date}</td><td>${p.name}</td><td>${formatCount(p.boxCount)}</td><td>${formatMoney(p.totalCost)}</td><td>${formatMoney(rowKiloCost)}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('production', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openProductionModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('productions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; } });
+            const putb = document.getElementById('purchases-tbody'); putb.innerHTML = ''; appData.budget.purchases.forEach((p, idx) => { if(chk(p.date)) putb.innerHTML += `<tr><td>${p.date}</td><td>${p.item}</td><td>${formatCount(p.count)}</td><td>${formatMoney(p.amount)}</td><td>${formatMoney(p.count*p.amount)}</td><td>${p.category}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('purchase', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openPurchaseModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('purchases',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const stb = document.getElementById('salaries-tbody'); stb.innerHTML = ''; appData.budget.salaries.forEach((s, idx) => { if(chk(s.date)) stb.innerHTML += `<tr><td>${s.date}</td><td>${s.category}</td><td>${formatMoney(s.amount)}</td><td>${s.status==='Paid'?'مدفوع':'غير مدفوع'}</td><td>${s.paymentDate||'-'}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('salary', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openSalaryModal(${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('salaries',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+            const ttb = document.getElementById('transactions-tbody'); ttb.innerHTML = ''; appData.budget.transactions.forEach((t, idx) => { if(chk(t.date)) ttb.innerHTML += `<tr><td>${t.date}</td><td><span class="status-badge ${t.type==='in'?'status-active':'status-inactive'}">${t.type==='in'?'استلام':'استرداد'}</span></td><td>${formatMoney(t.amount)}</td><td>${t.method}</td><td>${t.notes}</td><td><button class="btn btn-secondary-modern btn-sm" onclick="previewItem('transaction', ${idx})"><i class="bi bi-eye"></i></button> <button class="btn btn-primary-modern btn-sm" onclick="openTransactionModal('${t.type}', ${idx})"><i class="bi bi-pencil"></i></button> <button class="btn btn-danger-modern btn-sm" onclick="delItem('transactions',${idx})"><i class="bi bi-trash"></i></button></td></tr>`; });
+        }
+        
+        function delItem(type, i) { 
+            if(confirm('حذف؟')) { 
+                if (type === 'productions') {
+                    const prod = appData.budget.productions[i];
+                    if (prod.usedIngredients) {
+                        prod.usedIngredients.forEach(item => {
+                            if (appData.budget.purchases[item.id]) {
+                                appData.budget.purchases[item.id].remaining = (parseFloat(appData.budget.purchases[item.id].remaining) || 0) + parseFloat(item.qty);
+                            }
+                        });
+                    }
+                    if (prod.usedOps) {
+                        prod.usedOps.forEach(item => {
+                            if (appData.budget.salaries[item.id]) {
+                                appData.budget.salaries[item.id].isUsedInProduction = false;
+                            }
+                        });
+                    }
+                }
+                appData.budget[type].splice(i,1); 
+                saveData(); 
+                updateBudgetUI(); 
+            } 
+        }
+
+        // --- Modals Handlers ---
+        window.addProdIng = function() {
+             const tb = document.getElementById('prod-ing-table').tBodies[0];
+             let opts = '<option value="">اختر المنتج...</option>';
+             appData.budget.purchases.forEach((p,i) => { 
+                 if((p.category=='مواد أولية'||p.category=='تغليف') && p.remaining > 0) {
+                     opts += `<option value="${i}" data-price="${p.amount}">${p.item} (متاح: ${p.remaining})</option>`; 
+                 }
+             });
+             tb.insertAdjacentHTML('beforeend', `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`);
+        };
+        window.addProdOp = function() {
+             const tb = document.getElementById('prod-op-table').tBodies[0];
+             let opts = '<option value="">اختر...</option>';
+             appData.budget.salaries.forEach((s,i) => {
+                 if(!s.isUsedInProduction) {
+                    opts += `<option value="${i}" data-amt="${s.amount}">${s.category} - ${s.date}</option>`;
+                 }
+             });
+             tb.insertAdjacentHTML('beforeend', `<tr><td><select class="form-select-modern" onchange="calcOpRow(this)">${opts}</select></td><td class="amt">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`);
+        };
+        window.calcProdRow = function(e) {
+            const r = e.closest('tr'); const s = r.querySelector('select');
+            const price = parseFloat(s.options[s.selectedIndex].dataset.price||0);
+            const qty = parseFloat(r.querySelector('input').value)||0;
+            r.querySelector('.cost').innerText = (price*qty).toFixed(3); calcProdTotal();
+        };
+        window.calcOpRow = function(e) {
+            const r = e.closest('tr'); const s = r.querySelector('select');
+            r.querySelector('.amt').innerText = parseFloat(s.options[s.selectedIndex].dataset.amt||0).toFixed(3); calcProdTotal();
+        };
+        window.calcProdTotal = function() {
+            let total = 0;
+            document.querySelectorAll('#prod-ing-table .cost').forEach(c => total += parseFloat(c.innerText));
+            document.querySelectorAll('#prod-op-table .amt').forEach(c => total += parseFloat(c.innerText));
+            const count = parseFloat(document.getElementById('prod-count').value)||1;
+            document.getElementById('prod-total').value = total.toFixed(3);
+            document.getElementById('prod-unit').value = (total/count).toFixed(3);
+        }
+        document.getElementById('prod-count').addEventListener('input', calcProdTotal);
+
+        function openProductionModal(i){ 
+            const sel=document.getElementById('prod-name'); sel.innerHTML='<option value="">اختر الصنف</option>'; appData.products.filter(p=>p.active).forEach(p=>sel.innerHTML+=`<option>${p.name}</option>`); 
+            document.getElementById('prod-ing-table').tBodies[0].innerHTML=''; document.getElementById('prod-op-table').tBodies[0].innerHTML=''; document.getElementById('prod-total').value=''; document.getElementById('prod-unit').value='';
+            
+            if(i!==undefined){ 
+                const p = appData.budget.productions[i]; 
+                document.getElementById('prod-id').value=i; 
+                document.getElementById('prod-date').value=p.date; 
+                document.getElementById('prod-name').value=p.name; 
+                document.getElementById('prod-count').value=p.boxCount; 
+                document.getElementById('prod-weight').value=p.weight||'';
+                
+                // Refill Ingredients Table
+                if(p.usedIngredients) {
+                    const ingTb = document.getElementById('prod-ing-table').tBodies[0];
+                    p.usedIngredients.forEach(u => {
+                        let opts = '<option value="">اختر...</option>';
+                        appData.budget.purchases.forEach((pur, idx) => {
+                            if((pur.category=='مواد أولية'||pur.category=='تغليف')) {
+                                let selected = (idx == u.id) ? 'selected' : '';
+                                opts += `<option value="${idx}" data-price="${pur.amount}" ${selected}>${pur.item}</option>`;
+                            }
+                        });
+                        const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcProdRow(this)">${opts}</select></td><td><input type="number" class="form-control-modern" value="${u.qty}" oninput="calcProdRow(this)"></td><td class="cost">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                        ingTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                    document.querySelectorAll('#prod-ing-table tbody tr').forEach(r => calcProdRow(r.querySelector('select')));
+                }
+
+                if(p.usedOps) {
+                    const opTb = document.getElementById('prod-op-table').tBodies[0];
+                    p.usedOps.forEach(u => {
+                         let opts = '<option value="">اختر...</option>';
+                         appData.budget.salaries.forEach((s, idx) => {
+                             let selected = (idx == u.id) ? 'selected' : '';
+                             opts += `<option value="${idx}" data-amt="${s.amount}" ${selected}>${s.category} - ${s.date}</option>`;
+                         });
+                         const rowHtml = `<tr><td><select class="form-select-modern" onchange="calcOpRow(this)">${opts}</select></td><td class="amt">0.000</td><td><button class="btn btn-danger-modern btn-sm" onclick="this.closest('tr').remove();calcProdTotal()">x</button></td></tr>`;
+                         opTb.insertAdjacentHTML('beforeend', rowHtml);
+                    });
+                     document.querySelectorAll('#prod-op-table tbody tr').forEach(r => calcOpRow(r.querySelector('select')));
+                }
+                calcProdTotal();
+
+            } else { 
+                document.getElementById('prod-id').value=''; document.getElementById('prod-date').valueAsDate=new Date(); document.getElementById('prod-count').value=''; 
+            }
+            new bootstrap.Modal(document.getElementById('productionModal')).show(); 
+        }
+
         function savePurchase() { 
              const id = document.getElementById('pur-id').value; const isPaid = document.getElementById('pur-status').value === 'Paid';
              const data = { date: document.getElementById('pur-date').value, item: document.getElementById('pur-item').value, count: document.getElementById('pur-count').value, amount: document.getElementById('pur-amount').value, category: document.getElementById('pur-cat').value, status: document.getElementById('pur-status').value, method: isPaid ? document.getElementById('pur-method').value : '-', paymentDate: isPaid ? document.getElementById('pur-pay-date').value : '-', remaining: document.getElementById('pur-count').value };
